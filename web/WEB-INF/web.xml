@@ -13,10 +13,6 @@
         <servlet-class>controller.ProfileServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AdminUserManagementServlet</servlet-name>
-        <servlet-class>controller.AdminUserManagementServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ProductServlet</servlet-name>
         <servlet-class>controller.ProductServlet</servlet-class>
     </servlet>
@@ -33,10 +29,6 @@
         <servlet-class>controller.OrderServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AdminOrderServlet</servlet-name>
-        <servlet-class>controller.AdminOrderServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>RevenueServlet</servlet-name>
         <servlet-class>controller.RevenueServlet</servlet-class>
     </servlet>
@@ -47,6 +39,14 @@
     <servlet>
         <servlet-name>ReviewServlet</servlet-name>
         <servlet-class>controller.ReviewServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchServlet</servlet-name>
+        <servlet-class>controller.SearchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>controller.AdminServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
@@ -59,10 +59,6 @@
     <servlet-mapping>
         <servlet-name>ProfileServlet</servlet-name>
         <url-pattern>/ProfileServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AdminUserManagementServlet</servlet-name>
-        <url-pattern>/AdminUserManagementServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ProductServlet</servlet-name>
@@ -81,10 +77,6 @@
         <url-pattern>/OrderServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AdminOrderServlet</servlet-name>
-        <url-pattern>/AdminOrderServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>RevenueServlet</servlet-name>
         <url-pattern>/RevenueServlet</url-pattern>
     </servlet-mapping>
@@ -95,5 +87,13 @@
     <servlet-mapping>
         <servlet-name>ReviewServlet</servlet-name>
         <url-pattern>/ReviewServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchServlet</servlet-name>
+        <url-pattern>/SearchServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/AdminServlet</url-pattern>
     </servlet-mapping>
 </web-app>
