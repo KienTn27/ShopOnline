@@ -15,6 +15,5 @@
     <% 
         response.sendRedirect(request.getContextPath() + "/LoginServlet");
     %>
-
 </body>
 </html>
