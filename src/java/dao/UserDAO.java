@@ -71,7 +71,7 @@ public class UserDAO {
                 p.setPrice(rs.getDouble("Price"));
                 p.setQuantity(rs.getInt("Quantity"));
                 p.setImageUrl(rs.getString("ImageURL"));
-                p.setActive(rs.getBoolean("isActive"));
+                p.setIsActive(rs.getBoolean("isActive"));
                 products.add(p);
             }
         }
