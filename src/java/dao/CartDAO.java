@@ -12,18 +12,21 @@ public class CartDAO {
     public List<Cart> getCartByUserId(int userId) {
         List<Cart> carts = new ArrayList<>();
         Connection conn = DBContext.getInstance().getConnection();
-        String query = "SELECT * FROM Carts WHERE UserId = ?";
+        String query = "SELECT c.*, p.ProductName, p.Price FROM Carts c JOIN Products p ON c.ProductId = p.ProductId WHERE c.UserId = ?";
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Cart cart = new Cart();
-                cart.setCartId(rs.getInt("CartId"));
-                cart.setUserId(rs.getInt("UserId"));
-                cart.setProductId(rs.getInt("ProductId"));
-                cart.setQuantity(rs.getInt("Quantity"));
-                cart.setCreatedAt(rs.getDate("CreatedAt")); // Thêm trường CreatedAt
-                carts.add(cart);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Cart cart = new Cart();
+                    cart.setCartId(rs.getInt("CartId"));
+                    cart.setUserId(rs.getInt("UserId"));
+                    cart.setProductId(rs.getInt("ProductId"));
+                    cart.setQuantity(rs.getInt("Quantity"));
+                    cart.setCreatedAt(rs.getDate("CreatedAt"));
+                    cart.setPrice(rs.getDouble("Price"));
+                    cart.setProductName(rs.getString("ProductName"));
+                    carts.add(cart);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
