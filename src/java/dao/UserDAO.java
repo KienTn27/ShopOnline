@@ -1,6 +1,5 @@
 package dao;
 
-import dao.DBContext;
 import model.Product;
 import model.TopUser;
 import model.User;
@@ -11,20 +10,20 @@ import java.util.List;
 
 public class UserDAO {
 
-    private DBContext dbContext = DBContext.getInstance();
+    private final DBContext dbContext = DBContext.getInstance();
 
     // Đăng nhập
     public User getUserByUsernamePassword(String email, String password) throws SQLException {
         User user = null;
-        String sql = "SELECT * FROM Users WHERE Email = ? AND Password = ?";
+        String sql = "SELECT * FROM User WHERE Email = ? AND Password = ?";
         try (Connection conn = dbContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, email);
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                user = new User();
-                user.setUserId(rs.getInt("UserID"));
+                user = new User(rs.getString("UserId"), rs.getString("FullName"), rs.getString("Password"), rs.getString("Address"), rs.getDate("Birthday"), rs.getString("Phone"), rs.getFloat("Amount"));
+                user.setUserId(rs.getInt("userId"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
                 user.setFullName(rs.getString("FullName"));
@@ -39,7 +38,7 @@ public class UserDAO {
 
     // Đăng ký tài khoản
     public void addUser(User user) throws SQLException {
-        String sql = "INSERT INTO Users (username, password, FullName, Email, Phone, Role, isActive) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO User (username, password, FullName, Email, Phone, Role, isActive) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = dbContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getUsername());
@@ -79,17 +78,17 @@ public class UserDAO {
     }
 
     // Lấy danh sách top người dùng chi tiêu nhiều nhất
-    public List<TopUser> getTopUsers() {
+    public List<TopUser> getTopUser() {
         List<TopUser> list = new ArrayList<>();
         String sql = """
            SELECT u.FullName, COUNT(o.OrderID) AS TotalOrders, SUM(o.TotalAmount) AS TotalSpent
-            FROM Users u
-            JOIN Orders o ON u.UserID = o.UserID
+            FROM User u
+            JOIN Orders o ON u.userId = o.userId
             GROUP BY u.FullName
             ORDER BY TotalSpent DESC
         """;
 
-        try (Connection conn = dbContext.getInstance().getConnection();
+        try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -102,9 +101,56 @@ public class UserDAO {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         return list;
+    }
+    public User dangnhap(String userId, String password) {
+        String sql = "SELECT * FROM users WHERE userId = ? AND password = ?";
+        User user = null;
+        try {
+
+            PreparedStatement ps = dbContext.getConnection().prepareStatement(sql);
+            ps.setString(1, userId);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) // kiểm tra xem có tồn tại dữ liệu từ ResultSet không
+            {
+                user = new User(rs.getString("UserId"), rs.getString("FullName"),
+                        rs.getString("Password"), rs.getString("Address"), rs.getDate("Birthday"),
+                        rs.getString("Phone"), rs.getFloat("Amount"));
+                return user;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return user;
+
+    }
+    public int insert(User c) throws Exception {
+        String sql = """
+                     INSERT INTO [dbo].[User]
+                                ([UserId]
+                                ,[Fullname]
+                                ,[Password]
+                                ,[Email]
+                                ,[Username]
+                                ,[Phone])
+                          VALUES
+                                (?,?,?,?,?,?)""";
+        try {
+            PreparedStatement st = dbContext.getConnection().prepareStatement(sql);
+            st.setInt(1, c.getUserId());
+            st.setString(2, c.getFullName());
+            st.setString(3, c.getPassword());
+            st.setString(4, c.getEmail());
+            st.setString (5, c.getUsername());
+            st.setString(6, c.getPhone());
+
+            return st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return 0;
     }
 }
