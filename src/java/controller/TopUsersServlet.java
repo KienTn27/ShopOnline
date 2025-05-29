@@ -58,7 +58,7 @@ public class TopUsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-     List<TopUser> topUsers = new UserDAO().getTopUsers();
+     List<TopUser> topUsers = new UserDAO().getTopUser();
         request.setAttribute("topUsers", topUsers);
         request.getRequestDispatcher("/admin/top-users.jsp").forward(request, response);
 
