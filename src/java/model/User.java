@@ -11,7 +11,7 @@ public class User {
     private String role;
     private boolean isActive;
 
-    public User(String string, String string1, String string2, String string3, Date date, String string4, float aFloat) {
+    public User() {
     }
 
     public User(int userId, String username, String password, String fullName, String email, String phone, String role, boolean isActive) {
