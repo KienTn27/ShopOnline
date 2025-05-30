@@ -6,30 +6,32 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import model.Cart;
+import java.sql.SQLException;
+import model.CartDTO;
 
 public class CartDAO {
 
-    public List<Cart> getCartByUserId(int userId) {
-        List<Cart> carts = new ArrayList<>();
-        Connection conn = DBContext.getInstance().getConnection();
-        String query = "SELECT c.*, p.ProductName, p.Price FROM Carts c JOIN Products p ON c.ProductId = p.ProductId WHERE c.UserId = ?";
-        try (PreparedStatement ps = conn.prepareStatement(query)) {
+    private DBContext dbContext = DBContext.getInstance();
+
+    public List<CartDTO> getCartByUserId(int userId) throws SQLException {
+        List<CartDTO> carts = new ArrayList<>();
+        try (Connection conn = dbContext.getConnection(); PreparedStatement ps = conn.prepareStatement(
+                "SELECT c.CartId, c.UserId, c.ProductId, c.Quantity, c.CreatedAt, p.Name AS ProductName, p.Price "
+                + "FROM Carts c JOIN Products p ON c.ProductId = p.ProductId WHERE c.UserId = ?")) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Cart cart = new Cart();
+                    CartDTO cart = new CartDTO();
                     cart.setCartId(rs.getInt("CartId"));
                     cart.setUserId(rs.getInt("UserId"));
                     cart.setProductId(rs.getInt("ProductId"));
                     cart.setQuantity(rs.getInt("Quantity"));
                     cart.setCreatedAt(rs.getDate("CreatedAt"));
-                    cart.setPrice(rs.getDouble("Price"));
                     cart.setProductName(rs.getString("ProductName"));
+                    cart.setPrice(rs.getDouble("Price"));
                     carts.add(cart);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return carts;
     }
