@@ -119,25 +119,22 @@ public class OrderDAO {
         }
     }
 
-    public List<Order> getOrdersByUserId(int userId) {
+    public List<Order> getOrdersByUserId(int userId) throws SQLException {
         List<Order> orders = new ArrayList<>();
-        Connection conn = DBContext.getInstance().getConnection();
-        String query = "SELECT * FROM Orders WHERE UserId = ?";
-        try (PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection conn = dbContext.getConnection(); PreparedStatement ps = conn.prepareStatement("SELECT * FROM Orders WHERE UserId = ?")) {
             ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Order order = new Order();
-                order.setOrderId(rs.getInt("OrderId"));
-                order.setUserId(rs.getInt("UserId"));
-                order.setOrderDate(rs.getDate("OrderDate"));
-                order.setTotalAmount(rs.getDouble("TotalAmount"));
-                order.setShippingAddress(rs.getString("ShippingAddress"));
-                order.setStatus(rs.getString("Status")); // Thêm trường Status
-                orders.add(order);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Order order = new Order();
+                    order.setOrderId(rs.getInt("OrderId"));
+                    order.setUserId(rs.getInt("UserId"));
+                    order.setOrderDate(rs.getTimestamp("OrderDate"));
+                    order.setTotalAmount(rs.getDouble("TotalAmount"));
+                    order.setShippingAddress(rs.getString("ShippingAddress"));
+                    order.setStatus(rs.getString("Status"));
+                    orders.add(order);
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return orders;
     }
