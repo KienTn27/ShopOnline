@@ -92,7 +92,7 @@
                 %>
             </div>
             <div class="card-footer text-center">
-                Đã có tài khoản? <a href="Login.jsp" class="text-success">Đăng nhập ngay</a>
+                Đã có tài khoản? <a href="login.jsp" class="text-success">Đăng nhập ngay</a>
             </div>
         </div>
     </div>

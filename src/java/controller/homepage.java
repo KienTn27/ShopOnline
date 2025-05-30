@@ -20,7 +20,7 @@
 // *
 // * 
 // */
-//@WebServlet(name = "homepage", urlPatterns = {"/homepage"})
+//@WebServlet(name = "homepage", urlPatterns = {"/home"})
 //public class homepage extends HttpServlet {
 //
 //    /**
@@ -67,7 +67,7 @@
 //        request.setAttribute("top", list);
 //        list=c.getNewProducts();
 //        request.setAttribute("top1", list);
-//        request.getRequestDispatcher("homepage.jsp").forward(request, response);
+//        request.getRequestDispatcher("home.jsp").forward(request, response);
 //        
 //    }
 //

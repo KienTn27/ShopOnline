@@ -10,13 +10,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.User;
 
-@WebServlet(name = "loginServlet", urlPatterns = {"/Login"})
+@WebServlet(name = "loginServlet", urlPatterns = {"/login"})
 public class loginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("Login.jsp").forward(request, response);
+        request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class loginServlet extends HttpServlet {
         // Kiểm tra dữ liệu rỗng
         if (userID == null || userID.trim().isEmpty() || Password == null || Password.trim().isEmpty()) {
             request.setAttribute("errorMessage", "Tên đăng nhập và mật khẩu không được để trống.");
-            request.getRequestDispatcher("Login.jsp").forward(request, response);
+            request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
 
@@ -42,11 +42,11 @@ public class loginServlet extends HttpServlet {
             System.out.println("Login thành công: " + user.getUserId()); // debug
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            response.sendRedirect("Home");
+            response.sendRedirect("home");
         } else {
             System.out.println("Đăng nhập thất bại cho userID: " + userID); // debug
             request.setAttribute("errorMessage", "Tên đăng nhập hoặc mật khẩu không đúng.");
-            request.getRequestDispatcher("Login.jsp").forward(request, response);
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 
