@@ -11,11 +11,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import dao.RevenueDAO;
+import model.RevenueStat;
+import jakarta.servlet.annotation.WebServlet;
 
 /**
  *
  * @author X1 carbon Gen6
  */
+@WebServlet("/revenue")
 public class RevenueServlet extends HttpServlet {
    
     /** 
@@ -42,18 +47,20 @@ public class RevenueServlet extends HttpServlet {
         }
     } 
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
-     * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+ 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+      String type = request.getParameter("type");
+        if (type == null || (!type.equals("day") && !type.equals("month"))) {
+            type = "day"; // mặc định
+        }
+
+        List<RevenueStat> stats = new RevenueDAO().getRevenueBy(type);
+        request.setAttribute("type", type);
+        request.setAttribute("stats", stats);
+        request.getRequestDispatcher("/admin/revenue.jsp").forward(request, response);
+
     } 
 
     /** 
