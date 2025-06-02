@@ -4,18 +4,21 @@
  */
 
 package controller;
-
+import dao.ReviewDAO;
+import model.Review;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import java.util.List;
 /**
  *
  * @author X1 carbon Gen6
  */
+@WebServlet("/admin/reviews")
 public class ReviewServlet extends HttpServlet {
    
     /** 
@@ -53,7 +56,11 @@ public class ReviewServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+     ReviewDAO dao = new ReviewDAO();
+        List<Review> reviews = dao.getAllReviews();
+
+        request.setAttribute("reviews", reviews);
+        request.getRequestDispatcher("/admin/reviews.jsp").forward(request, response);
     } 
 
     /** 
