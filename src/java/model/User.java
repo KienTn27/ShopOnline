@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Date;
+
 public class User {
 
     private int userId;
@@ -10,8 +12,21 @@ public class User {
     private String phone;
     private String role;
     private boolean isActive;
+    private Date createAt;
 
     public User() {
+    }
+
+    public User(int userId, String username, String password, String fullName, String email, String phone, String role, boolean isActive, Date createAt) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.role = role;
+        this.isActive = isActive;
+        this.createAt = createAt;
     }
 
     public User(int userId, String username, String password, String fullName, String email, String phone, String role, boolean isActive) {
@@ -23,6 +38,22 @@ public class User {
         this.phone = phone;
         this.role = role;
         this.isActive = isActive;
+    }
+
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 
     public int getUserId() {

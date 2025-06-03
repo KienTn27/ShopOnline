@@ -12,12 +12,12 @@ public class DBContext {
     private Connection connection;
     
     // Thông tin kết nối
-    private static final String URL = "jdbc:sqlserver://PC-cua-KIEN:1433;databaseName=Shop;TrustServerCertificate=true";
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Shop;TrustServerCertificate=true";
     private static final String USER = "sa";
-    private static final String PASSWORD = "sa";
+    private static final String PASSWORD = "123456";
     
     // Constructor riêng tư
-    private DBContext() {
+    public DBContext() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connect();
