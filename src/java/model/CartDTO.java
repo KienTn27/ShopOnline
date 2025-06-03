@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.util.Date;
 
-/**
- *
- * @author X1 carbon Gen6
- */
 public class CartDTO {
 
     private int cartId;
@@ -19,11 +11,22 @@ public class CartDTO {
     private Date createdAt;
     private String productName;
     private double price;
+    private String imageURL; // Thêm thuộc tính imageURL
+    private int categoryId;
 
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    // Constructors
     public CartDTO() {
     }
 
-    public CartDTO(int cartId, int userId, int productId, int quantity, Date createdAt, String productName, double price) {
+    public CartDTO(int cartId, int userId, int productId, int quantity, Date createdAt, String productName, double price, String imageURL) {
         this.cartId = cartId;
         this.userId = userId;
         this.productId = productId;
@@ -31,8 +34,10 @@ public class CartDTO {
         this.createdAt = createdAt;
         this.productName = productName;
         this.price = price;
+        this.imageURL = imageURL;
     }
 
+    // Getters and Setters
     public int getCartId() {
         return cartId;
     }
@@ -89,4 +94,11 @@ public class CartDTO {
         this.price = price;
     }
 
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 }

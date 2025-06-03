@@ -16,8 +16,10 @@ public class CartDAO {
     public List<CartDTO> getCartByUserId(int userId) throws SQLException {
         List<CartDTO> carts = new ArrayList<>();
         try (Connection conn = dbContext.getConnection(); PreparedStatement ps = conn.prepareStatement(
-                "SELECT c.CartId, c.UserId, c.ProductId, c.Quantity, c.CreatedAt, p.Name AS ProductName, p.Price "
-                + "FROM Carts c JOIN Products p ON c.ProductId = p.ProductId WHERE c.UserId = ?")) {
+                "SELECT c.CartId, c.UserId, c.ProductId, c.Quantity, c.CreatedAt, "
+                + "p.Name AS ProductName, p.Price, p.ImageURL, p.CategoryID "
+                + "FROM Carts c JOIN Products p ON c.ProductId = p.ProductId "
+                + "WHERE c.UserId = ?")) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -29,6 +31,8 @@ public class CartDAO {
                     cart.setCreatedAt(rs.getDate("CreatedAt"));
                     cart.setProductName(rs.getString("ProductName"));
                     cart.setPrice(rs.getDouble("Price"));
+                    cart.setImageURL(rs.getString("ImageURL"));
+                    cart.setCategoryId(rs.getInt("CategoryID")); 
                     carts.add(cart);
                 }
             }
