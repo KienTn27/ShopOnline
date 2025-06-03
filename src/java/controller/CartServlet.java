@@ -23,8 +23,10 @@ public class CartServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String userIdStr = (String) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
+
         if (userIdStr == null) {
-            response.sendRedirect(request.getContextPath() + "/LoginServlet");
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
@@ -32,101 +34,75 @@ public class CartServlet extends HttpServlet {
         try {
             userId = Integer.parseInt(userIdStr);
         } catch (NumberFormatException e) {
-            request.setAttribute("error", "ID người dùng không hợp lệ!");
-            response.sendRedirect(request.getContextPath() + "/LoginServlet");
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
-        String role = (String) session.getAttribute("role");
         String action = request.getParameter("action");
-
         if (action == null || action.isEmpty()) {
             action = "viewCart";
         }
 
-        if ("viewCart".equals(action)) {
-            try {
-                List<CartDTO> carts = cartDAO.getCartByUserId(userId);
-                session.setAttribute("carts", carts);
+        switch (action) {
+            case "viewCart" -> {
+                try {
+                    List<CartDTO> carts = cartDAO.getCartByUserId(userId);
+                    session.setAttribute("carts", carts);
 
-                double cartTotal = 0;
-                if (carts != null) {
+                    double cartTotal = 0;
                     for (CartDTO cart : carts) {
                         cartTotal += cart.getPrice() * cart.getQuantity();
                     }
+                    session.setAttribute("cartTotal", cartTotal);
+                    response.sendRedirect(request.getContextPath() + "/view/cart.jsp");
+                } catch (Exception e) {
+                    response.sendRedirect(request.getContextPath() + "/HomeServlet");
                 }
-                session.setAttribute("cartTotal", cartTotal);
+            }
 
+            case "deleteCartItem" -> {
+                try {
+                    int cartId = Integer.parseInt(request.getParameter("cartId"));
+                    cartDAO.deleteCartItem(cartId);
+                } catch (Exception ignored) {
+                }
+
+                response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
+            }
+
+            case "viewOrders" -> {
+                try {
+                    List<Order> orders = "Admin".equals(role)
+                            ? orderDAO.getAllOrders()
+                            : orderDAO.getOrdersByUserId(userId);
+                    session.setAttribute("orders", orders);
+                    response.sendRedirect(request.getContextPath() + "/view/order.jsp");
+                } catch (Exception e) {
+                    response.sendRedirect(request.getContextPath() + "/HomeServlet");
+                }
+            }
+
+            case "viewOrderDetails" -> {
+                try {
+                    int orderId = Integer.parseInt(request.getParameter("orderId"));
+                    Order order = orderDAO.getOrderById(orderId);
+
+                    if (order == null || (!"Admin".equals(role) && order.getUserId() != userId)) {
+                        response.sendRedirect(request.getContextPath() + "/view/accessDenied.jsp");
+                        return;
+                    }
+
+                    OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+                    session.setAttribute("orderDetails", orderDetailDAO.getOrderDetailViewsByOrderId(orderId));
+                    response.sendRedirect(request.getContextPath() + "/view/orderDetail.jsp");
+
+                } catch (Exception e) {
+                    response.sendRedirect(request.getContextPath() + "/view/order.jsp");
+                }
+            }
+
+            default ->
                 response.sendRedirect(request.getContextPath() + "/view/cart.jsp");
-            } catch (Exception e) {
-                request.setAttribute("error", "Lỗi khi tải giỏ hàng: " + e.getMessage());
-                response.sendRedirect(request.getContextPath() + "/HomeServlet");
-            }
-        } else if ("deleteCartItem".equals(action)) {
-            int cartId;
-            try {
-                cartId = Integer.parseInt(request.getParameter("cartId"));
-                cartDAO.deleteCartItem(cartId);
-                List<CartDTO> carts = cartDAO.getCartByUserId(userId);
-                session.setAttribute("carts", carts);
-
-                double cartTotal = 0;
-                if (carts != null) {
-                    for (CartDTO cart : carts) {
-                        cartTotal += cart.getPrice() * cart.getQuantity();
-                    }
-                }
-                session.setAttribute("cartTotal", cartTotal);
-            } catch (NumberFormatException e) {
-                request.setAttribute("error", "CartId không hợp lệ!");
-            } catch (Exception e) {
-                request.setAttribute("error", "Lỗi khi xóa mục giỏ hàng: " + e.getMessage());
-            }
-            response.sendRedirect(request.getContextPath() + "/view/cart.jsp");
-        }
-        if ("viewOrders".equals(action)) {
-            try {
-                String statusFilter = request.getParameter("statusFilter");
-                List<Order> orders;
-                if ("Admin".equals(role)) {
-                    if (statusFilter != null && !statusFilter.isEmpty()) {
-                        orders = orderDAO.getOrdersByStatus(statusFilter);
-                    } else {
-                        orders = orderDAO.getAllOrders();
-                    }
-                } else {
-                    orders = orderDAO.getOrdersByUserId(userId);
-                }
-                session.setAttribute("orders", orders);
-                response.sendRedirect(request.getContextPath() + "/view/order.jsp");
-            } catch (Exception e) {
-                e.printStackTrace();
-                request.setAttribute("error", "Lỗi khi lấy danh sách đơn hàng: " + e.getMessage());
-                response.sendRedirect(request.getContextPath() + "/HomeServlet");
-            }
-        } else if ("viewOrderDetails".equals(action)) {
-            int orderId;
-            try {
-                orderId = Integer.parseInt(request.getParameter("orderId"));
-            } catch (NumberFormatException e) {
-                request.setAttribute("error", "OrderId không hợp lệ!");
-                request.getRequestDispatcher("view/order.jsp").forward(request, response);
-                return;
-            }
-            Order order = orderDAO.getOrderById(orderId);
-            if (order == null) {
-                request.setAttribute("error", "Đơn hàng không tồn tại!");
-                request.getRequestDispatcher("view/order.jsp").forward(request, response);
-                return;
-            }
-            if (!"Admin".equals(role) && order.getUserId() != userId) {
-                request.setAttribute("error", "Bạn không có quyền xem chi tiết đơn hàng này!");
-                request.getRequestDispatcher("view/accessDenied.jsp").forward(request, response);
-                return;
-            }
-            OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
-            session.setAttribute("orderDetails", orderDetailDAO.getOrderDetailsByOrderId(orderId));
-            response.sendRedirect(request.getContextPath() + "/view/orderDetails.jsp");
         }
     }
 
@@ -135,8 +111,10 @@ public class CartServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String userIdStr = (String) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
+
         if (userIdStr == null) {
-            response.sendRedirect(request.getContextPath() + "/LoginServlet");
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
@@ -144,54 +122,66 @@ public class CartServlet extends HttpServlet {
         try {
             userId = Integer.parseInt(userIdStr);
         } catch (NumberFormatException e) {
-            request.setAttribute("error", "ID người dùng không hợp lệ!");
-            response.sendRedirect(request.getContextPath() + "/LoginServlet");
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
-        String role = (String) session.getAttribute("role");
         String action = request.getParameter("action");
 
-        if ("placeOrder".equals(action)) {
-            try {
-                double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
-                String shippingAddress = request.getParameter("shippingAddress");
-                if (totalAmount <= 0 || shippingAddress == null || shippingAddress.trim().isEmpty()) {
-                    request.setAttribute("error", "Tổng tiền hoặc địa chỉ giao hàng không hợp lệ!");
+        switch (action) {
+            case "placeOrder" -> {
+                try {
+                    double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
+                    String shippingAddress = request.getParameter("shippingAddress");
+
+                    if (totalAmount <= 0 || shippingAddress == null || shippingAddress.trim().isEmpty()) {
+                        request.setAttribute("error", "Tổng tiền hoặc địa chỉ không hợp lệ.");
+                        request.getRequestDispatcher("view/cart.jsp").forward(request, response);
+                        return;
+                    }
+
+                    orderDAO.createOrder(userId, totalAmount, shippingAddress);
+                    cartDAO.clearCartByUserId(userId);
+                    response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewOrders");
+
+                } catch (Exception e) {
+                    request.setAttribute("error", "Lỗi đặt hàng.");
                     request.getRequestDispatcher("view/cart.jsp").forward(request, response);
+                }
+            }
+
+            case "updateOrderStatus" -> {
+                if (!"Admin".equals(role)) {
+                    response.sendRedirect(request.getContextPath() + "/view/accessDenied.jsp");
                     return;
                 }
-                orderDAO.createOrder(userId, totalAmount, shippingAddress);
-                cartDAO.clearCartByUserId(userId);
-                request.setAttribute("message", "Đặt hàng thành công!");
-                response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewOrders");
-            } catch (NumberFormatException e) {
-                request.setAttribute("error", "Định dạng tổng tiền không hợp lệ!");
-                request.getRequestDispatcher("view/cart.jsp").forward(request, response);
-            } catch (Exception e) {
-                e.printStackTrace();
-                request.setAttribute("error", "Lỗi khi đặt hàng: " + e.getMessage());
-                request.getRequestDispatcher("view/cart.jsp").forward(request, response);
+                try {
+                    int orderId = Integer.parseInt(request.getParameter("orderId"));
+                    String status = request.getParameter("status");
+                    orderDAO.updateOrderStatus(orderId, status);
+                    response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewOrders");
+                } catch (Exception e) {
+                    response.sendRedirect(request.getContextPath() + "/view/order.jsp");
+                }
             }
-        } else if ("updateOrderStatus".equals(action)) {
-            if (!"Admin".equals(role)) {
-                request.setAttribute("error", "Bạn không có quyền cập nhật trạng thái đơn hàng!");
-                request.getRequestDispatcher("view/accessDenied.jsp").forward(request, response);
-                return;
+
+            case "updatequantity" -> {
+                try {
+                    int cartId = Integer.parseInt(request.getParameter("cartId"));
+                    int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+                    if (quantity < 1) {
+                        quantity = 1; // Không cho phép < 1
+                    }
+                    cartDAO.updateCartQuantity(cartId, quantity);
+                } catch (Exception ignored) {
+                }
+
+                response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
             }
-            try {
-                int orderId = Integer.parseInt(request.getParameter("orderId"));
-                String status = request.getParameter("status");
-                orderDAO.updateOrderStatus(orderId, status);
-                response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewOrders");
-            } catch (NumberFormatException e) {
-                request.setAttribute("error", "OrderId không hợp lệ!");
-                request.getRequestDispatcher("view/order.jsp").forward(request, response);
-            } catch (Exception e) {
-                e.printStackTrace();
-                request.setAttribute("error", "Lỗi khi cập nhật trạng thái: " + e.getMessage());
-                request.getRequestDispatcher("view/order.jsp").forward(request, response);
-            }
+
+            default ->
+                response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
         }
     }
 

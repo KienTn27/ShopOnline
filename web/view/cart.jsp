@@ -59,7 +59,7 @@
                                     <td><fmt:formatNumber value="${cart.price * cart.quantity}" type="number"/>₫</td>
                                     <td>
                                         <a class="delete-btn" href="${pageContext.request.contextPath}/CartServlet?action=deleteCartItem&cartId=${cart.cartId}">🗑 Xóa</a><br>
-                                        <a class="similar-btn" href="#">🔍 Tìm tương tự</a>
+                                        <a class="similar-btn" href="${pageContext.request.contextPath}/SimilarProductServlet?categoryId=${cart.categoryId}">🔍 Tìm tương tự</a>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -112,7 +112,7 @@
             </c:choose>
 
             <div class="links">
-                <a href="${pageContext.request.contextPath}/HomeServlet">⬅️ Quay lại trang chủ</a>
+                <a href="${pageContext.request.contextPath}/Home">⬅️ Quay lại trang chủ</a>
                 <a href="${pageContext.request.contextPath}/CartServlet?action=viewOrders">📦 Đơn hàng</a>
             </div>
         </div>

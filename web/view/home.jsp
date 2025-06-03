@@ -32,7 +32,7 @@
                     <a class="nav-link" href="product.html">Product</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="product.html">Cart</a>
+                    <a class="nav-link" href="view/cart.jsp">Cart</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="contact.html">Contact</a>

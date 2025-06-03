@@ -32,7 +32,7 @@ public class CartDAO {
                     cart.setProductName(rs.getString("ProductName"));
                     cart.setPrice(rs.getDouble("Price"));
                     cart.setImageURL(rs.getString("ImageURL"));
-                    cart.setCategoryId(rs.getInt("CategoryID")); 
+                    cart.setCategoryId(rs.getInt("CategoryID")); // ✅ dòng quan trọng
                     carts.add(cart);
                 }
             }
