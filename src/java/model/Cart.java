@@ -9,20 +9,16 @@ public class Cart {
     private int productId;
     private int quantity;
     private Date createdAt;
-    private double price;
-    private String productName;
 
     public Cart() {
     }
 
-    public Cart(int cartId, int userId, int productId, int quantity, Date createdAt, double price, String productName) {
+    public Cart(int cartId, int userId, int productId, int quantity, Date createdAt) {
         this.cartId = cartId;
         this.userId = userId;
         this.productId = productId;
         this.quantity = quantity;
         this.createdAt = createdAt;
-        this.price = price;
-        this.productName = productName;
     }
 
     public int getCartId() {
@@ -63,21 +59,5 @@ public class Cart {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
     }
 }
