@@ -33,7 +33,7 @@ public class HomeControl extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false); // false = không tạo mới nếu chưa có
         if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("Login.jsp");
+        request.getRequestDispatcher("./view/login.jsp").forward(request, response);
             return;
         }
 
