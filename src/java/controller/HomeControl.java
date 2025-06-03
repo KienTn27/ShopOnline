@@ -25,7 +25,7 @@ public class HomeControl extends HttpServlet {
         List<Product> list = dao.getAllProducts();
 
         request.setAttribute("ListP", list);
-        request.getRequestDispatcher("Home.jsp").forward(request, response);
+        request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 
     @Override
