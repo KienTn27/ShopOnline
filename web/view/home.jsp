@@ -1,359 +1,411 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <!-- Site meta -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Free Bootstrap 4 Ecommerce Template</title>
-        <!-- CSS -->
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600" rel="stylesheet" type="text/css">
-        <link href="css/style.css" rel="stylesheet" type="text/css">
-    </head>
-    <body>
 
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" href="index.html">Simple Ecommerce</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<head>
+    <!-- Site meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Shop Qu?n Áo Th?i Trang</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <style>
+        body {
+            background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: #2f80ed;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+        }
+        
+        .hero {
+            background: url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            min-height: 340px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.10);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 32px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(47, 128, 237, 0.25);
+            border-radius: 18px;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .hero-content h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 8px rgba(44, 62, 80, 0.15);
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .product-section {
+            margin-top: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .product-card {
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 4px 18px rgba(44, 62, 80, 0.10);
+            transition: transform 0.15s, box-shadow 0.15s;
+            overflow: visible;
+            background: #fff;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+        }
+        
+        .product-card img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover img {
+            transform: scale(1.07) rotate(-2deg);
+        }
+        
+        .product-card .card-body {
+            padding: 18px 16px 12px 16px;
+        }
+        
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2f80ed;
+            margin-bottom: 6px;
+        }
+        
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e74c3c;
+        }
+        
+        .btn-buy {
+            border-radius: 30px;
+            background: linear-gradient(90deg, #56ccf2, #2f80ed);
+            color: #fff;
+            font-weight: 600;
+            padding: 8px 22px;
+            border: none;
+            transition: background 0.2s, transform 0.15s;
+        }
+        
+        .btn-buy:hover {
+            background: linear-gradient(90deg, #2f80ed, #56ccf2);
+            color: #fff;
+            transform: scale(1.07);
+            box-shadow: 0 4px 18px rgba(44, 62, 80, 0.18);
+        }
+        
+        .footer {
+            background: #2f80ed;
+            color: #fff;
+            padding: 24px 0 10px 0;
+            margin-top: 40px;
+            border-radius: 18px 18px 0 0;
+        }
+        
+        .swiper {
+            width: 100%;
+            height: 320px;
+            border-radius: 18px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.10);
+        }
+        
+        .swiper-slide {
+            position: relative;
+            background-position: center;
+            background-size: cover;
+        }
+        
+        .swiper-slide .slide-content {
+            position: absolute;
+            left: 40px;
+            bottom: 40px;
+            color: #fff;
+            background: rgba(47, 128, 237, 0.55);
+            padding: 18px 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(44, 62, 80, 0.10);
+            max-width: 60%;
+        }
+        
+        .product-card .badge-sale {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            background: linear-gradient(90deg, #e74c3c, #f9ca24);
+            color: #fff;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 4px 14px;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.12);
+        }
+        
+        .collection-section {
+            margin-top: 48px;
+            margin-bottom: 32px;
+        }
+        
+        .collection-card {
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(44, 62, 80, 0.10);
+            position: relative;
+            transition: transform 0.18s;
+        }
+        
+        .collection-card:hover {
+            transform: translateY(-6px) scale(1.03);
+        }
+        
+        .collection-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .collection-title {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(47, 128, 237, 0.65);
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 12px 0;
+            text-align: center;
+        }
+        
+        .promo-section {
+            margin-top: 32px;
+            margin-bottom: 32px;
+            background: linear-gradient(90deg, #56ccf2, #2f80ed);
+            color: #fff;
+            border-radius: 18px;
+            padding: 32px 0;
+            text-align: center;
+            box-shadow: 0 4px 18px rgba(44, 62, 80, 0.10);
+        }
+        
+        .promo-section h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .promo-section p {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
 
-                <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
-                    <ul class="navbar-nav m-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="category.html">Categories</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="product.html">Product</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="view/cart.jsp">Cart</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contact.html">Contact</a>
+<body>
 
-                        </li>
-                        <li class="nav-item">
-                        <li class="nav-item">
-                            <% if (session.getAttribute("user") != null) { %>
-                            <a class="nav-link" href="<%= request.getContextPath() %>/logout">Logout</a>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">FashionShop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link active" href="#">Trang ch?</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">S?n ph?m</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Gi? hàng</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Liên h?</a></li>
+                    <li class="nav-item">
+                        <% if (session.getAttribute("user") != null) { %>
+                            <a class="nav-link" href="<%= request.getContextPath() %>/logout">??ng xu?t</a>
                             <% } else { %>
-                                <a class="nav-link" href="<%= request.getContextPath() %>/login">Login</a>
+                                <a class="nav-link" href="<%= request.getContextPath() %>/login">??ng nh?p</a>
                                 <% } %>
-                        </li>
-                        </li>
-                    </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-                    <form class="form-inline my-2 my-lg-0">
-                        <div class="input-group input-group-sm">
-                            <input type="text" class="form-control" placeholder="Search...">
-                            <div class="input-group-append">
-                                <button type="button" class="btn btn-secondary btn-number">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <a class="btn btn-success btn-sm ml-3" href="cart.html">
-                            <i class="fa fa-shopping-cart"></i> Cart
-                            <span class="badge badge-light">3</span>
-                        </a>
-                    </form>
+    <div class="container">
+        <div class="swiper mySwiper mt-4">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" style="background-image:url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80')">
+                    <div class="slide-content">
+                        <h2>B? s?u t?p Xuân Hè 2024</h2>
+                        <p>Khám phá phong cách m?i, tr? trung, cá tính cho m?i gi?i tính!</p>
+                    </div>
+                </div>
+                <div class="swiper-slide" style="background-image:url('https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80')">
+                    <div class="slide-content">
+                        <h2>Sale Off 50% - Ch? hôm nay!</h2>
+                        <p>??ng b? l? c? h?i s? h?u nh?ng item hot trend v?i giá c?c t?t.</p>
+                    </div>
+                </div>
+                <div class="swiper-slide" style="background-image:url('https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80')">
+                    <div class="slide-content">
+                        <h2>Th?i trang nam n?</h2>
+                        <p>?a d?ng m?u mã, ch?t l??ng ??m b?o, giá h?p lý.</p>
+                    </div>
                 </div>
             </div>
-        </nav>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
 
-        <section class="jumbotron text-center">
-            <div class="container">
-                <h1 class="jumbotron-heading">E-COMMERCE BOOTSTRAP THEME</h1>
-                <p class="lead text-muted mb-0">Simple theme for e-commerce buid with Bootstrap 4.0.0. Pages available : home, category, product, cart & contact</p>
+    <div class="container promo-section">
+        <h3>Mi?n phí v?n chuy?n cho ??n hàng t? 499.000?</h3>
+        <p>??i tr? d? dàng trong 7 ngày. ??ng ký thành viên ?? nh?n ?u ?ãi ??c quy?n!</p>
+    </div>
+
+    <div class="container">
+        <div class="collection-section">
+            <h2 class="mb-4 text-center fw-bold" style="color:#2f80ed;">B? s?u t?p n?i b?t</h2>
+            <div class="row g-4">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="collection-card">
+                        <img src="https://images.unsplash.com/photo-1469398715555-76331a6c7c9b?auto=format&fit=crop&w=600&q=80" alt="BST Jeans" />
+                        <div class="collection-title">BST Jeans Cá Tính</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="collection-card">
+                        <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80" alt="BST Áo Khoác" />
+                        <div class="collection-title">Áo Khoác Sành ?i?u</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="collection-card">
+                        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" alt="BST Váy N?" />
+                        <div class="collection-title">Váy N? D?u Dàng</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="collection-card">
+                        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" alt="BST Áo Thun" />
+                        <div class="collection-title">Áo Thun N?ng ??ng</div>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
+        <div class="product-section">
+            <h2 class="mb-4 text-center fw-bold" style="color:#2f80ed;">S?n ph?m n?i b?t</h2>
+            <div class="row g-4">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card product-card position-relative">
+                        <span class="badge-sale">-20%</span>
+                        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80" alt="Áo thun nam basic" />
+                        <div class="card-body">
+                            <div class="product-title">Áo thun nam basic</div>
+                            <div class="product-price">199.000?</div>
+                            <button class="btn btn-buy w-100 mt-2">Mua ngay</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card product-card position-relative">
+                        <span class="badge-sale">-30%</span>
+                        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80" alt="Váy n? mùa hè" />
+                        <div class="card-body">
+                            <div class="product-title">Váy n? mùa hè</div>
+                            <div class="product-price">299.000?</div>
+                            <button class="btn btn-buy w-100 mt-2">Mua ngay</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card product-card position-relative">
+                        <span class="badge-sale">-15%</span>
+                        <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80" alt="Áo khoác bomber" />
+                        <div class="card-body">
+                            <div class="product-title">Áo khoác bomber</div>
+                            <div class="product-price">399.000?</div>
+                            <button class="btn btn-buy w-100 mt-2">Mua ngay</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card product-card position-relative">
+                        <span class="badge-sale">-10%</span>
+                        <img src="https://images.unsplash.com/photo-1469398715555-76331a6c7c9b?auto=format&fit=crop&w=400&q=80" alt="Qu?n jeans nam" />
+                        <div class="card-body">
+                            <div class="product-title">Qu?n jeans nam</div>
+                            <div class="product-price">259.000?</div>
+                            <button class="btn btn-buy w-100 mt-2">Mua ngay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center mt-5">
         <div class="container">
             <div class="row">
-                <div class="col">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img class="d-block w-100" src="https://th.bing.com/th/id/OIP.a9Uoz_mcrcVW1zSEwlE48wHaHa?w=199&h=200&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="First slide">
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block w-100" src="https://th.bing.com/th/id/OIP.iP5xBwLIHwz4b_b6tqZnPQHaHa?w=198&h=198&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="Second slide">
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block w-100" src="https://dummyimage.com/855x365/1443ff/fff" alt="Third slide">
-                            </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
+                <div class="col-md-6 text-md-start mb-2 mb-md-0">
+                    <b>FashionShop</b> &copy; 2024. All rights reserved.
                 </div>
-                <div class="col-12 col-md-3">
-                    <div class="card">
-                        <div class="card-header bg-success text-white text-uppercase">
-                            <i class="fa fa-heart"></i> Top product
-                        </div>
-                        <img class="img-fluid border-0" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
-                        <div class="card-body">
-                            <h4 class="card-title text-center"><a href="product.html" title="View Product">Product title</a></h4>
-                            <div class="row">
-                                <div class="col">
-                                    <p class="btn btn-danger btn-block">99.00 $</p>
-                                </div>
-                                <div class="col">
-                                    <a href="product.html" class="btn btn-success btn-block">View</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-6 text-md-end">
+                    <span><i class="fa fa-phone"></i> 0123 456 789</span> &nbsp;|&nbsp;
+                    <span><i class="fa fa-envelope"></i> support@fashionshop.vn</span>
                 </div>
             </div>
         </div>
+    </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+            loop: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            autoplay: {
+                delay: 3500,
+                disableOnInteraction: false,
+            },
+        });
+    </script>
 
-        <div class="container mt-3">
-            <div class="row">
-                <div class="col-sm">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white text-uppercase">
-                            <i class="fa fa-star"></i> Last products
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm">
-                                    <div class="card">
-                                        <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
-                                        <div class="card-body">
-                                            <h4 class="card-title"><a href="product.html" title="View Product">Product title</a></h4>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <p class="btn btn-danger btn-block">99.00 $</p>
-                                                </div>
-                                                <div class="col">
-                                                    <a href="cart.html" class="btn btn-success btn-block">Add to cart</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm">
-                                    <div class="card">
-                                        <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
-                                        <div class="card-body">
-                                            <h4 class="card-title"><a href="product.html" title="View Product">Product title</a></h4>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <p class="btn btn-danger btn-block">99.00 $</p>
-                                                </div>
-                                                <div class="col">
-                                                    <a href="cart.html" class="btn btn-success btn-block">Add to cart</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm">
-                                    <div class="card">
-                                        <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
-                                        <div class="card-body">
-                                            <h4 class="card-title"><a href="product.html" title="View Product">Product title</a></h4>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <p class="btn btn-danger btn-block">99.00 $</p>
-                                                </div>
-                                                <div class="col">
-                                                    <a href="cart.html" class="btn btn-success btn-block">Add to cart</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm">
-                                    <div class="card">
-                                        <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
-                                        <div class="card-body">
-                                            <h4 class="card-title"><a href="product.html" title="View Product">Product title</a></h4>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <p class="btn btn-danger btn-block">99.00 $</p>
-                                                </div>
-                                                <div class="col">
-                                                    <a href="cart.html" class="btn btn-success btn-block">Add to cart</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+</body>
 
-
-        <div class="container mt-3 mb-4">
-            <div class="row">
-                <div class="col-sm">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white text-uppercase">
-                            <i class="fa fa-trophy"></i> Best products
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm">
-                                    <div class="card">
-                                        <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
-                                        <div class="card-body">
-                                            <h4 class="card-title"><a href="product.html" title="View Product">Product title</a></h4>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <p class="btn btn-danger btn-block">99.00 $</p>
-                                                </div>
-                                                <div class="col">
-                                                    <a href="cart.html" class="btn btn-success btn-block">Add to cart</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm">
-                                    <div class="card">
-                                        <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
-                                        <div class="card-body">
-                                            <h4 class="card-title"><a href="product.html" title="View Product">Product title</a></h4>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <p class="btn btn-danger btn-block">99.00 $</p>
-                                                </div>
-                                                <div class="col">
-                                                    <a href="cart.html" class="btn btn-success btn-block">Add to cart</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm">
-                                    <div class="card">
-                                        <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
-                                        <div class="card-body">
-                                            <h4 class="card-title"><a href="product.html" title="View Product">Product title</a></h4>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <p class="btn btn-danger btn-block">99.00 $</p>
-                                                </div>
-                                                <div class="col">
-                                                    <a href="cart.html" class="btn btn-success btn-block">Add to cart</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm">
-                                    <div class="card">
-                                        <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
-                                        <div class="card-body">
-                                            <h4 class="card-title"><a href="product.html" title="View Product">Product title</a></h4>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <p class="btn btn-danger btn-block">99.00 $</p>
-                                                </div>
-                                                <div class="col">
-                                                    <a href="cart.html" class="btn btn-success btn-block">Add to cart</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Footer -->
-        <footer class="text-light">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-3 col-lg-4 col-xl-3">
-                        <h5>About</h5>
-                        <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25">
-                        <p class="mb-0">
-                            Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression.
-                        </p>
-                    </div>
-
-                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto">
-                        <h5>Informations</h5>
-                        <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25">
-                        <ul class="list-unstyled">
-                            <li><a href="">Link 1</a></li>
-                            <li><a href="">Link 2</a></li>
-                            <li><a href="">Link 3</a></li>
-                            <li><a href="">Link 4</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto">
-                        <h5>Others links</h5>
-                        <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25">
-                        <ul class="list-unstyled">
-                            <li><a href="">Link 1</a></li>
-                            <li><a href="">Link 2</a></li>
-                            <li><a href="">Link 3</a></li>
-                            <li><a href="">Link 4</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="col-md-4 col-lg-3 col-xl-3">
-                        <h5>Contact</h5>
-                        <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25">
-                        <ul class="list-unstyled">
-                            <li><i class="fa fa-home mr-2"></i> My company</li>
-                            <li><i class="fa fa-envelope mr-2"></i> email@example.com</li>
-                            <li><i class="fa fa-phone mr-2"></i> + 33 12 14 15 16</li>
-                            <li><i class="fa fa-print mr-2"></i> + 33 12 14 15 16</li>
-                        </ul>
-                    </div>
-                    <div class="col-12 copyright mt-3">
-                        <p class="float-left">
-                            <a href="#">Back to top</a>
-                        </p>
-                        <p class="text-right text-muted">created with <i class="fa fa-heart"></i> by <a href="https://t-php.fr/43-theme-ecommerce-bootstrap-4.html"><i>t-php</i></a> | <span>v. 1.0</span></p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-        <!-- JS -->
-        <script src="//code.jquery.com/jquery-3.2.1.slim.min.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" type="text/javascript"></script>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" type="text/javascript"></script>
-
-    </body>
 </html>
