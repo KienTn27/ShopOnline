@@ -256,6 +256,7 @@
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Liên hệ"><i class="fa fa-envelope fa-lg"></i></a></li>
                         <li class="nav-item mx-2">
                             <% if (session.getAttribute("user") != null) { %>
+                                <a class="nav-link" href="<%= request.getContextPath() %>/profile" title="Tài khoản"><i class="fa fa-user-circle fa-lg"></i></a>
                                 <a class="nav-link" href="<%= request.getContextPath() %>/logout">Đăng xuất</a>
                                 <% } else { %>
                                     <a class="nav-link" href="<%= request.getContextPath() %>/login">Đăng nhập</a>
