@@ -182,6 +182,21 @@ public class UserDAO extends DBContext {
         }
         return false;
     }
+    public boolean updateUserProfile(User user) {
+        String sql = "UPDATE Users SET FullName=?, Username=?, Email=?, Phone=? WHERE UserID=?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getUsername());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPhone());
+            ps.setInt(5, user.getUserId());
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
 
 // Lấy userId theo email
