@@ -237,6 +237,48 @@
                 font-size: 1.1rem;
                 font-weight: 500;
             }
+            
+            .search-form-wrap {
+                position: relative;
+                max-width: 400px;
+                width: 100%;
+            }
+            
+            #searchSuggest {
+                position: absolute;
+                top: 110%;
+                /* đặt ngay dưới input */
+                left: 0;
+                right: 0;
+                margin-top: 2px;
+                max-height: 260px;
+                overflow-y: auto;
+                border-radius: 14px;
+                box-shadow: 0 4px 18px rgba(44, 62, 80, 0.13);
+                font-size: 1rem;
+                padding: 0;
+                width: 100%;
+                z-index: 20;
+            }
+            
+            #searchSuggest li {
+                padding: 8px 18px;
+                cursor: pointer;
+                border: none;
+                border-bottom: 1px solid #f0f0f0;
+                background: #fff;
+                transition: background 0.15s;
+            }
+            
+            #searchSuggest li:last-child {
+                border-bottom: none;
+            }
+            
+            #searchSuggest li:hover,
+            #searchSuggest li.active {
+                background: #f1f7ff;
+                color: #2f80ed;
+            }
         </style>
     </head>
 
@@ -245,17 +287,12 @@
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
                 <a class="navbar-brand" href="#">FashionShop</a>
-                <form class="d-none d-lg-flex ms-4 flex-grow-1 position-relative" autocomplete="off">
+                <form class="d-none d-lg-flex ms-4 flex-grow-1 search-form-wrap" autocomplete="off" onsubmit="return false;">
                     <input class="form-control rounded-pill ps-4 pe-5" type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput" style="max-width: 400px;">
                     <button class="btn position-absolute end-0 top-0 mt-1 me-2" type="submit" style="background: none; border: none; color: #2f80ed;">
                         <i class="fa fa-search"></i>
                     </button>
-                    <ul class="list-group position-absolute w-100 mt-2 shadow-sm" id="searchSuggest" style="display:none; z-index: 10;">
-                        <li class="list-group-item list-group-item-action">Áo thun nam basic</li>
-                        <li class="list-group-item list-group-item-action">Váy nữ mùa hè</li>
-                        <li class="list-group-item list-group-item-action">Áo khoác bomber</li>
-                        <li class="list-group-item list-group-item-action">Quần jeans nam</li>
-                    </ul>
+                    <ul class="list-group" id="searchSuggest" style="display:none;"></ul>
                 </form>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -428,26 +465,57 @@
             });
         </script>
         <script>
-            // Gợi ý tìm kiếm sản phẩm nhiều nhất (demo tĩnh)
+            // Danh sách sản phẩm xu hướng/gợi ý (demo tĩnh)
+            const productTrends = [
+                "Đầm", "Trễ vai", "Áo khoác", "Quần", "Áo sơ mi", "Vest", "Parka", "Tweed", "Croptop", "Chân váy", "Lông cừu",
+                "Áo thun nam basic", "Váy nữ mùa hè", "Áo khoác bomber", "Quần jeans nam"
+            ];
             const searchInput = document.getElementById('searchInput');
             const searchSuggest = document.getElementById('searchSuggest');
-            searchInput.addEventListener('focus', function() {
+
+            function removeVietnameseTones(str) {
+                return str.normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+            }
+
+            function renderSuggest(list) {
+                searchSuggest.innerHTML = '';
+                if (list.length === 0) {
+                    searchSuggest.style.display = 'none';
+                    return;
+                }
+                list.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item list-group-item-action';
+                    li.textContent = item;
+                    li.addEventListener('mousedown', function() {
+                        searchInput.value = this.textContent;
+                        searchSuggest.style.display = 'none';
+                    });
+                    searchSuggest.appendChild(li);
+                });
                 searchSuggest.style.display = 'block';
+            }
+
+            searchInput.addEventListener('focus', function() {
+                renderSuggest(productTrends);
             });
+
+            searchInput.addEventListener('input', function() {
+                const val = removeVietnameseTones(this.value.trim().toLowerCase());
+                if (!val) {
+                    renderSuggest(productTrends);
+                    return;
+                }
+                const filtered = productTrends.filter(item =>
+                    removeVietnameseTones(item.toLowerCase()).includes(val)
+                );
+                renderSuggest(filtered);
+            });
+
             searchInput.addEventListener('blur', function() {
                 setTimeout(() => {
                     searchSuggest.style.display = 'none';
                 }, 200);
-            });
-            searchInput.addEventListener('input', function() {
-                // Có thể thêm logic lọc gợi ý ở đây nếu muốn
-                searchSuggest.style.display = 'block';
-            });
-            document.querySelectorAll('#searchSuggest li').forEach(item => {
-                item.addEventListener('mousedown', function() {
-                    searchInput.value = this.textContent;
-                    searchSuggest.style.display = 'none';
-                });
             });
         </script>
 
