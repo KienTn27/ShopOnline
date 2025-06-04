@@ -260,7 +260,7 @@
                                     <i class="fa fa-user-circle fa-lg"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item" href="<%= request.getContextPath() %>/profile">Thông tin cá nhân</a></li>
+                                    <li><a class="dropdown-item" href="<%= request.getContextPath() %>/view/profile.jsp">Thông tin cá nhân</a></li>
                                     <li><a class="dropdown-item" href="<%= request.getContextPath() %>/orders">Đơn hàng của tôi</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
