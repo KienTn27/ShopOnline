@@ -245,20 +245,40 @@
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
                 <a class="navbar-brand" href="#">FashionShop</a>
+                <form class="d-none d-lg-flex ms-4 flex-grow-1 position-relative" autocomplete="off">
+                    <input class="form-control rounded-pill ps-4 pe-5" type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput" style="max-width: 400px;">
+                    <button class="btn position-absolute end-0 top-0 mt-1 me-2" type="submit" style="background: none; border: none; color: #2f80ed;">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    <ul class="list-group position-absolute w-100 mt-2 shadow-sm" id="searchSuggest" style="display:none; z-index: 10;">
+                        <li class="list-group-item list-group-item-action">Áo thun nam basic</li>
+                        <li class="list-group-item list-group-item-action">Váy nữ mùa hè</li>
+                        <li class="list-group-item list-group-item-action">Áo khoác bomber</li>
+                        <li class="list-group-item list-group-item-action">Quần jeans nam</li>
+                    </ul>
+                </form>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link active" href="#">Trang chủ</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Giỏ hàng</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Liên hệ</a></li>
-                        <li class="nav-item">
+                    <ul class="navbar-nav align-items-center">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" href="#" title="Trang chủ"><i class="fa fa-home fa-lg"></i></a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" href="#" title="Sản phẩm"><i class="fa fa-tshirt fa-lg"></i></a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" href="#" title="Giỏ hàng"><i class="fa fa-shopping-cart fa-lg"></i></a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" href="#" title="Liên hệ"><i class="fa fa-phone fa-lg"></i></a>
+                        </li>
+                        <li class="nav-item mx-2">
                             <% if (session.getAttribute("user") != null) { %>
-                                <a class="nav-link" href="<%= request.getContextPath() %>/logout">Đăng xuất</a>
+                                <a class="nav-link" href="<%= request.getContextPath() %>/logout"><i class="fa fa-sign-out-alt fa-lg"></i></a>
                                 <% } else { %>
-                                    <a class="nav-link" href="<%= request.getContextPath() %>/login">Đăng nhập</a>
+                                    <a class="nav-link" href="<%= request.getContextPath() %>/login"><i class="fa fa-user fa-lg"></i></a>
                                     <% } %>
                         </li>
                     </ul>
@@ -405,6 +425,29 @@
                     delay: 3500,
                     disableOnInteraction: false,
                 },
+            });
+        </script>
+        <script>
+            // Gợi ý tìm kiếm sản phẩm nhiều nhất (demo tĩnh)
+            const searchInput = document.getElementById('searchInput');
+            const searchSuggest = document.getElementById('searchSuggest');
+            searchInput.addEventListener('focus', function() {
+                searchSuggest.style.display = 'block';
+            });
+            searchInput.addEventListener('blur', function() {
+                setTimeout(() => {
+                    searchSuggest.style.display = 'none';
+                }, 200);
+            });
+            searchInput.addEventListener('input', function() {
+                // Có thể thêm logic lọc gợi ý ở đây nếu muốn
+                searchSuggest.style.display = 'block';
+            });
+            document.querySelectorAll('#searchSuggest li').forEach(item => {
+                item.addEventListener('mousedown', function() {
+                    searchInput.value = this.textContent;
+                    searchSuggest.style.display = 'none';
+                });
             });
         </script>
 
