@@ -1,0 +1,315 @@
+/* inventory.css - Tông màu xanh nhạt */
+
+/* --- General Body and Font Styles --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f0f9ff; /* Rất nhẹ, gần như trắng xanh */
+    color: #374151; /* Dark gray for main text */
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    box-sizing: border-box;
+}
+
+/* --- Container for Page Content --- */
+.container {
+    width: 100%;
+    max-width: 1000px;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Slightly softer shadow */
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Page Title --- */
+h2 {
+    text-align: center;
+    color: #0c4a6e; /* Dark teal/blue for title */
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    /* Gradient nhẹ nhàng với tông xanh */
+    background: linear-gradient(90deg, #67e8f9, #22d3ee); /* Light blue to cyan gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #a7f3d0; /* Light green/aquamarine border */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.02); /* Very subtle shadow */
+}
+
+/* --- Buttons --- */
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.btn {
+    padding: 0.8rem 1.8rem;
+    border-radius: 0.75rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Softer shadow */
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Softer hover shadow */
+}
+
+.btn-primary {
+    /* Gradient xanh dương nhạt */
+    background: linear-gradient(45deg, #0ea5e9, #0284c7); /* Sky blue to a slightly darker blue */
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #0284c7, #0369a1); /* Darker shades of blue */
+}
+
+.btn-danger {
+    /* Vẫn giữ màu đỏ nhưng có thể điều chỉnh sắc thái */
+    background: linear-gradient(45deg, #f87171, #ef4444); /* Lighter red to standard red */
+}
+
+.btn-danger:hover {
+    background: linear-gradient(45deg, #ef4444, #dc2626); /* Standard red to darker red */
+}
+
+/* --- Table Styling --- */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06); /* Softer table shadow */
+}
+
+/* Table Header */
+thead th {
+    /* Gradient xanh ngọc tươi sáng */
+    background: linear-gradient(90deg, #67e8f9, #22d3ee); /* Light blue to cyan gradient */
+    color: #0c4a6e; /* Dark teal text for contrast */
+    padding: 1.1rem 1.5rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05); /* Subtle shadow for header text */
+}
+
+thead th:first-child {
+    border-top-left-radius: 0.75rem;
+}
+
+thead th:last-child {
+    border-top-right-radius: 0.75rem;
+}
+
+/* Table Body Rows */
+tbody tr {
+    background-color: #ffffff;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #ecfeff; /* Rất nhẹ, gần như trắng xanh nhạt */
+}
+
+tbody tr:hover {
+    background-color: #e0f2fe; /* Light blue on hover */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Cells */
+tbody td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0f2fe; /* Rất nhạt, hòa hợp với nền */
+    color: #4b5563;
+    font-size: 0.95rem;
+}
+
+/* Last Row Cells - remove bottom border */
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Specific Column Alignment */
+td:nth-child(1) { /* ID */
+    text-align: center;
+    font-weight: 600;
+    color: #0ea5e9; /* Sky blue for ID */
+}
+
+td:nth-child(2) { /* Product Name */
+    text-align: left;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+td:nth-child(3) { /* Stock Quantity */
+    text-align: center;
+    font-weight: 700;
+    color: #16a34a; /* Medium green for quantity */
+    font-size: 1.05rem;
+}
+
+td:nth-child(4) { /* Actions Column */
+    text-align: center;
+    white-space: nowrap;
+    gap: 0.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Action Buttons within table */
+.btn-action {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.btn-edit {
+    /* Gradient xanh lá cây nhạt */
+    background: linear-gradient(45deg, #2dd4bf, #0d9488); /* Teal to darker teal */
+    color: white;
+}
+
+.btn-edit:hover {
+    background: linear-gradient(45deg, #0d9488, #0f766e); /* Darker teal shades */
+}
+
+.btn-delete {
+    /* Vẫn giữ màu đỏ nhưng có thể điều chỉnh sắc thái */
+    background: linear-gradient(45deg, #fca5a5, #f87171); /* Very light red to lighter red */
+    color: white;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(45deg, #f87171, #ef4444); /* Lighter red to standard red */
+}
+
+/* --- Responsive adjustments for smaller screens --- */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    .container {
+        margin: 1rem auto;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .button-group {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        border-radius: 0.6rem;
+    }
+
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tbody tr {
+        margin-bottom: 1rem;
+        border: 1px solid #e0f2fe; /* Light blue border for rows */
+        border-radius: 0.75rem;
+        overflow: hidden;
+    }
+
+    tbody td {
+        border-bottom: 1px solid #e0f2fe;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+    }
+
+    tbody td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    /* Assign labels for responsive table */
+    tbody td:nth-of-type(1):before { content: "ID:"; }
+    tbody td:nth-of-type(2):before { content: "Tên sản phẩm:"; }
+    tbody td:nth-of-type(3):before { content: "Số lượng tồn:"; }
+    tbody td:nth-of-type(4):before { content: "Hành động:"; }
+
+    tbody tr:hover {
+        transform: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    td:nth-child(4) {
+        justify-content: flex-end;
+    }
+}
