@@ -6,6 +6,7 @@
         response.sendRedirect(request.getContextPath() + "/login");
         return;
     }
+    String message = (String) request.getAttribute("message");
 %>
             <!DOCTYPE html>
             <html lang="vi">
@@ -59,32 +60,39 @@
                             <i class="fa fa-user-circle"></i>
                         </div>
                         <h3 class="text-center mb-4">Thông tin cá nhân</h3>
-                        <form class="profile-info">
-                            <div class="mb-3">
-                                <label>Họ tên</label>
-                                <input type="text" class="form-control" value="<%= user.getFullName() %>" readonly>
+                        <% if (message != null) { %>
+                            <div class="alert alert-info">
+                                <%= message %>
                             </div>
-                            <div class="mb-3">
-                                <label>Tên đăng nhập</label>
-                                <input type="text" class="form-control" value="<%= user.getUsername() %>" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label>Email</label>
-                                <input type="email" class="form-control" value="<%= user.getEmail() %>" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label>Số điện thoại</label>
-                                <input type="text" class="form-control" value="<%= user.getPhone() %>" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label>Vai trò</label>
-                                <input type="text" class="form-control" value="<%= user.getRole() %>" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label>Ngày tạo tài khoản</label>
-                                <input type="text" class="form-control" value="<%= user.getCreateAt() != null ? user.getCreateAt() : " " %>" readonly>
-                            </div>
-                        </form>
+                            <% } %>
+                                <form class="profile-info" method="post" action="<%= request.getContextPath() %>/updateProfile">
+                                    <div class="mb-3">
+                                        <label>Họ tên</label>
+                                        <input type="text" name="fullName" class="form-control" value="<%= user.getFullName() %>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Tên đăng nhập</label>
+                                        <input type="text" name="username" class="form-control" value="<%= user.getUsername() %>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Email</label>
+                                        <input type="email" name="email" class="form-control" value="<%= user.getEmail() %>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Số điện thoại</label>
+                                        <input type="text" name="phone" class="form-control" value="<%= user.getPhone() %>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Vai trò</label>
+                                        <input type="text" class="form-control" value="<%= user.getRole() %>" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Ngày tạo tài khoản</label>
+                                        <input type="text" class="form-control" value="<%= user.getCreateAt() != null ? user.getCreateAt() : " " %>" readonly>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Lưu thay đổi</button>
+                                    <a href="<%= request.getContextPath() %>/Home" class="btn btn-secondary w-100 mt-2">Quay lại Trang chủ</a>
+                                </form>
                     </div>
                 </div>
             </body>
