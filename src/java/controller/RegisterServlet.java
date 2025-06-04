@@ -76,7 +76,7 @@ public class RegisterServlet extends HttpServlet {
                 response.sendRedirect("login");
             } else {
                 // Đăng ký thất bại
-                session.setAttribute("registerMessage", "Đăng ký thất bại. Vui lòng thử lại.");
+                session.setAttribute("registerMessage", "Email hoặc số điện thoại bị trùng vui lòng thử lại !!!");
                 response.sendRedirect("register");
             }
 
