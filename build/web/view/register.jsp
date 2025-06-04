@@ -5,48 +5,85 @@
         <title>Đăng ký tài khoản</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
         <style>
-            body {
-                background: linear-gradient(135deg, #56ccf2, #2f80ed);
-                height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            }
-            .register-form {
-                width: 450px;
-                background: white;
-                padding: 40px 30px;
-                border-radius: 15px;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            }
-            .register-form h3 {
-                text-align: center;
-                font-weight: 700;
-                margin-bottom: 25px;
-                color: #333;
-            }
-            .form-control {
-                border-radius: 30px;
-                padding: 12px 20px;
-            }
-            button {
-                margin-top: 20px;
-                border-radius: 30px;
-                background: linear-gradient(to right, #56ccf2, #2f80ed);
-                color: white;
-                border: none;
-                padding: 12px;
-                font-size: 16px;
-                font-weight: 600;
-            }
-            button:hover {
-                background: linear-gradient(to right, #2f80ed, #56ccf2);
-            }
-            .alert {
-                margin-top: 15px;
-            }
-        </style>
+    body {
+        min-height: 100vh;
+        background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+        background-image: url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(255,255,255,0.7);
+        z-index: 1;
+    }
+    .register-form {
+        position: relative;
+        z-index: 2;
+        max-width: 450px;
+        margin: 60px auto;
+        background: rgba(255,255,255,0.95);
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(44,62,80,0.15);
+        padding: 40px 32px 32px 32px;
+        backdrop-filter: blur(2px);
+    }
+    .register-form h3 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        color: #2f80ed;
+        margin-bottom: 24px;
+        text-align: center;
+    }
+    .register-form label {
+        font-weight: 600;
+        color: #333;
+    }
+    .register-form .form-control {
+        border-radius: 30px;
+        padding: 12px 20px;
+        margin-bottom: 18px;
+        border: 1px solid #e0e7ef;
+        background: #f8fafc;
+    }
+    .register-form button {
+        border-radius: 30px;
+        background: linear-gradient(90deg, #56ccf2, #2f80ed);
+        color: #fff;
+        font-weight: 700;
+        padding: 12px;
+        font-size: 16px;
+        border: none;
+        transition: background 0.2s;
+    }
+    .register-form button:hover {
+        background: linear-gradient(90deg, #2f80ed, #56ccf2);
+    }
+    .back-to-login {
+        display: inline-flex;
+        align-items: center;
+        color: #2f80ed;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s, box-shadow 0.2s;
+        border-radius: 30px;
+        padding: 8px 18px;
+        margin-top: 10px;
+    }
+    .back-to-login i {
+        margin-right: 8px;
+        font-size: 18px;
+    }
+    .back-to-login:hover {
+        color: #fff;
+        background: linear-gradient(90deg, #56ccf2, #2f80ed);
+        box-shadow: 0 2px 12px rgba(47,128,237,0.15);
+        text-decoration: none;
+    }
+</style>
         <script>
             // Hàm kiểm tra mật khẩu và nhập lại mật khẩu
             function validateForm() {
@@ -106,8 +143,13 @@
                 </div>
                 <% } %>
             </form>
+            <div class="text-center mt-3">
+                <a href="<%= request.getContextPath() %>/login" class="back-to-login">
+                    <i class="fa fa-arrow-left"></i> Quay lại trang đăng nhập
+                </a>
+            </div>
         </div>
-            
+
 
     </body>
 </html>
