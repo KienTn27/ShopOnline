@@ -1,12 +1,11 @@
 package dao;
 
-import model.Product;
-import model.TopUser;
-import model.User;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import model.Product;
+import model.TopUser;
+import model.User;
 
 public class UserDAO extends DBContext {
 
@@ -182,6 +181,8 @@ public class UserDAO extends DBContext {
         }
         return false;
     }
+
+    // Cập nhật thông tin cá nhân user
     public boolean updateUserProfile(User user) {
         String sql = "UPDATE Users SET FullName=?, Username=?, Email=?, Phone=? WHERE UserID=?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -190,6 +191,35 @@ public class UserDAO extends DBContext {
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPhone());
             ps.setInt(5, user.getUserId());
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Kiểm tra mật khẩu hiện tại
+    public boolean checkPassword(int userId, String password) {
+        String sql = "SELECT UserID FROM Users WHERE UserID = ? AND Password = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setString(2, password); // Lưu ý: Cần so sánh với mật khẩu đã hash trong thực tế
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Cập nhật mật khẩu
+    public boolean updatePassword(int userId, String newPassword) {
+        String sql = "UPDATE Users SET Password = ? WHERE UserID = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newPassword); // Lưu ý: Cần lưu mật khẩu đã hash trong thực tế
+            ps.setInt(2, userId);
             int rows = ps.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
