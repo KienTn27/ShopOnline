@@ -237,48 +237,6 @@
                 font-size: 1.1rem;
                 font-weight: 500;
             }
-            
-            .search-form-wrap {
-                position: relative;
-                max-width: 400px;
-                width: 100%;
-            }
-            
-            #searchSuggest {
-                position: absolute;
-                top: 110%;
-                /* đặt ngay dưới input */
-                left: 0;
-                right: 0;
-                margin-top: 2px;
-                max-height: 260px;
-                overflow-y: auto;
-                border-radius: 14px;
-                box-shadow: 0 4px 18px rgba(44, 62, 80, 0.13);
-                font-size: 1rem;
-                padding: 0;
-                width: 100%;
-                z-index: 20;
-            }
-            
-            #searchSuggest li {
-                padding: 8px 18px;
-                cursor: pointer;
-                border: none;
-                border-bottom: 1px solid #f0f0f0;
-                background: #fff;
-                transition: background 0.15s;
-            }
-            
-            #searchSuggest li:last-child {
-                border-bottom: none;
-            }
-            
-            #searchSuggest li:hover,
-            #searchSuggest li.active {
-                background: #f1f7ff;
-                color: #2f80ed;
-            }
         </style>
     </head>
 
@@ -287,36 +245,27 @@
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
                 <a class="navbar-brand" href="#">FashionShop</a>
-                <form class="d-none d-lg-flex ms-4 flex-grow-1 search-form-wrap" autocomplete="off" onsubmit="return false;">
-                    <input class="form-control rounded-pill ps-4 pe-5" type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput" style="max-width: 400px;">
-                    <button class="btn position-absolute end-0 top-0 mt-1 me-2" type="submit" style="background: none; border: none; color: #2f80ed;">
-                        <i class="fa fa-search"></i>
-                    </button>
-                    <ul class="list-group" id="searchSuggest" style="display:none;"></ul>
-                </form>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <span class="navbar-toggler-icon"></span>
+            </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav align-items-center">
-                        <li class="nav-item mx-2">
-                            <a class="nav-link" href="#" title="Trang chủ"><i class="fa fa-home fa-lg"></i></a>
-                        </li>
-                        <li class="nav-item mx-2">
-                            <a class="nav-link" href="#" title="Sản phẩm"><i class="fa fa-tshirt fa-lg"></i></a>
-                        </li>
-                        <li class="nav-item mx-2">
-                            <a class="nav-link" href="#" title="Giỏ hàng"><i class="fa fa-shopping-cart fa-lg"></i></a>
-                        </li>
-                        <li class="nav-item mx-2">
-                            <a class="nav-link" href="#" title="Liên hệ"><i class="fa fa-phone fa-lg"></i></a>
-                        </li>
+                        <li class="nav-item mx-2"><a class="nav-link" href="#" title="Trang chủ"><i class="fa fa-home fa-lg"></i></a></li>
+                        <li class="nav-item mx-2"><a class="nav-link" href="#" title="Sản phẩm"><i class="fa fa-tshirt fa-lg"></i></a></li>
+                        <li class="nav-item mx-2"><a class="nav-link" href="#" title="Giỏ hàng"><i class="fa fa-shopping-cart fa-lg"></i></a></li>
+                        <li class="nav-item mx-2"><a class="nav-link" href="#" title="Liên hệ"><i class="fa fa-envelope fa-lg"></i></a></li>
                         <li class="nav-item mx-2">
                             <% if (session.getAttribute("user") != null) { %>
-                                <a class="nav-link" href="<%= request.getContextPath() %>/logout"><i class="fa fa-sign-out-alt fa-lg"></i></a>
+                                <a class="nav-link" href="<%= request.getContextPath() %>/logout">Đăng xuất</a>
                                 <% } else { %>
-                                    <a class="nav-link" href="<%= request.getContextPath() %>/login"><i class="fa fa-user fa-lg"></i></a>
+                                    <a class="nav-link" href="<%= request.getContextPath() %>/login">Đăng nhập</a>
                                     <% } %>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <form class="d-flex position-relative" autocomplete="off" onsubmit="return false;">
+                                <input class="form-control me-2" type="search" id="searchInput" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" style="min-width:220px;">
+                                <div id="searchSuggestions" class="list-group position-absolute w-100" style="top:100%; z-index:1000; display:none;"></div>
+                            </form>
                         </li>
                     </ul>
                 </div>
@@ -463,59 +412,60 @@
                     disableOnInteraction: false,
                 },
             });
-        </script>
-        <script>
-            // Danh sách sản phẩm xu hướng/gợi ý (demo tĩnh)
-            const productTrends = [
-                "Đầm", "Trễ vai", "Áo khoác", "Quần", "Áo sơ mi", "Vest", "Parka", "Tweed", "Croptop", "Chân váy", "Lông cừu",
-                "Áo thun nam basic", "Váy nữ mùa hè", "Áo khoác bomber", "Quần jeans nam"
+
+            // Dữ liệu sản phẩm mẫu cho gợi ý
+            const trendingProducts = [
+                "Áo thun nam basic",
+                "Váy nữ mùa hè",
+                "Áo khoác bomber",
+                "Quần jeans nam",
+                "Áo sơ mi trắng",
+                "Đầm dạ hội",
+                "Áo hoodie unisex",
+                "Chân váy chữ A"
             ];
+
             const searchInput = document.getElementById('searchInput');
-            const searchSuggest = document.getElementById('searchSuggest');
+            const suggestionsBox = document.getElementById('searchSuggestions');
 
-            function removeVietnameseTones(str) {
-                return str.normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
-            }
-
-            function renderSuggest(list) {
-                searchSuggest.innerHTML = '';
+            function showSuggestions(list) {
                 if (list.length === 0) {
-                    searchSuggest.style.display = 'none';
+                    suggestionsBox.style.display = 'none';
                     return;
                 }
-                list.forEach(item => {
-                    const li = document.createElement('li');
-                    li.className = 'list-group-item list-group-item-action';
-                    li.textContent = item;
-                    li.addEventListener('mousedown', function() {
-                        searchInput.value = this.textContent;
-                        searchSuggest.style.display = 'none';
-                    });
-                    searchSuggest.appendChild(li);
-                });
-                searchSuggest.style.display = 'block';
+                suggestionsBox.innerHTML = list.map(item => `<button type="button" class="list-group-item list-group-item-action">${item}</button>`).join('');
+                suggestionsBox.style.display = 'block';
             }
 
+            // Gợi ý xu hướng khi focus
             searchInput.addEventListener('focus', function() {
-                renderSuggest(productTrends);
+                showSuggestions(trendingProducts);
             });
 
+            // Gợi ý theo tên khi nhập
             searchInput.addEventListener('input', function() {
-                const val = removeVietnameseTones(this.value.trim().toLowerCase());
-                if (!val) {
-                    renderSuggest(productTrends);
-                    return;
+                const value = this.value.trim().toLowerCase();
+                if (!value) {
+                    showSuggestions(trendingProducts);
+                } else {
+                    const filtered = trendingProducts.filter(p => p.toLowerCase().includes(value));
+                    showSuggestions(filtered);
                 }
-                const filtered = productTrends.filter(item =>
-                    removeVietnameseTones(item.toLowerCase()).includes(val)
-                );
-                renderSuggest(filtered);
             });
 
+            // Ẩn gợi ý khi blur (trễ để click chọn)
             searchInput.addEventListener('blur', function() {
                 setTimeout(() => {
-                    searchSuggest.style.display = 'none';
-                }, 200);
+                    suggestionsBox.style.display = 'none';
+                }, 150);
+            });
+
+            // Chọn gợi ý
+            suggestionsBox.addEventListener('mousedown', function(e) {
+                if (e.target && e.target.matches('button')) {
+                    searchInput.value = e.target.textContent;
+                    suggestionsBox.style.display = 'none';
+                }
             });
         </script>
 
