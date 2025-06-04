@@ -254,10 +254,19 @@
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Sản phẩm"><i class="fa fa-tshirt fa-lg"></i></a></li>
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Giỏ hàng"><i class="fa fa-shopping-cart fa-lg"></i></a></li>
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Liên hệ"><i class="fa fa-envelope fa-lg"></i></a></li>
-                        <li class="nav-item mx-2">
+                        <li class="nav-item dropdown mx-2">
                             <% if (session.getAttribute("user") != null) { %>
-                                <a class="nav-link" href="<%= request.getContextPath() %>/profile" title="Tài khoản"><i class="fa fa-user-circle fa-lg"></i></a>
-                                <a class="nav-link" href="<%= request.getContextPath() %>/logout">Đăng xuất</a>
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
+                                    <i class="fa fa-user-circle fa-lg"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="<%= request.getContextPath() %>/profile">Thông tin cá nhân</a></li>
+                                    <li><a class="dropdown-item" href="<%= request.getContextPath() %>/orders">Đơn hàng của tôi</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="<%= request.getContextPath() %>/logout">Đăng xuất</a></li>
+                                </ul>
                                 <% } else { %>
                                     <a class="nav-link" href="<%= request.getContextPath() %>/login">Đăng nhập</a>
                                     <% } %>
