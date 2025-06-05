@@ -333,6 +333,29 @@
             .action-buttons {
                 flex-direction: column;
             }
+            
+            .pagination-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .pagination-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .page-numbers {
+                flex-wrap: wrap;
+            }
+            
+            .search-container > div {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container > div > div:first-child {
+                min-width: auto;
+            }
         }
 
         @keyframes fadeIn {
@@ -342,6 +365,98 @@
 
         .table-container {
             animation: fadeIn 0.6s ease-out;
+        }
+
+        .pagination-container {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .pagination-info {
+            color: #6c757d;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pagination-btn {
+            padding: 8px 16px;
+            border: 2px solid #dee2e6;
+            background: white;
+            color: #495057;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #dee2e6;
+            background: white;
+            color: #495057;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .page-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+
+        .page-btn.ellipsis {
+            cursor: default;
+            border: none;
+            background: transparent;
+        }
+
+        .page-btn.ellipsis:hover {
+            transform: none;
         }
     </style>
 </head>
@@ -377,10 +492,23 @@
             </div>
         </div>
 
-        <!-- Search Box -->
+        <!-- Search Box and Controls -->
         <div class="search-container" style="position: relative;">
-            <input type="text" class="search-box" placeholder="Tìm kiếm theo tên, email hoặc số điện thoại..." id="searchInput">
-            <i class="fas fa-search search-icon"></i>
+            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <div style="flex: 1; position: relative; min-width: 250px;">
+                    <input type="text" class="search-box" placeholder="Tìm kiếm theo tên, email hoặc số điện thoại..." id="searchInput">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label for="itemsPerPage" style="font-weight: 600; color: #2c3e50;">Hiển thị:</label>
+                    <select id="itemsPerPage" style="padding: 8px 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 14px;">
+                        <option value="5">5 người/trang</option>
+                        <option value="10" selected>10 người/trang</option>
+                        <option value="20">20 người/trang</option>
+                        <option value="50">50 người/trang</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
         <c:if test="${requestScope.error != null}">
@@ -417,7 +545,7 @@
                                 <th><i class="fas fa-cogs"></i> Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="userTableBody">
                             <c:forEach var="user" items="${requestScope.userList}">
                                 <tr class="user-row" data-search="${user.username} ${user.fullName} ${user.email} ${user.phone}">
                                     <td><strong>#<c:out value="${user.userId}" /></strong></td>
@@ -493,20 +621,176 @@
                             </c:forEach>
                         </tbody>
                     </table>
+                    
+                    <!-- Pagination Controls -->
+                    <div class="pagination-container">
+                        <div class="pagination-info">
+                            <span id="paginationInfo">Hiển thị 1-10 trên tổng số 0 người dùng</span>
+                        </div>
+                        <div class="pagination-controls">
+                            <button id="prevPage" class="pagination-btn" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                                Trước
+                            </button>
+                            <div id="pageNumbers" class="page-numbers"></div>
+                            <button id="nextPage" class="pagination-btn">
+                                Tiếp
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
                 </c:otherwise>
             </c:choose>
         </div>
     </div>
 
     <script>
+        // Pagination variables
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let allUsers = [];
+        let filteredUsers = [];
+
+        // Initialize pagination system
+        function initializePagination() {
+            // Get all user rows and store them
+            const userRows = document.querySelectorAll('.user-row');
+            allUsers = Array.from(userRows);
+            filteredUsers = [...allUsers];
+            
+            // Setup event listeners
+            document.getElementById('itemsPerPage').addEventListener('change', function() {
+                itemsPerPage = parseInt(this.value);
+                currentPage = 1;
+                displayPage();
+                updatePaginationControls();
+            });
+
+            document.getElementById('prevPage').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayPage();
+                    updatePaginationControls();
+                }
+            });
+
+            document.getElementById('nextPage').addEventListener('click', function() {
+                const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayPage();
+                    updatePaginationControls();
+                }
+            });
+
+            // Initial display
+            displayPage();
+            updatePaginationControls();
+        }
+
+        // Display current page
+        function displayPage() {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            
+            // Hide all users
+            allUsers.forEach(user => {
+                user.style.display = 'none';
+            });
+            
+            // Show users for current page
+            filteredUsers.slice(startIndex, endIndex).forEach(user => {
+                user.style.display = '';
+            });
+            
+            updatePaginationInfo();
+        }
+
+        // Update pagination controls
+        function updatePaginationControls() {
+            const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            const pageNumbers = document.getElementById('pageNumbers');
+            
+            // Update prev/next buttons
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+            
+            // Generate page numbers
+            pageNumbers.innerHTML = '';
+            
+            if (totalPages > 0) {
+                const maxVisiblePages = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                
+                // Adjust start page if we're near the end
+                if (endPage - startPage < maxVisiblePages - 1) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+                
+                // First page
+                if (startPage > 1) {
+                    createPageButton(1);
+                    if (startPage > 2) {
+                        createEllipsis();
+                    }
+                }
+                
+                // Page numbers
+                for (let i = startPage; i <= endPage; i++) {
+                    createPageButton(i);
+                }
+                
+                // Last page
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        createEllipsis();
+                    }
+                    createPageButton(totalPages);
+                }
+            }
+        }
+
+        // Create page button
+        function createPageButton(pageNum) {
+            const btn = document.createElement('button');
+            btn.className = 'page-btn' + (pageNum === currentPage ? ' active' : '');
+            btn.textContent = pageNum;
+            btn.addEventListener('click', function() {
+                currentPage = pageNum;
+                displayPage();
+                updatePaginationControls();
+            });
+            document.getElementById('pageNumbers').appendChild(btn);
+        }
+
+        // Create ellipsis
+        function createEllipsis() {
+            const ellipsis = document.createElement('button');
+            ellipsis.className = 'page-btn ellipsis';
+            ellipsis.textContent = '...';
+            document.getElementById('pageNumbers').appendChild(ellipsis);
+        }
+
+        // Update pagination info
+        function updatePaginationInfo() {
+            const totalItems = filteredUsers.length;
+            const startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+            const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+            
+            document.getElementById('paginationInfo').textContent = 
+                `Hiển thị ${startItem}-${endItem} trên tổng số ${totalItems} người dùng`;
+        }
+
         // Calculate and display statistics
         function updateStats() {
-            const rows = document.querySelectorAll('#userTable tbody tr');
-            let totalUsers = rows.length;
+            let totalUsers = filteredUsers.length;
             let activeUsers = 0;
             let blockedUsers = 0;
 
-            rows.forEach(row => {
+            filteredUsers.forEach(row => {
                 const statusBadge = row.querySelector('.status-badge');
                 if (statusBadge && statusBadge.classList.contains('status-active')) {
                     activeUsers++;
@@ -523,26 +807,31 @@
         // Search functionality
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
-            const userRows = document.querySelectorAll('.user-row');
 
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase().trim();
                 
-                userRows.forEach(row => {
-                    const searchData = row.getAttribute('data-search').toLowerCase();
-                    if (searchData.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
+                if (searchTerm === '') {
+                    filteredUsers = [...allUsers];
+                } else {
+                    filteredUsers = allUsers.filter(row => {
+                        const searchData = row.getAttribute('data-search').toLowerCase();
+                        return searchData.includes(searchTerm);
+                    });
+                }
+                
+                currentPage = 1;
+                displayPage();
+                updatePaginationControls();
+                updateStats();
             });
         }
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            updateStats();
+            initializePagination();
             setupSearch();
+            updateStats();
         });
     </script>
 </body>
