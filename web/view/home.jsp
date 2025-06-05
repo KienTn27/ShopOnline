@@ -252,7 +252,7 @@
                     <ul class="navbar-nav align-items-center">
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Trang chủ"><i class="fa fa-home fa-lg"></i></a></li>
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Sản phẩm"><i class="fa fa-tshirt fa-lg"></i></a></li>
-                        <li class="nav-item mx-2"><a class="nav-link" href="#" title="Giỏ hàng"><i class="fa fa-shopping-cart fa-lg"></i></a></li>
+                        <li class="nav-item mx-2"><a class="nav-link" href="CartServlet" title="Giỏ hàng"><i class="fa fa-shopping-cart fa-lg"></i></a></li>
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Liên hệ"><i class="fa fa-envelope fa-lg"></i></a></li>
                         <li class="nav-item dropdown mx-2">
                             <% if (session.getAttribute("user") != null) { %>
