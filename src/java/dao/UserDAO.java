@@ -227,7 +227,75 @@ public class UserDAO extends DBContext {
         }
         return false;
     }
+    //// Lấy tất cả người dùng, admin lên đầu
+    public List<User> getAllUsers() throws SQLException {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM Users ORDER BY CASE WHEN Role = 'Admin' THEN 0 ELSE 1 END, UserID";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("UserID"));
+                user.setUsername(rs.getString("Username"));
+                user.setPassword(rs.getString("Password"));
+                user.setFullName(rs.getString("FullName"));
+                user.setEmail(rs.getString("Email"));
+                user.setPhone(rs.getString("Phone"));
+                user.setRole(rs.getString("Role"));
+                user.setIsActive(rs.getBoolean("IsActive"));
+                user.setCreateAt(rs.getTimestamp("CreatedAt"));
+                userList.add(user);
+            }
+        }
+        return userList;
+    }
+    // Cập nhật trạng thái isActive của user
+    public boolean updateUserStatus(int userId, boolean isActive) {
+        String sql = "UPDATE Users SET isActive = ? WHERE UserID = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, isActive);
+            ps.setInt(2, userId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean deleteUser(int userId) throws SQLException {
+        String sql = "DELETE FROM Users WHERE UserID = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        }
+    }
+    public User getUserById(int userId) {
+        String sql = "SELECT * FROM Users WHERE UserID = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setUserId(rs.getInt("UserID"));
+                    user.setUsername(rs.getString("Username"));
+                    user.setPassword(rs.getString("Password"));
+                    user.setFullName(rs.getString("FullName"));
+                    user.setEmail(rs.getString("Email"));
+                    user.setPhone(rs.getString("Phone"));
+                    user.setRole(rs.getString("Role"));
+                    user.setIsActive(rs.getBoolean("IsActive"));
+                    user.setCreateAt(rs.getTimestamp("CreatedAt"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
 }
+
 
 // Lấy userId theo email
 //    public Integer getUserIdByEmail(String email) {
