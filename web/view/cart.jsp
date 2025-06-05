@@ -73,37 +73,38 @@
                     <div class="mt-4 text-end">
                         <h4>Tổng cộng: <span class="text-danger"><fmt:formatNumber value="${cartTotal}" type="number" />₫</span></h4>
                     </div>
-                    <!-- Form địa chỉ giao hàng -->
-                    <div class="shipping-form">
+                    <!-- Địa chỉ giao hàng -->
+                    <div class="shipping-form mt-4">
                         <h3>📦 Nhập địa chỉ giao hàng</h3>
-                        <form action="${pageContext.request.contextPath}/CartServlet" method="post" id="shippingForm">
+                        <form action="${pageContext.request.contextPath}/CartServlet" method="post">
                             <input type="hidden" name="action" value="placeOrder">
                             <input type="hidden" name="totalAmount" value="${cartTotal}">
-                            <input type="hidden" name="shippingAddress" id="shippingAddress">
 
-                            <div class="location-select">
-                                <label for="province">Tỉnh/Thành phố:</label>
-                                <select id="province" required>
-                                    <option value="">-- Chọn Tỉnh/Thành --</option>
-                                </select>
-
-                                <label for="district">Quận/Huyện:</label>
-                                <select id="district" required>
-                                    <option value="">-- Chọn Quận/Huyện --</option>
-                                </select>
-
-                                <label for="ward">Phường/Xã:</label>
-                                <select id="ward" required>
-                                    <option value="">-- Chọn Phường/Xã --</option>
-                                </select>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="city">Thành phố:</label>
+                                    <input type="text" id="city" name="city" class="form-control" placeholder="TP. Hồ Chí Minh, Hà Nội..." required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="province">Quận/Huyện:</label>
+                                    <input type="text" id="province" name="province" class="form-control" placeholder="Quận 1, Huyện Bình Chánh..." required>
+                                </div>
                             </div>
 
-                            <div class="address-box">
+                            <div class="mb-3">
+                                <label for="district">Phường/Xã:</label>
+                                <input type="text" id="district" name="district" class="form-control" placeholder="Phường Cát Linh, Trung Văn ..." required>
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="detailAddress">Địa chỉ cụ thể:</label>
-                                <textarea id="detailAddress" rows="2" placeholder="Số nhà, tên đường..." required></textarea>
+                                <textarea id="detailAddress" name="detailAddress" class="form-control" rows="2"
+                                          placeholder="Số nhà, tên đường..." required></textarea>
                             </div>
 
-                            <button type="submit" class="checkout-btn">🛍 Thanh toán ngay</button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa-solid fa-money-bill"></i> Thanh toán ngay
+                            </button>
                         </form>
                     </div>
                 </c:when>
@@ -117,68 +118,5 @@
                 <a href="${pageContext.request.contextPath}/CartServlet?action=viewOrders">📦 Đơn hàng</a>
             </div>
         </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/vietnamjs@1.0.0/dist/vietnamjs.min.js"></script>
-        <script>
-            const provinceSelect = document.getElementById('province');
-            const districtSelect = document.getElementById('district');
-            const wardSelect = document.getElementById('ward');
-            const detailAddress = document.getElementById('detailAddress');
-            const shippingAddress = document.getElementById('shippingAddress');
-            const shippingForm = document.getElementById('shippingForm');
-
-            fetch('https://provinces.open-api.vn/api/?depth=3')
-                    .then(res => res.json())
-                    .then(data => {
-                        data.forEach(province => {
-                            const opt = document.createElement('option');
-                            opt.value = province.name;
-                            opt.text = province.name;
-                            opt.dataset.districts = JSON.stringify(province.districts);
-                            provinceSelect.appendChild(opt);
-                        });
-
-                        provinceSelect.addEventListener('change', () => {
-                            districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
-                            wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
-                            const selected = provinceSelect.selectedOptions[0];
-                            const districts = JSON.parse(selected.dataset.districts || '[]');
-                            districts.forEach(district => {
-                                const opt = document.createElement('option');
-                                opt.value = district.name;
-                                opt.text = district.name;
-                                opt.dataset.wards = JSON.stringify(district.wards);
-                                districtSelect.appendChild(opt);
-                            });
-                        });
-
-                        districtSelect.addEventListener('change', () => {
-                            wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
-                            const selected = districtSelect.selectedOptions[0];
-                            const wards = JSON.parse(selected.dataset.wards || '[]');
-                            wards.forEach(ward => {
-                                const opt = document.createElement('option');
-                                opt.value = ward.name;
-                                opt.text = ward.name;
-                                wardSelect.appendChild(opt);
-                            });
-                        });
-                    });
-
-            shippingForm.addEventListener('submit', function (e) {
-                const province = provinceSelect.value;
-                const district = districtSelect.value;
-                const ward = wardSelect.value;
-                const detail = detailAddress.value.trim();
-
-                if (!province || !district || !ward || !detail) {
-                    alert("Vui lòng nhập đầy đủ địa chỉ giao hàng.");
-                    e.preventDefault();
-                    return;
-                }
-
-                shippingAddress.value = `${detail}, ${ward}, ${district}, ${province}`;
-                    });
-        </script>
     </body>
 </html>
