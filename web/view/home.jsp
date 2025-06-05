@@ -265,6 +265,10 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
+                                    <% if (session.getAttribute("user") != null && ((model.User)session.getAttribute("user")).getRole().equals("Admin")) { %>
+                                        <li><a class="dropdown-item" href="<%= request.getContextPath() %>/admin/menu.jsp">Quản lý website</a></li>
+                                    <% } %>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="<%= request.getContextPath() %>/logout">Đăng xuất</a></li>
                                 </ul>
                                 <% } else { %>
