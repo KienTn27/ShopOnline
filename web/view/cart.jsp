@@ -7,71 +7,72 @@
         <meta charset="UTF-8">
         <title>Giỏ hàng</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/cart.css">
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+        <!-- Bootstrap 5 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Font Awesome -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/cart.css">
     </head>
     <body>
-        <div class="cart-container">
-            <h2>🛒 Giỏ hàng của bạn</h2>
+        <div class="container my-4">
+            <h2 class="mb-4"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng của bạn</h2>
 
             <c:choose>
                 <c:when test="${not empty sessionScope.carts}">
-                    <table class="cart-table">
-                        <thead>
-                            <tr>
-                                <th>Sản phẩm</th>
-                                <th>Đơn giá</th>
-                                <th>Số lượng</th>
-                                <th>Thành tiền</th>
-                                <th>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="cart" items="${sessionScope.carts}">
-                                <tr>
-                                    <td>
-                                        <div class="product-info">
-                                            <img src="${cart.imageURL}" alt="${cart.productName}" class="product-image"/>
-                                            <div class="product-details">
-                                                <div class="product-name">${cart.productName}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><fmt:formatNumber value="${cart.price}" type="number"/>₫</td>
-                                    <td>
-                                        <div class="quantity-box">
-                                            <form action="${pageContext.request.contextPath}/CartServlet" method="post">
-                                                <input type="hidden" name="action" value="updatequantity">
-                                                <input type="hidden" name="cartId" value="${cart.cartId}">
-                                                <input type="hidden" name="quantity" value="${cart.quantity - 1}">
-                                                <button type="submit">−</button>
+                    <div class="row g-3">
+                        <c:forEach var="cart" items="${sessionScope.carts}">
+                            <div class="col-md-12">
+                                <div class="card p-3 shadow-sm d-flex flex-row align-items-center">
+                                    <img src="${cart.imageURL}" class="img-thumbnail me-3" style="width: 100px; height: auto;" alt="${cart.productName}">
+                                    <div class="flex-grow-1">
+                                        <h5 class="mb-1">${cart.productName}</h5>
+                                        <p class="mb-1 text-danger fw-bold"><fmt:formatNumber value="${cart.price}" type="number" />₫</p>
+
+                                        <div class="d-flex align-items-center mb-2">
+                                            <form method="post" action="${pageContext.request.contextPath}/CartServlet" class="me-2">
+                                                <input type="hidden" name="action" value="updatequantity"/>
+                                                <input type="hidden" name="cartId" value="${cart.cartId}"/>
+                                                <input type="hidden" name="quantity" value="${cart.quantity - 1}"/>
+                                                <button class="btn btn-outline-secondary btn-sm">−</button>
                                             </form>
 
-                                            <input type="text" value="${cart.quantity}" readonly>
+                                            <input type="text" class="form-control form-control-sm text-center mx-1" value="${cart.quantity}" style="width: 50px;" readonly />
 
-                                            <form action="${pageContext.request.contextPath}/CartServlet" method="post">
-                                                <input type="hidden" name="action" value="updatequantity">
-                                                <input type="hidden" name="cartId" value="${cart.cartId}">
-                                                <input type="hidden" name="quantity" value="${cart.quantity + 1}">
-                                                <button type="submit">+</button>
+                                            <form method="post" action="${pageContext.request.contextPath}/CartServlet" class="ms-2">
+                                                <input type="hidden" name="action" value="updatequantity"/>
+                                                <input type="hidden" name="cartId" value="${cart.cartId}"/>
+                                                <input type="hidden" name="quantity" value="${cart.quantity + 1}"/>
+                                                <button class="btn btn-outline-secondary btn-sm">+</button>
                                             </form>
                                         </div>
 
-                                    </td>
-                                    <td><fmt:formatNumber value="${cart.price * cart.quantity}" type="number"/>₫</td>
-                                    <td>
-                                        <a class="delete-btn" href="${pageContext.request.contextPath}/CartServlet?action=deleteCartItem&cartId=${cart.cartId}">🗑 Xóa</a><br>
-                                        <a class="similar-btn" href="${pageContext.request.contextPath}/SimilarProductServlet?categoryId=${cart.categoryId}">🔍 Tìm tương tự</a>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3" class="total-label">Tổng cộng:</td>
-                                <td colspan="2" class="total-value"><fmt:formatNumber value="${cartTotal}" type="number" />₫</td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                                        <div>Thành tiền: <strong><fmt:formatNumber value="${cart.price * cart.quantity}" type="number"/>₫</strong></div>
+                                    </div>
 
+                                    <div class="text-end ms-3">
+                                        <a href="${pageContext.request.contextPath}/CartServlet?action=deleteCartItem&cartId=${cart.cartId}" class="btn btn-outline-danger btn-sm mb-1">
+                                            <i class="fa-solid fa-trash"></i> Xóa
+                                        </a>
+                                        <br/>
+                                        <a href="${pageContext.request.contextPath}/SimilarProductServlet?categoryId=${cart.categoryId}" class="btn btn-outline-primary btn-sm">
+                                            <i class="fa-solid fa-magnifying-glass"></i> Tìm tương tự
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
+
+                    <!-- Tổng tiền -->
+                    <div class="mt-4 text-end">
+                        <h4>Tổng cộng: <span class="text-danger"><fmt:formatNumber value="${cartTotal}" type="number" />₫</span></h4>
+                    </div>
                     <!-- Form địa chỉ giao hàng -->
                     <div class="shipping-form">
                         <h3>📦 Nhập địa chỉ giao hàng</h3>
