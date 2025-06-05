@@ -132,13 +132,20 @@ public class CartServlet extends HttpServlet {
             case "placeOrder" -> {
                 try {
                     double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
-                    String shippingAddress = request.getParameter("shippingAddress");
-
-                    if (totalAmount <= 0 || shippingAddress == null || shippingAddress.trim().isEmpty()) {
-                        request.setAttribute("error", "Tổng tiền hoặc địa chỉ không hợp lệ.");
+                    String city = request.getParameter("city");
+                    String province = request.getParameter("province");
+                    String district = request.getParameter("district");
+                    String detail = request.getParameter("detailAddress");
+                    if (totalAmount <= 0
+                            || city == null || city.trim().isEmpty()
+                            || province == null || province.trim().isEmpty()
+                            || district == null || district.trim().isEmpty()
+                            || detail == null || detail.trim().isEmpty()) {
+                        request.setAttribute("error", "Vui lòng điền đầy đủ thông tin địa chỉ.");
                         request.getRequestDispatcher("view/cart.jsp").forward(request, response);
                         return;
                     }
+                    String shippingAddress = detail + ", " + district + ", " + province + ", " + city;
 
                     orderDAO.createOrder(userId, totalAmount, shippingAddress);
                     cartDAO.clearCartByUserId(userId);
