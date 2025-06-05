@@ -76,6 +76,7 @@
 
     <body>
         <div class="menu-container">
+            <a href="<%= request.getContextPath() %>/Home" style="background:#007bff;color:#fff;">🏠 Quay lại trang Home</a>
             <a href="<%= request.getContextPath() %>/RevenueServlet">📈 Doanh thu</a>
             <a href="<%= request.getContextPath() %>/TopProductsServlet">🔥 Bán chạy</a>
             <a href="<%= request.getContextPath() %>/TopUsersServlet">👑 Người dùng chi tiêu</a>
