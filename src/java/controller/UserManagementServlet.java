@@ -46,15 +46,28 @@ public class UserManagementServlet extends HttpServlet {
         UserDAO userDAO = new UserDAO();
         String error = null;
         try {
+            User targetUser = userDAO.getUserById(userId);
+            boolean isSelf = (userId == currentUser.getUserId());
+            boolean isTargetAdmin = targetUser != null && "Admin".equals(targetUser.getRole());
             switch (action) {
                 case "block":
-                    userDAO.updateUserStatus(userId, false);
+                    if (isSelf) {
+                        error = "Bạn không thể block chính mình!";
+                    } else {
+                        userDAO.updateUserStatus(userId, false);
+                    }
                     break;
                 case "unblock":
                     userDAO.updateUserStatus(userId, true);
                     break;
                 case "delete":
-                    userDAO.deleteUser(userId);
+                    if (isSelf) {
+                        error = "Bạn không thể xóa chính mình!";
+                    } else if (isTargetAdmin) {
+                        error = "Admin không thể xóa admin khác!";
+                    } else {
+                        userDAO.deleteUser(userId);
+                    }
                     break;
                 default:
                     error = "Hành động không hợp lệ";
