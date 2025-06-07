@@ -1,0 +1,150 @@
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Menu Wrapper */
+.menu-wrapper {
+    max-width: 900px;
+    width: 100%;
+    background: linear-gradient(135deg, #f0fcff 0%, #e6f3f8 100%);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border: 1px solid rgba(144, 224, 239, 0.3);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Menu Group */
+.menu-group {
+    margin-bottom: 15px;
+}
+
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(90deg, #90e0ef 0%, #80d4e9 100%);
+    color: #2c3e50;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.group-header:hover {
+    background: linear-gradient(90deg, #80d4e9 0%, #70c9e3 100%);
+}
+
+.group-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.group-header .arrow {
+    font-size: 16px;
+    transition: transform 0.3s ease;
+}
+
+.group-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 0 0 10px 10px;
+    border: 1px solid rgba(144, 224, 239, 0.3);
+    border-top: none;
+}
+
+/* Menu Item */
+.group-content a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    background-color: #f0fcff;
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease, transform 0.2s ease-in-out;
+    min-width: 130px;
+    font-size: 14px;
+    gap: 8px;
+}
+
+.group-content a:hover {
+    background: linear-gradient(135deg, #90e0ef 0%, #80d4e9 100%);
+    color: #ffffff;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 15px rgba(144, 224, 239, 0.4);
+}
+
+.group-content a:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Keyframes cho hiệu ứng fadeIn */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ẩn phần thống kê doanh thu (thay class phù hợp nếu cần) */
+.stats-panel, .dashboard-stats, .revenue-stats {
+    display: none;
+}
+
+/* Thử ẩn phần bên phải tạm thời */
+body > div:last-child {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .menu-wrapper {
+        padding: 15px;
+    }
+
+    .group-content {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .group-content a {
+        width: 100%;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-wrapper {
+        padding: 10px;
+    }
+
+    .group-header h3 {
+        font-size: 16px;
+    }
+
+    .group-content a {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}
