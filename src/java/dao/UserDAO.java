@@ -294,73 +294,73 @@ public class UserDAO extends DBContext {
         return null;
     }
     
+
+
+
+ //Lấy userId theo email
+    public Integer getUserIdByEmail(String email) {
+        String sql = "SELECT UserID FROM Users WHERE Email = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("UserID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+// Lưu token
+    public void savePasswordResetToken(int userId, String token, Timestamp expiry) {
+        String sql = "INSERT INTO password_reset_tokens (user_id, token, expiry) VALUES (?, ?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setString(2, token);
+            ps.setTimestamp(3, expiry);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+// Kiểm tra token hợp lệ
+    public boolean isValidResetToken(String token) {
+        String sql = "SELECT * FROM password_reset_tokens WHERE token = ? AND is_used = 0 AND expiry > GETDATE()";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, token);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+// Cập nhật mật khẩu theo token
+    public boolean updatePasswordByToken(String token, String newPassword) {
+        String sql = "UPDATE Users SET Password = ? WHERE UserID = "
+                + "(SELECT user_id FROM password_reset_tokens WHERE token = ? AND is_used = 0 AND expiry > GETDATE())";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
+            ps.setString(2, token);
+            int rows = ps.executeUpdate();
+
+            if (rows > 0) {
+                // Đánh dấu token đã dùng
+                String updateTokenSql = "UPDATE password_reset_tokens SET is_used = 1 WHERE token = ?";
+                try (PreparedStatement ps2 = conn.prepareStatement(updateTokenSql)) {
+                    ps2.setString(1, token);
+                    ps2.executeUpdate();
+                }
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
-
-
-// Lấy userId theo email
-//    public Integer getUserIdByEmail(String email) {
-//        String sql = "SELECT UserID FROM Users WHERE Email = ?";
-//        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-//            ps.setString(1, email);
-//            ResultSet rs = ps.executeQuery();
-//            if (rs.next()) {
-//                return rs.getInt("UserID");
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-//// Lưu token
-//    public void savePasswordResetToken(int userId, String token, Timestamp expiry) {
-//        String sql = "INSERT INTO password_reset_tokens (user_id, token, expiry) VALUES (?, ?, ?)";
-//        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-//            ps.setInt(1, userId);
-//            ps.setString(2, token);
-//            ps.setTimestamp(3, expiry);
-//            ps.executeUpdate();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//// Kiểm tra token hợp lệ
-//    public boolean isValidResetToken(String token) {
-//        String sql = "SELECT * FROM password_reset_tokens WHERE token = ? AND is_used = 0 AND expiry > GETDATE()";
-//        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-//            ps.setString(1, token);
-//            ResultSet rs = ps.executeQuery();
-//            return rs.next();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
-//
-//// Cập nhật mật khẩu theo token
-//    public boolean updatePasswordByToken(String token, String newPassword) {
-//        String sql = "UPDATE Users SET Password = ? WHERE UserID = "
-//                + "(SELECT user_id FROM password_reset_tokens WHERE token = ? AND is_used = 0 AND expiry > GETDATE())";
-//        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-//            ps.setString(1, newPassword);
-//            ps.setString(2, token);
-//            int rows = ps.executeUpdate();
-//
-//            if (rows > 0) {
-//                // Đánh dấu token đã dùng
-//                String updateTokenSql = "UPDATE password_reset_tokens SET is_used = 1 WHERE token = ?";
-//                try (PreparedStatement ps2 = conn.prepareStatement(updateTokenSql)) {
-//                    ps2.setString(1, token);
-//                    ps2.executeUpdate();
-//                }
-//                return true;
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
-//
-//}

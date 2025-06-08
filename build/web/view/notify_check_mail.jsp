@@ -56,7 +56,7 @@
         <div class="notify-box">
             <h3>Vui lòng kiểm tra email</h3>
             <p>Một email hướng dẫn đặt lại mật khẩu đã được gửi đến địa chỉ bạn cung cấp.<br>Vui lòng kiểm tra hộp thư và làm theo hướng dẫn để thay đổi mật khẩu.</p>
-            <a href="login" class="btn btn-login">Quay lại đăng nhập</a>
+            <a href="login.jsp" class="btn btn-login">Quay lại đăng nhập</a>
         </div>
     </body>
 
