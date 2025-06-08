@@ -77,7 +77,7 @@ public class UserDAO extends DBContext {
         }
 
         return list;
-    }
+    }                                                                                                                                                                                                       
 
     
 
@@ -87,7 +87,7 @@ public class UserDAO extends DBContext {
                                 ([UserId]
                                 ,[Fullname]
                                 ,[Password]
-                                ,[Email]
+                                ,[Email]                        
                                 ,[Username]
                                 ,[Phone])
                           VALUES
