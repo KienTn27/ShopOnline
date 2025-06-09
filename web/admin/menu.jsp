@@ -414,30 +414,31 @@
         </div>
 
         <!-- Nhóm Sản phẩm -->
-        <div class="menu-group" id="group-products-toggle">
-            <div class="group-header" onclick="toggleGroup('group-products')">
-                <div class="group-title">
-                    <div class="group-icon">👗</div>
-                    <h3>Sản phẩm</h3>
-                </div>
-                <span class="arrow">➤</span>
-            </div>
-            <div class="group-content" id="group-products">
-                <a href="<%= request.getContextPath() %>/TopProductsServlet">
-                    <span class="menu-icon">🔥</span>
-                    Bán chạy
-                    <span class="stats-badge">Hot</span>
-                </a>
-                <a href="<%= request.getContextPath() %>/product-sales">
-                    <span class="menu-icon">📦</span>
-                    Bán ra
-                </a>
-                <a href="#">
-                    <span class="menu-icon">🗂️</span>
-                    Cập nhật trạng thái đơn hàng
-                </a>
-            </div>
+<div class="menu-group" id="group-products-toggle">
+    <div class="group-header" onclick="toggleGroup('group-products')">
+        <div class="group-title">
+            <div class="group-icon">👗</div>
+            <h3>Sản phẩm</h3>
         </div>
+        <span class="arrow">➤</span>
+    </div>
+    <div class="group-content" id="group-products">
+        <a href="<%= request.getContextPath() %>/TopProductsServlet">
+            <span class="menu-icon">🔥</span>
+            Bán chạy
+            <span class="stats-badge">Hot</span>
+        </a>
+        <a href="<%= request.getContextPath() %>/product-sales">
+            <span class="menu-icon">📦</span>
+            Bán ra
+        </a>
+        <a href="<%= request.getContextPath() %>/UpdateStatusServlet">
+            <span class="menu-icon">🗂️</span>
+            Cập nhật trạng thái đơn hàng
+        </a>
+    </div>
+</div>
+
 
         <!-- Nhóm Người dùng & Đánh giá -->
         <div class="menu-group" id="group-users-reviews-toggle">
@@ -488,6 +489,7 @@
                 <span class="arrow">➤</span>
             </div>
             <div class="group-content" id="group-admin">
+
                 <a href="<%= request.getContextPath() %>/admin/user-management">
                     <span class="menu-icon">👤</span>
                     Quản lý người dùng

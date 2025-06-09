@@ -155,7 +155,7 @@ public class OrderDAO {
 
     public void updateOrderStatus(int orderId, String status) {
         Connection conn = DBContext.getInstance().getConnection();
-        String query = "UPDATE Orders SET Status = ? WHERE OrderId = ?";
+        String query = "UPDATE Orders SET Status = ? WHERE OrderID = ?";
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, status);
             ps.setInt(2, orderId);
