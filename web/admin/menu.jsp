@@ -40,7 +40,7 @@
             <div class="group-content" id="group-products">
                 <a href="<%= request.getContextPath() %>/TopProductsServlet">🔥 Bán chạy</a>
                 <a href="<%= request.getContextPath() %>/product-sales">📦 Bán ra</a>
-                <a href="#">🗂️ Cập nhật trạng thái đơn hàng</a>
+                <a href="<%= request.getContextPath() %>/UpdateStatusServlet">🗂️ Cập nhật trạng thái đơn hàng</a>
             </div>
         </div>
 
@@ -75,7 +75,6 @@
             </div>
             <div class="group-content" id="group-admin">
                 <a href="<%= request.getContextPath() %>/admin/user-management">👤 Quản lý người dùng</a>
-                <a href="<%= request.getContextPath() %>/#">👤 Cập nhật trạng thái</a>
             </div>
         </div>
     </div>
