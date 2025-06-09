@@ -38,13 +38,13 @@ public class UserDAO extends DBContext {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Product p = new Product();
-                p.setProductId(rs.getInt("ProductID"));
+                p.setProductID(rs.getInt("ProductID"));
                 p.setName(rs.getString("name"));
-                p.setCategoryId(rs.getString("CategoryID"));
+                p.setCategoryID(rs.getInt("CategoryID"));
                 p.setDescription(rs.getString("description"));
-                p.setPrice(rs.getDouble("Price"));
+                p.setPrice(rs.getBigDecimal("Price"));
                 p.setQuantity(rs.getInt("Quantity"));
-                p.setImageUrl(rs.getString("ImageURL"));
+                p.setImageURL(rs.getString("ImageURL"));
                 p.setIsActive(rs.getBoolean("isActive"));
                 products.add(p);
             }

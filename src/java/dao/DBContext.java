@@ -12,9 +12,9 @@ public class DBContext {
     private Connection connection;
     
     // Thông tin kết nối
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Shop;TrustServerCertificate=true";
+    private static final String URL = "jdbc:sqlserver://LONGNGUYEN:1433;databaseName=Shop;TrustServerCertificate=true";
     private static final String USER = "sa";
-    private static final String PASSWORD = "123456";
+    private static final String PASSWORD = "123";
     
     // Constructor riêng tư
     public DBContext() {
