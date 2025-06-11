@@ -5,23 +5,22 @@
 package controller;
 
 import dao.NotificationDAO;
-import dao.OrderDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import model.Order;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
  * @author X1 carbon Gen6
  */
-public class UpdateStatusServlet extends HttpServlet {
+public class CountUnreadServlet extends HttpServlet {
 
-    private OrderDAO orderDAO = new OrderDAO();
+    NotificationDAO dao = new NotificationDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +39,10 @@ public class UpdateStatusServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UpdateStatusServlet</title>");
+            out.println("<title>Servlet CountUnreadServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UpdateStatusServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet CountUnreadServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,15 +60,14 @@ public class UpdateStatusServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            List<Order> orders = orderDAO.getAllOrders();
-            request.setAttribute("orders", orders);
-            request.getRequestDispatcher("admin/orderList.jsp").forward(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Database error");
-            request.getRequestDispatcher("admin/orderList.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if(user==null){
+            response.getWriter().write("0");
+            return;
         }
+        int count = dao.countUnreadNotifications(user.getUserId());
+        response.getWriter().write(String.valueOf(count));
     }
 
     /**
@@ -83,18 +81,7 @@ public class UpdateStatusServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
-        String status = request.getParameter("status");
-
-        orderDAO.updateOrderStatus(orderId, status);
-
-        int userId = orderDAO.getUserIdByOrderId(orderId);
-        if (userId != -1) {
-            String message = "Đơn hàng #" + orderId + "của bạn đã được cập nhật trạng thái: " + status;
-            NotificationDAO notificationDAO = new NotificationDAO();
-            notificationDAO.addNotification(userId, message);
-        }
-        response.sendRedirect("UpdateStatusServlet");
+        processRequest(request, response);
     }
 
     /**

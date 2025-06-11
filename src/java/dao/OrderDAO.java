@@ -164,4 +164,20 @@ public class OrderDAO {
             e.printStackTrace();
         }
     }
+
+    public int getUserIdByOrderId(int orderId) {
+        int userId = -1;
+        try (Connection conn = dbContext.getConnection()) {
+            String sql = "SELECT UserID FROM Orders WHERE OrderID = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                userId = rs.getInt("userId");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return userId;
+    }
 }
