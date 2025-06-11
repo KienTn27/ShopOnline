@@ -1,2 +1,5 @@
-/ShopOnline/nbproject/private/
-/nbproject/private/
+build/
+*.class
+*.log
+nbproject/private/
+
