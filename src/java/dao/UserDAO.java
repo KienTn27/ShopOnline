@@ -6,6 +6,7 @@ import java.util.List;
 import model.Product;
 import model.TopUser;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserDAO extends DBContext {
 
@@ -13,20 +14,7 @@ public class UserDAO extends DBContext {
 
  
 
-    // Đăng ký tài khoản
-    public void addUser(User user) throws SQLException {
-        String sql = "INSERT INTO User (username, password, FullName, Email, Phone, Role, isActive) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = dbContext.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword()); // Nên mã hóa mật khẩu trong thực tế
-            stmt.setString(3, user.getFullName());
-            stmt.setString(4, user.getEmail());
-            stmt.setString(5, user.getPhone());
-            stmt.setString(6, user.getRole());
-            stmt.setBoolean(7, user.isActive());
-            stmt.executeUpdate();
-        }
-    }
+    
 
     // Tìm kiếm sản phẩm
     public List<Product> searchProducts(String keyword) throws SQLException {
@@ -79,57 +67,32 @@ public class UserDAO extends DBContext {
         return list;
     }                                                                                                                                                                                                       
 
-    
-
-    public int insert(User c) throws Exception {
-        String sql = """
-                     INSERT INTO [dbo].[User]
-                                ([UserId]
-                                ,[Fullname]
-                                ,[Password]
-                                ,[Email]                        
-                                ,[Username]
-                                ,[Phone])
-                          VALUES
-                                (?,?,?,?,?,?)""";
-        try {
-            PreparedStatement st = dbContext.getConnection().prepareStatement(sql);
-            st.setInt(1, c.getUserId());
-            st.setString(2, c.getFullName());
-            st.setString(3, c.getPassword());
-            st.setString(4, c.getEmail());
-            st.setString(5, c.getUsername());
-            st.setString(6, c.getPhone());
-
-            return st.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        return 0;
-    }
+   
 //dang nhap
     public User login(String username, String password) {
-        String sql = "SELECT * FROM [Users] WHERE [Username] = ? AND [Password] = ?";
+        String sql = "SELECT * FROM [Users] WHERE [Username] = ?";
 
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
-            ps.setString(2, password);
-
+            
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    User user = new User();
-                    user.setUserId(rs.getInt("UserID"));
-                    user.setUsername(rs.getString("Username"));
-                    user.setPassword(rs.getString("Password"));
-                    user.setFullName(rs.getString("FullName"));
-                    user.setEmail(rs.getString("Email"));
-                    user.setPhone(rs.getString("Phone"));
-                    user.setRole(rs.getString("Role"));
-                    user.setIsActive(rs.getBoolean("IsActive"));
-                    user.setCreateAt(rs.getTimestamp("CreatedAt"));
+                    String hashedPassword = rs.getString("Password");
+                    if (BCrypt.checkpw(password, hashedPassword)) {
+                        User user = new User();
+                        user.setUserId(rs.getInt("UserID"));
+                        user.setUsername(rs.getString("Username"));
+                        user.setPassword(hashedPassword); // Store the hashed password
+                        user.setFullName(rs.getString("FullName"));
+                        user.setEmail(rs.getString("Email"));
+                        user.setPhone(rs.getString("Phone"));
+                        user.setRole(rs.getString("Role"));
+                        user.setIsActive(rs.getBoolean("IsActive"));
+                        user.setCreateAt(rs.getTimestamp("CreatedAt"));
 
-                    return user;
+                        return user;
+                    }
                 }
             }
 
@@ -137,7 +100,8 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
 
-        return null; // Không tìm thấy user
+        return null; 
+// Không tìm thấy user
     }
 
     public boolean isUsernameExists(String username) {
@@ -163,8 +127,10 @@ public class UserDAO extends DBContext {
 
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+
             ps.setString(1, user.getUsername());
-            ps.setString(2, user.getPassword());
+            ps.setString(2, hashedPassword);
             ps.setString(3, user.getFullName());
             ps.setString(4, user.getEmail());
             ps.setString(5, user.getPhone());
@@ -201,12 +167,14 @@ public class UserDAO extends DBContext {
 
     // Kiểm tra mật khẩu hiện tại
     public boolean checkPassword(int userId, String password) {
-        String sql = "SELECT UserID FROM Users WHERE UserID = ? AND Password = ?";
+        String sql = "SELECT Password FROM Users WHERE UserID = ?"; // Chỉ lấy mật khẩu
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
-            ps.setString(2, password); // Lưu ý: Cần so sánh với mật khẩu đã hash trong thực tế
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
+                if (rs.next()) {
+                    String hashedPassword = rs.getString("Password");
+                    return BCrypt.checkpw(password, hashedPassword);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -218,7 +186,8 @@ public class UserDAO extends DBContext {
     public boolean updatePassword(int userId, String newPassword) {
         String sql = "UPDATE Users SET Password = ? WHERE UserID = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, newPassword); // Lưu ý: Cần lưu mật khẩu đã hash trong thực tế
+            String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            ps.setString(1, hashedPassword);
             ps.setInt(2, userId);
             int rows = ps.executeUpdate();
             return rows > 0;
@@ -248,7 +217,9 @@ public class UserDAO extends DBContext {
         }
         return userList;
     }
-    // Cập nhật trạng thái isActive của user
+    
+    
+    // Block User
     public boolean updateUserStatus(int userId, boolean isActive) {
         String sql = "UPDATE Users SET isActive = ? WHERE UserID = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -261,6 +232,7 @@ public class UserDAO extends DBContext {
         }
         return false;
     }
+    //XOA USER
     public boolean deleteUser(int userId) throws SQLException {
         String sql = "DELETE FROM Users WHERE UserID = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -296,7 +268,7 @@ public class UserDAO extends DBContext {
     
 
 
-
+////Quen Pass
  //Lấy userId theo email
     public Integer getUserIdByEmail(String email) {
         String sql = "SELECT UserID FROM Users WHERE Email = ?";
@@ -342,22 +314,22 @@ public class UserDAO extends DBContext {
     public boolean updatePasswordByToken(String token, String newPassword) {
         String sql = "UPDATE Users SET Password = ? WHERE UserID = "
                 + "(SELECT user_id FROM password_reset_tokens WHERE token = ? AND is_used = 0 AND expiry > GETDATE())";
+        
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, newPassword);
+            String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            ps.setString(1, hashedPassword);
             ps.setString(2, token);
             int rows = ps.executeUpdate();
 
             if (rows > 0) {
-                // Đánh dấu token đã dùng
                 String updateTokenSql = "UPDATE password_reset_tokens SET is_used = 1 WHERE token = ?";
-                try (PreparedStatement ps2 = conn.prepareStatement(updateTokenSql)) {
-                    ps2.setString(1, token);
-                    ps2.executeUpdate();
+                try (PreparedStatement updateTokenPs = conn.prepareStatement(updateTokenSql)) {
+                    updateTokenPs.setString(1, token);
+                    updateTokenPs.executeUpdate();
                 }
                 return true;
             }
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
