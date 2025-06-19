@@ -41,31 +41,38 @@ public class UserDAO extends DBContext {
     }
 
     // Lấy danh sách top người dùng chi tiêu nhiều nhất
-    public List<TopUser> getTopUser() {
-        List<TopUser> list = new ArrayList<>();
-        String sql = """
-           SELECT u.FullName, COUNT(o.OrderID) AS TotalOrders, SUM(o.TotalAmount) AS TotalSpent
-            FROM User u
-            JOIN Orders o ON u.userId = o.userId
-            GROUP BY u.FullName
-            ORDER BY TotalSpent DESC
-        """;
+   public List<TopUser> getTopUser() {
+    List<TopUser> list = new ArrayList<>();
 
-        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+    String sql = """
+        SELECT u.FullName, COUNT(o.OrderID) AS TotalOrders, 
+               SUM(ISNULL(o.TotalAmount, 0)) AS TotalSpent
+        FROM dbo.Users u
+        JOIN dbo.Orders o ON u.UserId = o.UserId
+        GROUP BY u.FullName
+        ORDER BY TotalSpent DESC
+    """;
 
-            while (rs.next()) {
-                String fullName = rs.getString("FullName");
-                int orders = rs.getInt("TotalOrders");
-                double spent = rs.getDouble("TotalSpent");
+    try (Connection conn = DBContext.getInstance().getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql); 
+         ResultSet rs = ps.executeQuery()) {
 
-                list.add(new TopUser(fullName, orders, spent));
-            }
+        while (rs.next()) {
+            String fullName = rs.getString("FullName");
+            int orders = rs.getInt("TotalOrders");
+            double spent = rs.getDouble("TotalSpent");
 
-        } catch (Exception e) {
+            System.out.println("📊 " + fullName + " - " + orders + " đơn - " + spent + "đ");
+
+            list.add(new TopUser(fullName, orders, spent));
         }
 
-        return list;
-    }                                                                                                                                                                                                       
+    } catch (Exception e) {
+        e.printStackTrace(); // Phải in lỗi để debug
+    }
+
+    return list;
+}
 
    
 //dang nhap
