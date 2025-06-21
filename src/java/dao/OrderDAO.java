@@ -180,4 +180,52 @@ public class OrderDAO {
         }
         return userId;
     }
+    
+    public boolean cancelOrder(int orderId, int userId) {
+        Connection conn = DBContext.getInstance().getConnection();
+        
+        String checkQuery = "SELECT Status FROM Orders WHERE OrderID = ? AND UserID = ?";
+        try (PreparedStatement checkPs = conn.prepareStatement(checkQuery)) {
+            checkPs.setInt(1, orderId);
+            checkPs.setInt(2, userId);
+            ResultSet rs = checkPs.executeQuery();
+            
+            if (rs.next()) {
+                String status = rs.getString("Status");
+                // Chỉ cho phép hủy khi đơn hàng chưa được giao
+                if ("Pending".equals(status) || "Processing".equals(status) || "Confirmed".equals(status)) {
+                    // Cập nhật trạng thái đơn hàng thành "Cancelled"
+                    String updateQuery = "UPDATE Orders SET Status = 'Cancelled' WHERE OrderID = ? AND UserID = ?";
+                    try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
+                        updatePs.setInt(1, orderId);
+                        updatePs.setInt(2, userId);
+                        int rowsAffected = updatePs.executeUpdate();
+                        return rowsAffected > 0;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean canCancelOrder(int orderId, int userId) {
+        Connection conn = DBContext.getInstance().getConnection();
+        String query = "SELECT Status FROM Orders WHERE OrderID = ? AND UserID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, orderId);
+            ps.setInt(2, userId);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                String status = rs.getString("Status");
+                // Chỉ cho phép hủy khi đơn hàng chưa được giao
+                return "Pending".equals(status) || "Processing".equals(status) || "Confirmed".equals(status);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

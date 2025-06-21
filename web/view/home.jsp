@@ -272,7 +272,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="<%= request.getContextPath() %>/view/profile.jsp">Thông tin cá nhân</a></li>
-                                <li><a class="dropdown-item" href="<%= request.getContextPath() %>/orders">Đơn hàng của tôi</a></li>
+                                <li><a class="dropdown-item" href="<%= request.getContextPath() %>/OrderServlet">Đơn hàng của tôi</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
