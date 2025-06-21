@@ -86,10 +86,25 @@ public class UpdateStatusServlet extends HttpServlet {
         int orderId = Integer.parseInt(request.getParameter("orderId"));
         String status = request.getParameter("status");
 
-        orderDAO.updateOrderStatus(orderId, status);
+        // Kiểm tra xem đơn hàng có bị hủy không
+        Order order = orderDAO.getOrderById(orderId);
+        if (order != null && "Cancelled".equals(order.getStatus())) {
+            // Không cho phép thay đổi trạng thái đơn hàng đã bị hủy
+            request.setAttribute("error", "Không thể thay đổi trạng thái đơn hàng đã bị hủy!");
+            try {
+                List<Order> orders = orderDAO.getAllOrders();
+                request.setAttribute("orders", orders);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            request.getRequestDispatcher("admin/orderList.jsp").forward(request, response);
+            return;
+        }
 
+        orderDAO.updateOrderStatus(orderId, status);
+        
         int userId = orderDAO.getUserIdByOrderId(orderId);
-        if (userId != -1) {
+        if(userId != -1){
             String message = "Đơn hàng #" + orderId + "của bạn đã được cập nhật trạng thái: " + status;
             NotificationDAO notificationDAO = new NotificationDAO();
             notificationDAO.addNotification(userId, message);
