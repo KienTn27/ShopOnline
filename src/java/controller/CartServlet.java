@@ -46,7 +46,7 @@ public class CartServlet extends HttpServlet {
         switch (action) {
             case "viewCart" -> {
                 try {
-                    List<CartDTO> carts = cartDAO.getCartByUserId(userId);
+                    List<CartDTO> carts = cartDAO.getCartWithStockInfo(userId);
                     session.setAttribute("carts", carts);
 
                     double cartTotal = 0;
@@ -175,13 +175,52 @@ public class CartServlet extends HttpServlet {
             case "updatequantity" -> {
                 try {
                     int cartId = Integer.parseInt(request.getParameter("cartId"));
-                    int quantity = Integer.parseInt(request.getParameter("quantity"));
+                    String operation = request.getParameter("operation"); // "increase" hoặc "decrease"
 
-                    if (quantity < 1) {
-                        quantity = 1; // Không cho phép < 1
+                    System.out.println("Debug - CartID: " + cartId + ", Operation: " + operation);
+
+                    // Lấy thông tin giỏ hàng hiện tại
+                    List<CartDTO> currentCarts = cartDAO.getCartWithStockInfo(userId);
+                    CartDTO currentCart = null;
+                    for (CartDTO cart : currentCarts) {
+                        if (cart.getCartId() == cartId) {
+                            currentCart = cart;
+                            break;
+                        }
                     }
-                    cartDAO.updateCartQuantity(cartId, quantity);
-                } catch (Exception ignored) {
+
+                    if (currentCart != null) {
+                        int newQuantity = currentCart.getQuantity();
+
+                        System.out.println("Debug - Current quantity: " + newQuantity + ", Stock: " + currentCart.getStockQuantity());
+
+                        if ("increase".equals(operation)) {
+                            newQuantity = Math.min(newQuantity + 1, currentCart.getStockQuantity());
+                            System.out.println("Debug - After increase: " + newQuantity);
+                        } else if ("decrease".equals(operation)) {
+                            newQuantity = Math.max(newQuantity - 1, 1);
+                            System.out.println("Debug - After decrease: " + newQuantity);
+                        }
+
+                        // Chỉ cập nhật nếu số lượng thay đổi
+                        if (newQuantity != currentCart.getQuantity()) {
+                            System.out.println("Debug - Updating quantity from " + currentCart.getQuantity() + " to " + newQuantity);
+                            cartDAO.updateCartQuantity(cartId, newQuantity);
+
+                            // Thêm thông báo nếu đạt giới hạn
+                            if (newQuantity >= currentCart.getStockQuantity()) {
+                                session.setAttribute("warningMessage", "Đã đạt giới hạn tồn kho cho sản phẩm: " + currentCart.getProductName());
+                            }
+                        } else {
+                            System.out.println("Debug - No change in quantity");
+                        }
+                    } else {
+                        System.out.println("Debug - Cart not found for ID: " + cartId);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error in updatequantity: " + e.getMessage());
+                    e.printStackTrace();
+                    session.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật số lượng: " + e.getMessage());
                 }
 
                 response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
