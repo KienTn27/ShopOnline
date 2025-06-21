@@ -13,6 +13,7 @@ public class CartDTO {
     private double price;
     private String imageURL; // Thêm thuộc tính imageURL
     private int categoryId;
+    private int stockQuantity; // Thêm thông tin tồn kho
 
     public int getCategoryId() {
         return categoryId;
@@ -20,6 +21,14 @@ public class CartDTO {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     // Constructors
