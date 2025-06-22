@@ -254,7 +254,7 @@
             }
 
             .quantity-input {
-                width: 60px;
+                width: 70px;
                 text-align: center;
                 font-weight: bold;
                 border: 2px solid var(--border-color);
@@ -262,6 +262,18 @@
                 padding: 0.5rem;
                 background: white;
                 font-size: 1rem;
+                transition: border-color 0.3s ease;
+            }
+
+            .quantity-input:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+            }
+
+            .quantity-input::placeholder {
+                color: #9ca3af;
+                font-size: 0.8rem;
             }
 
             .stock-info {
@@ -578,6 +590,24 @@
                 .quantity-controls {
                     justify-content: center;
                     width: 100%;
+                    flex-wrap: wrap;
+                    gap: 0.5rem;
+                }
+
+                .quantity-input {
+                    width: 70px;
+                    font-size: 0.9rem;
+                }
+
+                .quantity-input-wrapper small {
+                    font-size: 0.6rem;
+                    top: -18px;
+                }
+
+                .btn-quantity {
+                    width: 35px;
+                    height: 35px;
+                    font-size: 0.8rem;
                 }
 
                 .navigation-links {
@@ -672,7 +702,7 @@
                                                 </button>
                                             </form>
 
-                                            <input type="text" class="quantity-input" value="${cart.quantity}" readonly />
+                                            <input type="text" class="quantity-input" value="${cart.quantity}" placeholder="Nhập số lượng"/>
 
                                             <form method="post" action="${pageContext.request.contextPath}/CartServlet" class="d-inline">
                                                 <input type="hidden" name="action" value="updatequantity"/>
@@ -807,32 +837,97 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-            // Auto-hide alert messages after 8 seconds
-            const alertMessages = document.querySelectorAll('.alert-modern');
-                    alertMessages.forEach(msg => {
+                // Auto-hide alert messages after 8 seconds
+                const alertMessages = document.querySelectorAll('.alert-modern');
+                alertMessages.forEach(msg => {
                     setTimeout(() => {
-                    msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                            msg.style.opacity = '0';
-                            msg.style.transform = 'translateY(-20px)';
-                            setTimeout(() => {
+                        msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        msg.style.opacity = '0';
+                        msg.style.transform = 'translateY(-20px)';
+                        setTimeout(() => {
                             msg.remove();
-                            }, 500);
+                        }, 500);
                     }, 8000);
+                });
+
+                // Xử lý nhập số lượng trực tiếp
+                const quantityInputs = document.querySelectorAll('.quantity-input');
+                quantityInputs.forEach(input => {
+                    // Xử lý khi nhấn Enter
+                    input.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            updateQuantity(this);
+                        }
                     });
-                    // Form submission loading state
-                    const forms = document.querySelectorAll('form');
-                    forms.forEach(form => {
+                    
+                    // Xử lý khi mất focus
+                    input.addEventListener('blur', function() {
+                        updateQuantity(this);
+                    });
+                });
+                
+                // Hàm cập nhật số lượng
+                function updateQuantity(input) {
+                    const cartItem = input.closest('.cart-item');
+                    const cartId = cartItem.querySelector('input[name="cartId"]').value;
+                    const quantity = parseInt(input.value) || 1;
+                    
+                    // Tạo form và submit
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '${pageContext.request.contextPath}/CartServlet';
+                    
+                    const actionInput = document.createElement('input');
+                    actionInput.type = 'hidden';
+                    actionInput.name = 'action';
+                    actionInput.value = 'updatequantity';
+                    
+                    const cartIdInput = document.createElement('input');
+                    cartIdInput.type = 'hidden';
+                    cartIdInput.name = 'cartId';
+                    cartIdInput.value = cartId;
+                    
+                    const operationInput = document.createElement('input');
+                    operationInput.type = 'hidden';
+                    operationInput.name = 'operation';
+                    operationInput.value = 'set';
+                    
+                    const quantityInput = document.createElement('input');
+                    quantityInput.type = 'hidden';
+                    quantityInput.name = 'quantity';
+                    quantityInput.value = quantity;
+                    
+                    form.appendChild(actionInput);
+                    form.appendChild(cartIdInput);
+                    form.appendChild(operationInput);
+                    form.appendChild(quantityInput);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+
+                // Form submission loading state
+                const forms = document.querySelectorAll('form');
+                forms.forEach(form => {
                     form.addEventListener('submit', function(e) {
-                    const submitButton = form.querySelector('button[type="submit"]');
+                        // Chỉ áp dụng loading state cho form đặt hàng, không áp dụng cho form tăng/giảm số lượng
+                        if (form.querySelector('input[name="action"][value="placeOrder"]')) {
+                            const submitButton = form.querySelector('button[type="submit"]');
                             if (submitButton) {
-                    const originalText = submitButton.innerHTML;
-                            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
-                            submitButton.disabled = true;
-                            // Re-enable after 5 seconds in case of error
-                            setTimeout(() => {
-                            submitButton.innerHTML = originalText;
+                                const originalText = submitButton.innerHTML;
+                                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
+                                submitButton.disabled = true;
+                                // Re-enable after 5 seconds in case of error
+                                setTimeout(() => {
+                                    submitButton.innerHTML = originalText;
                                     submitButton.disabled = false;
-                            }, 5000);
-                    }
+                                }, 5000);
+                            }
+                        }
                     });
+                });
+            });
         </script>
+    </body>
+</html>

@@ -175,7 +175,7 @@ public class CartServlet extends HttpServlet {
             case "updatequantity" -> {
                 try {
                     int cartId = Integer.parseInt(request.getParameter("cartId"));
-                    String operation = request.getParameter("operation"); // "increase" hoặc "decrease"
+                    String operation = request.getParameter("operation"); // "increase", "decrease", hoặc "set"
 
                     System.out.println("Debug - CartID: " + cartId + ", Operation: " + operation);
 
@@ -200,6 +200,27 @@ public class CartServlet extends HttpServlet {
                         } else if ("decrease".equals(operation)) {
                             newQuantity = Math.max(newQuantity - 1, 1);
                             System.out.println("Debug - After decrease: " + newQuantity);
+                        } else if ("set".equals(operation)) {
+                            // Xử lý nhập số lượng trực tiếp
+                            String quantityStr = request.getParameter("quantity");
+                            if (quantityStr != null && !quantityStr.trim().isEmpty()) {
+                                try {
+                                    int inputQuantity = Integer.parseInt(quantityStr);
+                                    // Đảm bảo số lượng hợp lệ
+                                    newQuantity = Math.max(1, Math.min(inputQuantity, currentCart.getStockQuantity()));
+                                    System.out.println("Debug - Setting quantity to: " + newQuantity);
+                                } catch (NumberFormatException e) {
+                                    System.err.println("Invalid quantity input: " + quantityStr);
+                                    session.setAttribute("errorMessage", "Số lượng không hợp lệ. Vui lòng nhập số từ 1 đến " + currentCart.getStockQuantity());
+                                    response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
+                                    return;
+                                }
+                            } else {
+                                System.err.println("Quantity parameter is null or empty");
+                                session.setAttribute("errorMessage", "Vui lòng nhập số lượng");
+                                response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
+                                return;
+                            }
                         }
 
                         // Chỉ cập nhật nếu số lượng thay đổi
@@ -216,6 +237,7 @@ public class CartServlet extends HttpServlet {
                         }
                     } else {
                         System.out.println("Debug - Cart not found for ID: " + cartId);
+                        session.setAttribute("errorMessage", "Không tìm thấy sản phẩm trong giỏ hàng");
                     }
                 } catch (Exception e) {
                     System.err.println("Error in updatequantity: " + e.getMessage());
@@ -224,6 +246,86 @@ public class CartServlet extends HttpServlet {
                 }
 
                 response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
+            }
+
+            case "updateQuantityAjax" -> {
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                
+                try {
+                    int cartId = Integer.parseInt(request.getParameter("cartId"));
+                    String operation = request.getParameter("operation"); // "increase", "decrease", hoặc "set"
+                    int newQuantity = -1;
+                    
+                    if ("set".equals(operation)) {
+                        newQuantity = Integer.parseInt(request.getParameter("quantity"));
+                    }
+
+                    // Lấy thông tin giỏ hàng hiện tại
+                    List<CartDTO> currentCarts = cartDAO.getCartWithStockInfo(userId);
+                    CartDTO currentCart = null;
+                    for (CartDTO cart : currentCarts) {
+                        if (cart.getCartId() == cartId) {
+                            currentCart = cart;
+                            break;
+                        }
+                    }
+
+                    if (currentCart != null) {
+                        int currentQuantity = currentCart.getQuantity();
+                        
+                        if ("increase".equals(operation)) {
+                            newQuantity = Math.min(currentQuantity + 1, currentCart.getStockQuantity());
+                        } else if ("decrease".equals(operation)) {
+                            newQuantity = Math.max(currentQuantity - 1, 1);
+                        } else if ("set".equals(operation)) {
+                            // Đảm bảo số lượng hợp lệ
+                            newQuantity = Math.max(1, Math.min(newQuantity, currentCart.getStockQuantity()));
+                        }
+
+                        // Chỉ cập nhật nếu số lượng thay đổi
+                        if (newQuantity != currentQuantity) {
+                            cartDAO.updateCartQuantity(cartId, newQuantity);
+                            
+                            // Tính lại tổng giỏ hàng
+                            List<CartDTO> updatedCarts = cartDAO.getCartWithStockInfo(userId);
+                            double cartTotal = 0;
+                            for (CartDTO cart : updatedCarts) {
+                                cartTotal += cart.getPrice() * cart.getQuantity();
+                            }
+                            session.setAttribute("carts", updatedCarts);
+                            session.setAttribute("cartTotal", cartTotal);
+                            
+                            // Trả về JSON response
+                            String jsonResponse = String.format(
+                                "{\"success\": true, \"newQuantity\": %d, \"cartTotal\": %.0f, \"isMaxStock\": %s, \"isMinQuantity\": %s, \"stockQuantity\": %d}",
+                                newQuantity, cartTotal, 
+                                newQuantity >= currentCart.getStockQuantity() ? "true" : "false",
+                                newQuantity <= 1 ? "true" : "false",
+                                currentCart.getStockQuantity()
+                            );
+                            response.getWriter().write(jsonResponse);
+                        } else {
+                            // Không có thay đổi
+                            String jsonResponse = String.format(
+                                "{\"success\": true, \"newQuantity\": %d, \"cartTotal\": %.0f, \"isMaxStock\": %s, \"isMinQuantity\": %s, \"stockQuantity\": %d, \"noChange\": true}",
+                                currentQuantity, 
+                                (Double) session.getAttribute("cartTotal"), 
+                                currentQuantity >= currentCart.getStockQuantity() ? "true" : "false",
+                                currentQuantity <= 1 ? "true" : "false",
+                                currentCart.getStockQuantity()
+                            );
+                            response.getWriter().write(jsonResponse);
+                        }
+                    } else {
+                        response.getWriter().write("{\"success\": false, \"error\": \"Không tìm thấy sản phẩm trong giỏ hàng\"}");
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error in updateQuantityAjax: " + e.getMessage());
+                    e.printStackTrace();
+                    response.getWriter().write("{\"success\": false, \"error\": \"Có lỗi xảy ra khi cập nhật số lượng\"}");
+                }
+                return; // Không redirect
             }
 
             default ->
