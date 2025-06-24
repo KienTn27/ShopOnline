@@ -14,6 +14,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import model.Order;
+import dao.UserDAO;
+import model.User;
+import dao.OrderDetailDAO;
+import model.OrderDetailView;
 
 /**
  *
@@ -63,7 +67,35 @@ public class UpdateStatusServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             List<Order> orders = orderDAO.getAllOrders();
-            request.setAttribute("orders", orders);
+            // Tạo danh sách chứa thông tin mở rộng
+            java.util.List<java.util.Map<String, Object>> orderViews = new java.util.ArrayList<>();
+            dao.UserDAO userDAO = new dao.UserDAO();
+            dao.OrderDetailDAO orderDetailDAO = new dao.OrderDetailDAO();
+            for (Order order : orders) {
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                map.put("orderId", order.getOrderId());
+                map.put("orderDate", order.getOrderDate());
+                map.put("totalAmount", order.getTotalAmount());
+                map.put("status", order.getStatus());
+                // Lấy tên người dùng
+                model.User user = userDAO.getUserById(order.getUserId());
+                map.put("userName", user != null ? user.getFullName() : "Người dùng");
+                // Lấy tên sản phẩm đầu tiên
+                java.util.List<model.OrderDetailView> details = orderDetailDAO.getOrderDetailViewsByOrderId(order.getOrderId());
+                String productName;
+                if (details.size() > 0) {
+                    java.util.List<String> productNames = new java.util.ArrayList<>();
+                    for (model.OrderDetailView d : details) {
+                        productNames.add(d.getProductName());
+                    }
+                    productName = String.join(", ", productNames);
+                } else {
+                    productName = "";
+                }
+                map.put("productName", productName);
+                orderViews.add(map);
+            }
+            request.setAttribute("orders", orderViews);
             request.getRequestDispatcher("admin/orderList.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,7 +137,24 @@ public class UpdateStatusServlet extends HttpServlet {
         
         int userId = orderDAO.getUserIdByOrderId(orderId);
         if(userId != -1){
-            String message = "Đơn hàng #" + orderId + "của bạn đã được cập nhật trạng thái: " + status;
+            // Lấy tên người dùng
+            UserDAO userDAO = new UserDAO();
+            User user = userDAO.getUserById(userId);
+            String userName = (user != null) ? user.getFullName() : "Người dùng";
+            // Lấy tên sản phẩm (lấy sản phẩm đầu tiên trong đơn hàng)
+            OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+            List<OrderDetailView> details = orderDetailDAO.getOrderDetailViewsByOrderId(orderId);
+            String productName;
+            if (details.size() > 0) {
+                java.util.List<String> productNames = new java.util.ArrayList<>();
+                for (OrderDetailView d : details) {
+                    productNames.add(d.getProductName());
+                }
+                productName = String.join(", ", productNames);
+            } else {
+                productName = "Sản phẩm";
+            }
+            String message = "Đơn hàng của bạn với sản phẩm " + productName + " đã được cập nhật trạng thái: " + status;
             NotificationDAO notificationDAO = new NotificationDAO();
             notificationDAO.addNotification(userId, message);
         }

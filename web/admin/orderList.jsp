@@ -5,20 +5,21 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Quản Lý Đơn Hàng</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+        <title>Quản Lý Đơn Hàng | E-Commerce Admin</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
             :root {
-                --primary-color: #2563eb;
-                --secondary-color: #64748b;
-                --success-color: #16a34a;
-                --warning-color: #ea580c;
-                --danger-color: #dc2626;
-                --info-color: #0891b2;
-                --dark-color: #1e293b;
+                --primary-color: #4f46e5;
+                --primary-hover: #4338ca;
+                --success-color: #10b981;
+                --warning-color: #f59e0b;
+                --danger-color: #ef4444;
+                --info-color: #06b6d4;
+                --dark-color: #1f2937;
                 --light-bg: #f8fafc;
-                --border-color: #e2e8f0;
+                --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                --border-radius: 12px;
             }
 
             body {
@@ -27,240 +28,159 @@
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             }
 
-            .main-container {
+            .admin-header {
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(10px);
-                border-radius: 20px;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-                margin: 2rem auto;
-                padding: 0;
-                overflow: hidden;
-            }
-
-            .header-section {
-                background: linear-gradient(135deg, var(--primary-color), #3b82f6);
-                color: white;
-                padding: 2rem;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .header-section::before {
-                content: '';
-                position: absolute;
-                top: -50%;
-                right: -50%;
-                width: 200%;
-                height: 200%;
-                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
-                animation: float 20s ease-in-out infinite;
-            }
-
-            @keyframes float {
-                0%, 100% {
-                    transform: translateY(0px) rotate(0deg);
-                }
-                50% {
-                    transform: translateY(-10px) rotate(180deg);
-                }
-            }
-
-            .header-content {
-                position: relative;
-                z-index: 2;
-            }
-
-            .page-title {
-                font-size: 2.5rem;
-                font-weight: 700;
-                margin: 0;
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-            }
-
-            .page-subtitle {
-                opacity: 0.9;
-                margin-top: 0.5rem;
-                font-size: 1.1rem;
-            }
-
-            .stats-row {
-                margin-top: 1.5rem;
-                display: flex;
-                gap: 2rem;
-                flex-wrap: wrap;
-            }
-
-            .stat-item {
-                background: rgba(255, 255, 255, 0.2);
-                padding: 1rem;
-                border-radius: 10px;
-                backdrop-filter: blur(10px);
-                flex: 1;
-                min-width: 150px;
-                text-align: center;
-            }
-
-            .stat-number {
-                font-size: 1.8rem;
-                font-weight: bold;
-                display: block;
-            }
-
-            .stat-label {
-                font-size: 0.9rem;
-                opacity: 0.9;
-            }
-
-            .content-section {
-                padding: 2rem;
-            }
-
-            .error-message {
-                background: linear-gradient(135deg, #fef2f2, #fee2e2);
-                color: var(--danger-color);
-                border: 1px solid #fecaca;
-                border-left: 4px solid var(--danger-color);
-                padding: 1rem 1.5rem;
-                border-radius: 10px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                padding: 1.5rem 0;
                 margin-bottom: 2rem;
+                box-shadow: var(--card-shadow);
+            }
+
+            .admin-title {
+                color: var(--dark-color);
+                font-weight: 700;
+                font-size: 2rem;
+                margin: 0;
                 display: flex;
                 align-items: center;
                 gap: 0.75rem;
-                box-shadow: 0 4px 6px rgba(220, 38, 38, 0.1);
             }
 
-            .table-container {
-                background: white;
-                border-radius: 15px;
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-                overflow: hidden;
-                border: 1px solid var(--border-color);
+            .admin-title i {
+                color: var(--primary-color);
+                font-size: 1.8rem;
             }
 
-            .table {
-                margin: 0;
-                font-size: 0.95rem;
+            .stats-cards {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
             }
 
-            .table thead th {
-                background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-                border: none;
-                padding: 1.25rem 1rem;
-                font-weight: 600;
-                color: var(--dark-color);
+            .stat-card {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                border-radius: var(--border-radius);
+                padding: 1.5rem;
+                text-align: center;
+                box-shadow: var(--card-shadow);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
+            }
+
+            .stat-number {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+            }
+
+            .stat-label {
+                color: #6b7280;
+                font-size: 0.9rem;
                 text-transform: uppercase;
-                font-size: 0.85rem;
                 letter-spacing: 0.5px;
-                position: relative;
             }
 
-            .table thead th::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 2px;
-                background: linear-gradient(90deg, var(--primary-color), transparent);
+            .orders-container {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                border-radius: var(--border-radius);
+                box-shadow: var(--card-shadow);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                overflow: hidden;
             }
 
-            .table tbody td {
+            .table-header {
+                background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+                color: white;
+                padding: 1.5rem;
+                margin: 0;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .table-responsive {
+                border-radius: 0;
+            }
+
+            .modern-table {
+                margin: 0;
+                background: white;
+            }
+
+            .modern-table thead th {
+                background: var(--light-bg);
+                color: var(--dark-color);
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.75rem;
+                letter-spacing: 0.5px;
+                padding: 1rem;
+                border: none;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+            .modern-table tbody tr {
+                transition: background-color 0.2s ease;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .modern-table tbody tr:hover {
+                background-color: #f8fafc;
+            }
+
+            .modern-table td {
                 padding: 1rem;
                 vertical-align: middle;
-                border-top: 1px solid #f1f5f9;
-            }
-
-            .table tbody tr {
-                transition: all 0.3s ease;
-            }
-
-            .table tbody tr:hover {
-                background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-                transform: translateX(5px);
-            }
-
-            .order-id {
-                font-weight: 600;
-                color: var(--primary-color);
-                font-family: 'Courier New', monospace;
-            }
-
-            .user-badge {
-                background: linear-gradient(135deg, #e0f2fe, #b3e5fc);
-                color: #0277bd;
-                padding: 0.4rem 0.8rem;
-                border-radius: 20px;
-                font-size: 0.85rem;
-                font-weight: 500;
-                display: inline-flex;
-                align-items: center;
-                gap: 0.4rem;
-            }
-
-            .date-display {
-                color: var(--secondary-color);
-                font-size: 0.9rem;
-            }
-
-            .total-amount {
-                font-weight: 700;
-                font-size: 1.1rem;
-                color: var(--success-color);
+                border: none;
             }
 
             .status-badge {
-                padding: 0.5rem 1rem;
-                border-radius: 25px;
-                font-size: 0.85rem;
+                padding: 0.375rem 0.75rem;
+                border-radius: 50px;
+                font-size: 0.75rem;
                 font-weight: 600;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
                 display: inline-flex;
                 align-items: center;
-                gap: 0.5rem;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                gap: 0.375rem;
             }
 
             .status-pending {
-                background: linear-gradient(135deg, #fef3c7, #fde68a);
+                background: #fef3c7;
                 color: #92400e;
             }
 
             .status-processing {
-                background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+                background: #dbeafe;
                 color: #1e40af;
             }
 
-            .status-confirmed {
-                background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            .status-shipped {
+                background: #d1fae5;
                 color: #065f46;
             }
 
-            .status-shipped {
-                background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
-                color: #3730a3;
-            }
-
             .status-delivered {
-                background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-                color: #14532d;
+                background: #dcfce7;
+                color: #166534;
             }
 
             .status-cancelled {
-                background: linear-gradient(135deg, #fee2e2, #fecaca);
+                background: #fee2e2;
                 color: #991b1b;
-                animation: pulse-red 2s infinite;
-            }
-
-            @keyframes pulse-red {
-                0%, 100% {
-                    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
-                }
-                50% {
-                    box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
-                }
             }
 
             .update-form {
@@ -269,318 +189,310 @@
                 align-items: center;
             }
 
-            .form-select {
-                border: 2px solid var(--border-color);
+            .status-select {
                 border-radius: 8px;
-                padding: 0.5rem;
-                font-size: 0.9rem;
+                border: 2px solid #e5e7eb;
+                padding: 0.375rem 0.75rem;
+                font-size: 0.875rem;
+                transition: border-color 0.2s ease;
                 background: white;
-                transition: all 0.3s ease;
-                min-width: 130px;
             }
 
-            .form-select:focus {
+            .status-select:focus {
                 border-color: var(--primary-color);
-                box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+                outline: none;
             }
 
             .btn-update {
-                background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+                background: var(--primary-color);
                 border: none;
                 color: white;
                 padding: 0.5rem 1rem;
                 border-radius: 8px;
-                font-weight: 600;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+                font-size: 0.875rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.375rem;
             }
 
             .btn-update:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
-                background: linear-gradient(135deg, #1e40af, var(--primary-color));
+                background: var(--primary-hover);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+                color: white;
             }
 
-            .disabled-message {
-                background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-                color: var(--secondary-color);
-                padding: 0.75rem 1rem;
-                border-radius: 8px;
-                font-size: 0.85rem;
-                border-left: 3px solid #cbd5e1;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
+            .order-id {
+                font-weight: 600;
+                color: var(--primary-color);
+            }
+
+            .product-name {
+                font-weight: 500;
+                color: var(--dark-color);
+            }
+
+            .total-amount {
+                font-weight: 600;
+                color: var(--success-color);
+                font-size: 1.1rem;
+            }
+
+            .user-name {
+                color: #4b5563;
+                font-weight: 500;
+            }
+
+            .order-date {
+                color: #6b7280;
+                font-size: 0.9rem;
             }
 
             .no-orders {
                 text-align: center;
                 padding: 3rem;
-                color: var(--secondary-color);
+                color: #6b7280;
             }
 
             .no-orders i {
-                font-size: 4rem;
+                font-size: 3rem;
                 margin-bottom: 1rem;
-                opacity: 0.5;
+                color: #d1d5db;
             }
 
             @media (max-width: 768px) {
-                .main-container {
-                    margin: 1rem;
-                    border-radius: 15px;
+                .admin-title {
+                    font-size: 1.5rem;
+                    text-align: center;
                 }
 
-                .header-section {
-                    padding: 1.5rem;
-                }
-
-                .page-title {
-                    font-size: 2rem;
-                }
-
-                .stats-row {
-                    gap: 1rem;
-                }
-
-                .stat-item {
-                    min-width: 120px;
-                }
-
-                .content-section {
-                    padding: 1.5rem;
-                }
-
-                .table-container {
-                    overflow-x: auto;
+                .stats-cards {
+                    grid-template-columns: repeat(2, 1fr);
                 }
 
                 .update-form {
                     flex-direction: column;
-                    gap: 0.5rem;
+                    gap: 0.25rem;
                 }
 
-                .form-select {
-                    min-width: 100px;
+                .status-select, .btn-update {
+                    width: 100%;
+                    font-size: 0.8rem;
                 }
+            }
+
+            .loading-spinner {
+                display: none;
+                margin-left: 0.5rem;
+            }
+
+            .form-updating .loading-spinner {
+                display: inline-block;
+            }
+
+            .form-updating .btn-update {
+                opacity: 0.7;
+                cursor: not-allowed;
             }
         </style>
     </head>
     <body>
-        <div class="container-fluid">
-            <div class="main-container">
-                <!-- Header Section -->
-                <div class="header-section">
-                    <div class="header-content">
-                        <h1 class="page-title">
-                            <i class="fas fa-clipboard-list"></i>
-                            Quản Lý Đơn Hàng
-                        </h1>
-                        <p class="page-subtitle">
-                            Theo dõi và cập nhật trạng thái đơn hàng một cách hiệu quả
-                        </p>
-                        <div class="stats-row">
-                            <div class="stat-item">
-                                <span class="stat-number">${not empty orders ? orders.size() : 0}</span>
-                                <span class="stat-label">Tổng đơn hàng</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-number">
-                                    <c:set var="activeCount" value="0"/>
-                                    <c:forEach var="order" items="${orders}">
-                                        <c:if test="${order.status != 'Cancelled' && order.status != 'Delivered'}">
-                                            <c:set var="activeCount" value="${activeCount + 1}"/>
-                                        </c:if>
-                                    </c:forEach>
-                                    ${activeCount}
-                                </span>
-                                <span class="stat-label">Đang xử lý</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-number">
-                                    <c:set var="deliveredCount" value="0"/>
-                                    <c:forEach var="order" items="${orders}">
-                                        <c:if test="${order.status == 'Delivered'}">
-                                            <c:set var="deliveredCount" value="${deliveredCount + 1}"/>
-                                        </c:if>
-                                    </c:forEach>
-                                    ${deliveredCount}
-                                </span>
-                                <span class="stat-label">Đã giao</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Content Section -->
-                <div class="content-section">
-                    <!-- Error Message -->
-                    <c:if test="${not empty requestScope.error}">
-                        <div class="error-message">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <span>${requestScope.error}</span>
-                        </div>
-                    </c:if>
-
-                    <!-- Orders Table -->
-                    <div class="table-container">
-                        <c:choose>
-                            <c:when test="${not empty orders}">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th><i class="fas fa-hashtag me-1"></i>Mã Đơn Hàng</th>
-                                            <th><i class="fas fa-user me-1"></i>Khách Hàng</th>
-                                            <th><i class="fas fa-calendar me-1"></i>Ngày Đặt</th>
-                                            <th><i class="fas fa-dollar-sign me-1"></i>Tổng Tiền</th>
-                                            <th><i class="fas fa-info-circle me-1"></i>Trạng Thái</th>
-                                            <th><i class="fas fa-edit me-1"></i>Cập Nhật</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="order" items="${orders}">
-                                            <tr>
-                                                <td>
-                                                    <span class="order-id">#${order.orderId}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="user-badge">
-                                                        <i class="fas fa-user-circle"></i>
-                                                        ${order.userId}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <div class="date-display">
-                                                        <i class="far fa-clock me-1"></i>
-                                                        ${order.orderDate}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="total-amount">$${order.totalAmount}</span>
-                                                </td>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${order.status == 'Pending'}">
-                                                            <span class="status-badge status-pending">
-                                                                <i class="fas fa-clock"></i>
-                                                                Chờ xử lý
-                                                            </span>
-                                                        </c:when>
-                                                        <c:when test="${order.status == 'Processing'}">
-                                                            <span class="status-badge status-processing">
-                                                                <i class="fas fa-cog fa-spin"></i>
-                                                                Đang xử lý
-                                                            </span>
-                                                        </c:when>
-                                                        <c:when test="${order.status == 'Confirmed'}">
-                                                            <span class="status-badge status-confirmed">
-                                                                <i class="fas fa-check"></i>
-                                                                Đã xác nhận
-                                                            </span>
-                                                        </c:when>
-                                                        <c:when test="${order.status == 'Shipped'}">
-                                                            <span class="status-badge status-shipped">
-                                                                <i class="fas fa-shipping-fast"></i>
-                                                                Đang giao
-                                                            </span>
-                                                        </c:when>
-                                                        <c:when test="${order.status == 'Delivered'}">
-                                                            <span class="status-badge status-delivered">
-                                                                <i class="fas fa-check-double"></i>
-                                                                Đã giao
-                                                            </span>
-                                                        </c:when>
-                                                        <c:when test="${order.status == 'Cancelled'}">
-                                                            <span class="status-badge status-cancelled">
-                                                                <i class="fas fa-times"></i>
-                                                                Đã hủy
-                                                            </span>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <span class="status-badge status-pending">
-                                                                <i class="fas fa-question"></i>
-                                                                ${order.status}
-                                                            </span>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </td>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${order.status == 'Cancelled'}">
-                                                            <div class="disabled-message">
-                                                                <i class="fas fa-lock"></i>
-                                                                <span>Không thể thay đổi trạng thái đơn hàng đã hủy</span>
-                                                            </div>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <form action="UpdateStatusServlet" method="post" class="update-form">
-                                                                <input type="hidden" name="orderId" value="${order.orderId}" />
-                                                                <select name="status" class="form-select">
-                                                                    <option value="Pending" ${order.status == 'Pending' ? 'selected' : ''}>Chờ xử lý</option>
-                                                                    <option value="Processing" ${order.status == 'Processing' ? 'selected' : ''}>Đang xử lý</option>
-                                                                    <option value="Confirmed" ${order.status == 'Confirmed' ? 'selected' : ''}>Đã xác nhận</option>
-                                                                    <option value="Shipped" ${order.status == 'Shipped' ? 'selected' : ''}>Đang giao</option>
-                                                                    <option value="Delivered" ${order.status == 'Delivered' ? 'selected' : ''}>Đã giao</option>
-                                                                </select>
-                                                                <button type="submit" class="btn btn-update">
-                                                                    <i class="fas fa-save me-1"></i>
-                                                                    Cập nhật
-                                                                </button>
-                                                            </form>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="no-orders">
-                                    <i class="fas fa-inbox"></i>
-                                    <h4>Chưa có đơn hàng nào</h4>
-                                    <p>Danh sách đơn hàng sẽ hiển thị tại đây khi có dữ liệu.</p>
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-                </div>
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="container">
+                <h1 class="admin-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    Quản Lý Đơn Hàng
+                </h1>
             </div>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <div class="container">
+            <!-- Statistics Cards -->
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-number" style="color: var(--info-color);">
+                        <c:choose>
+                            <c:when test="${not empty orders}">
+                                ${orders.size()}
+                            </c:when>
+                            <c:otherwise>0</c:otherwise>
+                        </c:choose>
+                    </div>
+                    <div class="stat-label">Tổng Đơn Hàng</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: var(--warning-color);">
+                        <c:set var="pendingCount" value="0" />
+                        <c:forEach var="order" items="${orders}">
+                            <c:if test="${order.status == 'Pending'}">
+                                <c:set var="pendingCount" value="${pendingCount + 1}" />
+                            </c:if>
+                        </c:forEach>
+                        ${pendingCount}
+                    </div>
+                    <div class="stat-label">Chờ Xử Lý</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: var(--success-color);">
+                        <c:set var="deliveredCount" value="0" />
+                        <c:forEach var="order" items="${orders}">
+                            <c:if test="${order.status == 'Delivered'}">
+                                <c:set var="deliveredCount" value="${deliveredCount + 1}" />
+                            </c:if>
+                        </c:forEach>
+                        ${deliveredCount}
+                    </div>
+                    <div class="stat-label">Đã Giao</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: var(--danger-color);">
+                        <c:set var="cancelledCount" value="0" />
+                        <c:forEach var="order" items="${orders}">
+                            <c:if test="${order.status == 'Cancelled'}">
+                                <c:set var="cancelledCount" value="${cancelledCount + 1}" />
+                            </c:if>
+                        </c:forEach>
+                        ${cancelledCount}
+                    </div>
+                    <div class="stat-label">Đã Hủy</div>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="orders-container">
+                <h3 class="table-header">
+                    <i class="fas fa-list"></i>
+                    Danh Sách Đơn Hàng
+                </h3>
+
+                <c:choose>
+                    <c:when test="${not empty orders}">
+                        <div class="table-responsive">
+                            <table class="table modern-table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-hashtag me-1"></i>Mã Đơn</th>
+                                        <th><i class="fas fa-user me-1"></i>Khách Hàng</th>
+                                        <th><i class="fas fa-box me-1"></i>Sản Phẩm</th>
+                                        <th><i class="fas fa-calendar me-1"></i>Ngày Đặt</th>
+                                        <th><i class="fas fa-money-bill me-1"></i>Tổng Tiền</th>
+                                        <th><i class="fas fa-info-circle me-1"></i>Trạng Thái</th>
+                                        <th><i class="fas fa-edit me-1"></i>Cập Nhật</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="order" items="${orders}">
+                                        <tr>
+                                            <td class="order-id">#${order.orderId}</td>
+                                            <td class="user-name">${order.userName}</td>
+                                            <td class="product-name">${order.productName}</td>
+                                            <td class="order-date">${order.orderDate}</td>
+                                            <td class="total-amount">${order.totalAmount}đ</td>
+                                            <td>
+                                                <span class="status-badge status-${order.status.toLowerCase()}">
+                                                    <c:choose>
+                                                        <c:when test="${order.status == 'Pending'}">
+                                                            <i class="fas fa-clock"></i>Chờ xử lý
+                                                        </c:when>
+                                                        <c:when test="${order.status == 'Processing'}">
+                                                            <i class="fas fa-spinner"></i>Đang xử lý
+                                                        </c:when>
+                                                        <c:when test="${order.status == 'Shipped'}">
+                                                            <i class="fas fa-truck"></i>Đã gửi
+                                                        </c:when>
+                                                        <c:when test="${order.status == 'Delivered'}">
+                                                            <i class="fas fa-check-circle"></i>Đã giao
+                                                        </c:when>
+                                                        <c:when test="${order.status == 'Cancelled'}">
+                                                            <i class="fas fa-times-circle"></i>Đã hủy
+                                                        </c:when>
+                                                    </c:choose>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <form action="UpdateStatusServlet" method="post" class="update-form" onsubmit="showLoading(this)">
+                                                    <input type="hidden" name="orderId" value="${order.orderId}" />
+                                                    <select name="status" class="status-select">
+                                                        <option value="Pending" ${order.status == 'Pending' ? 'selected' : ''}>Chờ xử lý</option>
+                                                        <option value="Processing" ${order.status == 'Processing' ? 'selected' : ''}>Đang xử lý</option>
+                                                        <option value="Shipped" ${order.status == 'Shipped' ? 'selected' : ''}>Đã gửi</option>
+                                                        <option value="Delivered" ${order.status == 'Delivered' ? 'selected' : ''}>Đã giao</option>
+                                                        <option value="Cancelled" ${order.status == 'Cancelled' ? 'selected' : ''}>Đã hủy</option>
+                                                    </select>
+                                                    <button type="submit" class="btn-update">
+                                                        <i class="fas fa-sync-alt"></i>
+                                                        Cập nhật
+                                                        <div class="loading-spinner">
+                                                            <i class="fas fa-spinner fa-spin"></i>
+                                                        </div>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="no-orders">
+                            <i class="fas fa-inbox"></i>
+                            <h4>Chưa có đơn hàng nào</h4>
+                            <p>Không có đơn hàng nào để hiển thị.</p>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            // Add smooth scrolling and form validation
-            document.addEventListener('DOMContentLoaded', function () {
-                // Form submission with loading state
-                const updateForms = document.querySelectorAll('.update-form');
-                updateForms.forEach(form => {
-                    form.addEventListener('submit', function (e) {
-                        const button = form.querySelector('.btn-update');
-                        const originalText = button.innerHTML;
-                        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Đang cập nhật...';
-                        button.disabled = true;
+                                                    function showLoading(form) {
+                                                        form.classList.add('form-updating');
+                                                        form.querySelector('.btn-update').disabled = true;
+                                                    }
 
-                        // Re-enable button after 3 seconds in case of error
-                        setTimeout(() => {
-                            button.innerHTML = originalText;
-                            button.disabled = false;
-                        }, 3000);
-                    });
-                });
+                                                    // Add smooth animations on page load
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        const cards = document.querySelectorAll('.stat-card');
+                                                        cards.forEach((card, index) => {
+                                                            card.style.opacity = '0';
+                                                            card.style.transform = 'translateY(20px)';
+                                                            setTimeout(() => {
+                                                                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                                                                card.style.opacity = '1';
+                                                                card.style.transform = 'translateY(0)';
+                                                            }, index * 100);
+                                                        });
 
-                // Auto-hide error messages after 10 seconds
-                const errorMessages = document.querySelectorAll('.error-message');
-                errorMessages.forEach(msg => {
-                    setTimeout(() => {
-                        msg.style.transition = 'opacity 0.5s ease';
-                        msg.style.opacity = '0';
-                        setTimeout(() => {
-                            msg.remove();
-                        }, 500);
-                    }, 10000);
-                });
-            });
+                                                        const tableContainer = document.querySelector('.orders-container');
+                                                        if (tableContainer) {
+                                                            tableContainer.style.opacity = '0';
+                                                            tableContainer.style.transform = 'translateY(30px)';
+                                                            setTimeout(() => {
+                                                                tableContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                                                                tableContainer.style.opacity = '1';
+                                                                tableContainer.style.transform = 'translateY(0)';
+                                                            }, 400);
+                                                        }
+                                                    });
+
+                                                    // Auto-refresh functionality (optional)
+                                                    let autoRefresh = false;
+                                                    function toggleAutoRefresh() {
+                                                        autoRefresh = !autoRefresh;
+                                                        if (autoRefresh) {
+                                                            setInterval(() => {
+                                                                if (autoRefresh) {
+                                                                    location.reload();
+                                                                }
+                                                            }, 30000); // Refresh every 30 seconds
+                                                        }
+                                                    }
         </script>
     </body>
 </html>
