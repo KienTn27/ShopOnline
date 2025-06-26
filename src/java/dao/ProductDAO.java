@@ -35,6 +35,19 @@ public class ProductDAO {
         return list;
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // Lấy danh sách sản phẩm bán chạy
     public List<TopProduct> getTopSellingProducts() {
         List<TopProduct> list = new ArrayList<>();
@@ -434,10 +447,85 @@ public class ProductDAO {
         return product;
     }
     
+    
+    
+    
+    
+    
+public List<Product> getProductsWithPagination(int offset, int limit) {
+    List<Product> products = new ArrayList<>();
+    
+    // SQL Server sử dụng OFFSET và FETCH thay vì LIMIT
+    String sql = "SELECT * FROM Products WHERE IsActive = 1 " +
+                 "ORDER BY ProductID " +
+                 "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+    
+    try (Connection conn = DBContext.getInstance().getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setInt(1, offset);
+        ps.setInt(2, limit);
+        
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Product p = new Product();
+                p.setProductId(rs.getInt("ProductID"));
+                p.setName(rs.getString("Name"));
+                p.setCategoryId(rs.getString("CategoryID"));
+                p.setDescription(rs.getString("Description"));
+                p.setPrice(rs.getDouble("Price"));
+                p.setQuantity(rs.getInt("Quantity"));
+                p.setImageUrl(rs.getString("ImageURL"));
+                p.setIsActive(rs.getBoolean("IsActive"));
+                products.add(p);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return products;
+}
+public List<Product> getFeaturedProducts(int limit) {
+    List<Product> products = new ArrayList<>();
+    
+    // SQL Server sử dụng TOP thay vì LIMIT
+    String sql = "SELECT TOP (?) * FROM Products WHERE IsActive = 1 ORDER BY ProductID";
+    
+    try (Connection conn = DBContext.getInstance().getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setInt(1, limit);
+        
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Product p = new Product();
+                p.setProductId(rs.getInt("ProductID"));
+                p.setName(rs.getString("Name"));
+                p.setCategoryId(rs.getString("CategoryID"));
+                p.setDescription(rs.getString("Description"));
+                p.setPrice(rs.getDouble("Price"));
+                p.setQuantity(rs.getInt("Quantity"));
+                p.setImageUrl(rs.getString("ImageURL"));
+                p.setIsActive(rs.getBoolean("IsActive"));
+                products.add(p);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return products;
+}
+
+    
+    
+    
+    
     public static void main(String[] args) {
         List<Product1> l = new ArrayList<>();
         ProductDAO pd = new ProductDAO();
-        l = pd.getActiveProducts();
-        System.out.println(l.size());
+        System.out.println(pd.getProductsWithPagination(1, 5).get(0).getName());
+        
+        
+//        System.out.println(l.size());
     }
 }

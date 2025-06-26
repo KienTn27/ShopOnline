@@ -1,4 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -237,6 +240,98 @@
                 font-size: 1.1rem;
                 font-weight: 500;
             }
+
+            /* Thêm vào cuối phần <style> */
+            .pagination-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 40px;
+                margin-bottom: 20px;
+            }
+
+            .pagination {
+                display: flex;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                gap: 8px;
+            }
+
+            .pagination .page-item .page-link {
+                border: none;
+                padding: 10px 15px;
+                border-radius: 12px;
+                background: #fff;
+                color: #2f80ed;
+                font-weight: 600;
+                box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+                transition: all 0.2s;
+                text-decoration: none;
+            }
+
+            .pagination .page-item.active .page-link {
+                background: linear-gradient(90deg, #56ccf2, #2f80ed);
+                color: #fff;
+                transform: scale(1.1);
+            }
+
+            .pagination .page-item:hover .page-link {
+                background: #2f80ed;
+                color: #fff;
+                transform: translateY(-2px);
+            }
+
+            .pagination .page-item.disabled .page-link {
+                background: #f8f9fa;
+                color: #6c757d;
+                cursor: not-allowed;
+            }
+
+            .product-info {
+                margin-bottom: 20px;
+                padding: 15px;
+                background: rgba(47, 128, 237, 0.05);
+                border-radius: 12px;
+                text-align: center;
+            }
+
+            .product-info h5 {
+                color: #2f80ed;
+                font-weight: 700;
+                margin-bottom: 5px;
+            }
+
+            .product-quantity {
+                font-size: 0.9rem;
+                color: #666;
+                margin-bottom: 10px;
+            }
+
+            .product-quantity.out-of-stock {
+                color: #e74c3c;
+                font-weight: 600;
+            }
+
+            .btn-buy:disabled {
+                background: #6c757d !important;
+                cursor: not-allowed;
+                transform: none !important;
+            }
+
+            .empty-products {
+                text-align: center;
+                padding: 60px 20px;
+                color: #6c757d;
+            }
+
+            .empty-products i {
+                font-size: 4rem;
+                margin-bottom: 20px;
+                opacity: 0.5;
+            }
+
+
         </style>
     </head>
 
@@ -326,88 +421,147 @@
         <div class="container promo-section">
             <h3>Miễn phí vận chuyển cho đơn hàng từ 499.000đ</h3>
             <p>Đổi trả dễ dàng trong 7 ngày. Đăng ký thành viên để nhận ưu đãi độc quyền!</p>
-        </div>
-
+        </div>             
+        <!-- Thêm sau phần sản phẩm nổi bật, trước footer -->
         <div class="container">
-            <div class="collection-section">
-                <h2 class="mb-4 text-center fw-bold" style="color:#2f80ed;">Bộ sưu tập nổi bật</h2>
-                <div class="row g-4">
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="collection-card">
-                            <img src="https://images.unsplash.com/photo-1469398715555-76331a6c7c9b?auto=format&fit=crop&w=600&q=80" alt="BST Jeans" />
-                            <div class="collection-title">BST Jeans Cá Tính</div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="collection-card">
-                            <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80" alt="BST Áo Khoác" />
-                            <div class="collection-title">Áo Khoác Sành Điệu</div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="collection-card">
-                            <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" alt="BST Váy Nữ" />
-                            <div class="collection-title">Váy Nữ Dịu Dàng</div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="collection-card">
-                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" alt="BST Áo Thun" />
-                            <div class="collection-title">Áo Thun Năng Động</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="product-section">
-                <h2 class="mb-4 text-center fw-bold" style="color:#2f80ed;">Sản phẩm nổi bật</h2>
-                <div class="row g-4">
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="card product-card position-relative">
-                            <span class="badge-sale">-20%</span>
-                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80" alt="Áo thun nam basic" />
-                            <div class="card-body">
-                                <div class="product-title">Áo thun nam basic</div>
-                                <div class="product-price">199.000đ</div>
-                                <button class="btn btn-buy w-100 mt-2">Mua ngay</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="card product-card position-relative">
-                            <span class="badge-sale">-30%</span>
-                            <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80" alt="Váy nữ mùa hè" />
-                            <div class="card-body">
-                                <div class="product-title">Váy nữ mùa hè</div>
-                                <div class="product-price">299.000đ</div>
-                                <button class="btn btn-buy w-100 mt-2">Mua ngay</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="card product-card position-relative">
-                            <span class="badge-sale">-15%</span>
-                            <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80" alt="Áo khoác bomber" />
-                            <div class="card-body">
-                                <div class="product-title">Áo khoác bomber</div>
-                                <div class="product-price">399.000đ</div>
-                                <button class="btn btn-buy w-100 mt-2">Mua ngay</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="card product-card position-relative">
-                            <span class="badge-sale">-10%</span>
-                            <img src="https://images.unsplash.com/photo-1469398715555-76331a6c7c9b?auto=format&fit=crop&w=400&q=80" alt="Quần jeans nam" />
-                            <div class="card-body">
-                                <div class="product-title">Quần jeans nam</div>
-                                <div class="product-price">259.000đ</div>
-                                <button class="btn btn-buy w-100 mt-2">Mua ngay</button>
-                            </div>
-                        </div>
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                    <h2 class="fw-bold" style="color:#2f80ed;">Tất cả sản phẩm</h2>
+                    <div class="product-info">
+                        <h5>Tổng cộng: ${totalProducts} sản phẩm</h5>
+                        <small>Trang ${currentPage} / ${totalPages}</small>
                     </div>
                 </div>
+
+                <c:choose>
+                    <c:when test="${not empty productList}">
+                        <div class="row g-4">
+                            <c:forEach var="product" items="${productList}">
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="card product-card">
+                                        <c:choose>
+                                            <c:when test="${not empty product.imageUrl}">
+                                                <img src="${product.imageUrl}" alt="${product.name}" />
+                                            </c:when>
+                                            <c:otherwise>
+                                                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80" alt="${product.name}" />
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                        <div class="card-body">
+                                            <div class="product-title">${product.name}</div>
+                                            <div class="product-price">
+                                                <fmt:formatNumber value="${product.price}" type="number" groupingUsed="true"/>đ
+                                            </div>
+                                            <div class="product-quantity ${product.quantity <= 0 ? 'out-of-stock' : ''}">
+                                                <c:choose>
+                                                    <c:when test="${product.quantity <= 0}">
+                                                        <i class="fas fa-times-circle"></i> Hết hàng
+                                                    </c:when>
+                                                    <c:when test="${product.quantity <= 5}">
+                                                        <i class="fas fa-exclamation-triangle text-warning"></i> Chỉ còn ${product.quantity} sản phẩm
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <i class="fas fa-check-circle text-success"></i> Còn ${product.quantity} sản phẩm
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <button class="btn btn-buy w-100 mt-2" 
+                                                ${product.quantity <= 0 ? 'disabled' : ''}
+                                                    onclick="addToCart(${product.productId})">
+                                                ${product.quantity <= 0 ? 'Hết hàng' : 'Mua ngay'}
+                                            </button>
+                                            <button class="btn btn-buy w-100 mt-2" 
+                                                ${product.quantity <= 0 ? 'disabled' : ''}
+                                                onclick="addToCart(${product.productId})">
+                                                ${product.quantity <= 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+
+                        <!-- Pagination -->
+                        <c:if test="${totalPages > 1}">
+                            <div class="pagination-container">
+                                <nav aria-label="Product pagination">
+                                    <ul class="pagination">
+                                        <!-- Previous Button -->
+                                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                            <a class="page-link" href="Home?page=${currentPage - 1}" aria-label="Previous">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+
+                                        <!-- Page Numbers -->
+                                        <c:choose>
+                                            <c:when test="${totalPages <= 7}">
+                                                <c:forEach begin="1" end="${totalPages}" var="i">
+                                                    <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                                        <a class="page-link" href="Home?page=${i}">${i}</a>
+                                                    </li>
+                                                </c:forEach>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <!-- First page -->
+                                                <li class="page-item ${currentPage == 1 ? 'active' : ''}">
+                                                    <a class="page-link" href="Home?page=1">1</a>
+                                                </li>
+
+                                                <!-- Dots if needed -->
+                                                <c:if test="${currentPage > 4}">
+                                                    <li class="page-item disabled">
+                                                        <span class="page-link">...</span>
+                                                    </li>
+                                                </c:if>
+
+                                                <!-- Pages around current -->
+                                                <c:forEach begin="${currentPage > 4 ? currentPage - 1 : 2}" 
+                                                           end="${currentPage < totalPages - 3 ? currentPage + 1 : totalPages - 1}" 
+                                                           var="i">
+                                                    <c:if test="${i > 1 && i < totalPages}">
+                                                        <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                                            <a class="page-link" href="Home?page=${i}">${i}</a>
+                                                        </li>
+                                                    </c:if>
+                                                </c:forEach>
+
+                                                <!-- Dots if needed -->
+                                                <c:if test="${currentPage < totalPages - 3}">
+                                                    <li class="page-item disabled">
+                                                        <span class="page-link">...</span>
+                                                    </li>
+                                                </c:if>
+
+                                                <!-- Last page -->
+                                                <li class="page-item ${currentPage == totalPages ? 'active' : ''}">
+                                                    <a class="page-link" href="Home?page=${totalPages}">${totalPages}</a>
+                                                </li>
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                        <!-- Next Button -->
+                                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                            <a class="page-link" href="home?page=${currentPage + 1}" aria-label="Next">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </c:if>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="empty-products">
+                            <i class="fas fa-box-open"></i>
+                            <h4>Không có sản phẩm nào</h4>
+                            <p>Hiện tại chưa có sản phẩm nào trong cửa hàng.</p>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
-        </div>
+        </div>       
 
         <footer class="footer text-center mt-5">
             <div class="container">
@@ -426,109 +580,152 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
         <script>
-                                var swiper = new Swiper(".mySwiper", {
-                                    loop: true,
-                                    pagination: {
-                                        el: ".swiper-pagination",
-                                        clickable: true,
-                                    },
-                                    autoplay: {
-                                        delay: 3500,
-                                        disableOnInteraction: false,
-                                    },
-                                });
+                                                        var swiper = new Swiper(".mySwiper", {
+                                                        loop: true,
+                                                                pagination: {
+                                                                el: ".swiper-pagination",
+                                                                        clickable: true,
+                                                                },
+                                                                autoplay: {
+                                                                delay: 3500,
+                                                                        disableOnInteraction: false,
+                                                                },
+                                                        });
+                                                        // Dữ liệu sản phẩm mẫu cho gợi ý
+                                                        const trendingProducts = [
+                                                                "Áo thun nam basic",
+                                                                "Váy nữ mùa hè",
+                                                                "Áo khoác bomber",
+                                                                "Quần jeans nam",
+                                                                "Áo sơ mi trắng",
+                                                                "Đầm dạ hội",
+                                                                "Áo hoodie unisex",
+                                                                "Chân váy chữ A"
+                                                        ];
+                                                        const searchInput = document.getElementById('searchInput');
+                                                        const suggestionsBox = document.getElementById('searchSuggestions');
+                                                        function showSuggestions(list) {
+                                                        if (list.length === 0) {
+                                                        suggestionsBox.style.display = 'none';
+                                                        return;
+                                                        }
+                                                        suggestionsBox.innerHTML = list.map(item => `<button type="button" class="list-group-item list-group-item-action">${item}</button>`).join('');
+                                                        suggestionsBox.style.display = 'block';
+                                                        }
 
-                                // Dữ liệu sản phẩm mẫu cho gợi ý
-                                const trendingProducts = [
-                                    "Áo thun nam basic",
-                                    "Váy nữ mùa hè",
-                                    "Áo khoác bomber",
-                                    "Quần jeans nam",
-                                    "Áo sơ mi trắng",
-                                    "Đầm dạ hội",
-                                    "Áo hoodie unisex",
-                                    "Chân váy chữ A"
-                                ];
-
-                                const searchInput = document.getElementById('searchInput');
-                                const suggestionsBox = document.getElementById('searchSuggestions');
-
-                                function showSuggestions(list) {
-                                    if (list.length === 0) {
-                                        suggestionsBox.style.display = 'none';
-                                        return;
-                                    }
-                                    suggestionsBox.innerHTML = list.map(item => `<button type="button" class="list-group-item list-group-item-action">${item}</button>`).join('');
-                                    suggestionsBox.style.display = 'block';
-                                }
-
-                                // Gợi ý xu hướng khi focus
-                                searchInput.addEventListener('focus', function () {
-                                    showSuggestions(trendingProducts);
-                                });
-
-                                // Gợi ý theo tên khi nhập
-                                searchInput.addEventListener('input', function () {
-                                    const value = this.value.trim().toLowerCase();
-                                    if (!value) {
-                                        showSuggestions(trendingProducts);
-                                    } else {
-                                        const filtered = trendingProducts.filter(p => p.toLowerCase().includes(value));
-                                        showSuggestions(filtered);
-                                    }
-                                });
-
-                                // Ẩn gợi ý khi blur (trễ để click chọn)
-                                searchInput.addEventListener('blur', function () {
-                                    setTimeout(() => {
-                                        suggestionsBox.style.display = 'none';
-                                    }, 150);
-                                });
-
-                                // Chọn gợi ý
-                                suggestionsBox.addEventListener('mousedown', function (e) {
-                                    if (e.target && e.target.matches('button')) {
-                                        searchInput.value = e.target.textContent;
-                                        suggestionsBox.style.display = 'none';
-                                    }
-                                });
-
-                                document.addEventListener("DOMContentLoaded", function () {
-                                    const notifBtn = document.getElementById("notifDropdown");
-                                    const notifMenu = document.getElementById("notifMenu");
-                                    notifBtn.addEventListener("click", function () {
-                                        fetch("NotificationServlet") // Gọi servlet NotificationServlet
-                                                .then(res => res.text())
-                                                .then(html => {
-                                                    notifMenu.innerHTML = html;
-                                                    updateNotifCount();
-                                                });
-                                    });
-                                    notifMenu.addEventListener("click", function (e) {
-                                        const target = e.target.closest(".notification-item");
-                                        if (target) {
-                                            const notiId = target.getAttribute("data-id");
-                                            if (target.classList.contains("bg-light")) {
-                                                fetch('MarkNotificationReadServlet?id=' + notiId, {
-                                                    method: 'POST'
-                                                }).then(res => {
-                                                    if (res.ok) {
+                                                        // Gợi ý xu hướng khi focus
+                                                        searchInput.addEventListener('focus', function () {
+                                                        showSuggestions(trendingProducts);
+                                                        });
+                                                        // Gợi ý theo tên khi nhập
+                                                        searchInput.addEventListener('input', function () {
+                                                        const value = this.value.trim().toLowerCase();
+                                                        if (!value) {
+                                                        showSuggestions(trendingProducts);
+                                                        } else {
+                                                        const filtered = trendingProducts.filter(p => p.toLowerCase().includes(value));
+                                                        showSuggestions(filtered);
+                                                        }
+                                                        });
+                                                        // Ẩn gợi ý khi blur (trễ để click chọn)
+                                                        searchInput.addEventListener('blur', function () {
+                                                        setTimeout(() => {
+                                                        suggestionsBox.style.display = 'none';
+                                                        }, 150);
+                                                        });
+                                                        // Chọn gợi ý
+                                                        suggestionsBox.addEventListener('mousedown', function (e) {
+                                                        if (e.target && e.target.matches('button')) {
+                                                        searchInput.value = e.target.textContent;
+                                                        suggestionsBox.style.display = 'none';
+                                                        }
+                                                        });
+                                                        document.addEventListener("DOMContentLoaded", function () {
+                                                        const notifBtn = document.getElementById("notifDropdown");
+                                                        const notifMenu = document.getElementById("notifMenu");
+                                                        notifBtn.addEventListener("click", function () {
+                                                        fetch("NotificationServlet") // Gọi servlet NotificationServlet
+                                                                .then(res => res.text())
+                                                                .then(html => {
+                                                                notifMenu.innerHTML = html;
+                                                                updateNotifCount();
+                                                                });
+                                                        });
+                                                        notifMenu.addEventListener("click", function (e) {
+                                                        const target = e.target.closest(".notification-item");
+                                                        if (target) {
+                                                        const notiId = target.getAttribute("data-id");
+                                                        if (target.classList.contains("bg-light")) {
+                                                        fetch('MarkNotificationReadServlet?id=' + notiId, {
+                                                        method: 'POST'
+                                                        }).then(res => {
+                                                        if (res.ok) {
                                                         target.classList.remove("bg-light", "text-dark");
                                                         target.classList.add("bg-white");
                                                         updateNotifCount();
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    });
-                                    function updateNotifCount() {
-                                        fetch("CountUnreadServlet")
-                                                .then(res => res.text())
-                                                .then(count => {
-                                                    document.getElementById("notifCount").textContent = count === "0" ? "" : count;
-                                                });
-                                    }
-                                });
+                                                        }
+                                                        });
+                                                        }
+                                                        }
+                                                        });
+                                                        function updateNotifCount() {
+                                                        fetch("CountUnreadServlet")
+                                                                .then(res => res.text())
+                                                                .then(count => {
+                                                                document.getElementById("notifCount").textContent = count === "0" ? "" : count;
+                                                                });
+                                                        }
+                                                        });
+// Function để thêm sản phẩm vào giỏ hàng
+                                                        function addToCart(productId) {
+                                                        // Kiểm tra đăng nhập
+            <% if (session.getAttribute("user") == null) { %>
+                                                        alert('Vui lòng đăng nhập để mua hàng!');
+                                                        window.location.href = 'login';
+                                                        return;
+            <% } %>
+
+                                                        // Gửi request thêm vào giỏ hàng
+                                                        fetch('AddToCartServlet', {
+                                                        method: 'POST',
+                                                                headers: {
+                                                                'Content-Type': 'application/x-www-form-urlencoded',
+                                                                },
+                                                                body: 'productId=' + productId + '&quantity=1'
+                                                        })
+                                                                .then(response => response.json())
+                                                                .then(data => {
+                                                                if (data.success) {
+                                                                alert('Đã thêm sản phẩm vào giỏ hàng!');
+                                                                updateCartCount();
+                                                                } else {
+                                                                alert('Có lỗi xảy ra: ' + data.message);
+                                                                }
+                                                                })
+                                                                .catch(error => {
+                                                                console.error('Error:', error);
+                                                                alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+                                                                });
+                                                        }
+
+// Function cập nhật số lượng giỏ hàng
+                                                        function updateCartCount() {
+                                                        fetch('GetCartCountServlet')
+                                                                .then(response => response.text())
+                                                                .then(count => {
+                                                                const cartBadge = document.querySelector('.cart-count');
+                                                                if (cartBadge) {
+                                                                cartBadge.textContent = count;
+                                                                }
+                                                                });
+                                                        }
+
+// Cập nhật danh sách sản phẩm cho tìm kiếm
+                                                        const trendingProducts = [
+            <c:forEach var="product" items="${productList}" varStatus="status">
+                                                        "${product.name}"<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
+                                                        ];
         </script>
     </body>
 </html>

@@ -97,6 +97,11 @@
                 </div>
             </div>
         </div>
+        <div class="col-12">
+            <a class="btn btn-primary" href="admin/menu.jsp">
+                <i class="fas fa-arrow-left me-2"></i>Trở về
+            </a>
+        </div>               
     </div>
     
     <div class="container-fluid">
