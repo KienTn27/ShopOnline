@@ -48,4 +48,18 @@ public class OrderDetailDAO {
 
         return orderDetails;
     }
+
+    public void addOrderDetail(int orderId, int productId, int quantity, double unitPrice) {
+        Connection conn = DBContext.getInstance().getConnection();
+        String query = "INSERT INTO OrderDetails (OrderId, ProductId, Quantity, UnitPrice) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, orderId);
+            ps.setInt(2, productId);
+            ps.setInt(3, quantity);
+            ps.setDouble(4, unitPrice);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -3,6 +3,7 @@ package controller;
 import dao.CartDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
+import dao.ProductDAO;
 import java.io.IOException;
 import java.util.List;
 import jakarta.servlet.ServletException;
@@ -147,11 +148,33 @@ public class CartServlet extends HttpServlet {
                     }
                     String shippingAddress = detail + ", " + district + ", " + province + ", " + city;
 
+                    // Lấy danh sách giỏ hàng trước khi xóa
+                    List<CartDTO> cartItems = cartDAO.getCartWithStockInfo(userId);
+                    
+                    // Tạo đơn hàng
                     orderDAO.createOrder(userId, totalAmount, shippingAddress);
+                    
+                    // Lấy OrderId vừa tạo
+                    int orderId = orderDAO.getLastOrderId(userId);
+                    
+                    // Tạo chi tiết đơn hàng và cập nhật số lượng sản phẩm
+                    OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+                    ProductDAO productDAO = new ProductDAO();
+                    
+                    for (CartDTO cartItem : cartItems) {
+                        // Thêm chi tiết đơn hàng
+                        orderDetailDAO.addOrderDetail(orderId, cartItem.getProductId(), cartItem.getQuantity(), cartItem.getPrice());
+                        
+                        // Cập nhật số lượng sản phẩm (giảm đi)
+                        productDAO.decreaseProductQuantity(cartItem.getProductId(), cartItem.getQuantity());
+                    }
+                    
+                    // Xóa giỏ hàng
                     cartDAO.clearCartByUserId(userId);
                     response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewOrders");
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                     request.setAttribute("error", "Lỗi đặt hàng.");
                     request.getRequestDispatcher("view/cart.jsp").forward(request, response);
                 }

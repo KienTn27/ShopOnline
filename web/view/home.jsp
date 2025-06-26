@@ -467,13 +467,13 @@
                                                 </c:choose>
                                             </div>
                                             <button class="btn btn-buy w-100 mt-2" 
-                                                ${product.quantity <= 0 ? 'disabled' : ''}
-                                                    onclick="addToCart(${product.productId})">
-                                                ${product.quantity <= 0 ? 'Hết hàng' : 'Mua ngay'}
+                                                    ${product.quantity <= 0 ? 'disabled' : ''}
+                                                    onclick="addToCart('${product.productId}')">
+                                                ${product.quantity <= 0 ? 'Hết hàng' : 'Xem chi tiết'}
                                             </button>
                                             <button class="btn btn-buy w-100 mt-2" 
-                                                ${product.quantity <= 0 ? 'disabled' : ''}
-                                                onclick="addToCart(${product.productId})">
+                                                    ${product.quantity <= 0 ? 'disabled' : ''}
+                                                    onclick="addToCart('${product.productId}')">
                                                 ${product.quantity <= 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
                                             </button>
                                         </div>
@@ -580,152 +580,136 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
         <script>
-                                                        var swiper = new Swiper(".mySwiper", {
+                                                    var swiper = new Swiper(".mySwiper", {
                                                         loop: true,
-                                                                pagination: {
-                                                                el: ".swiper-pagination",
-                                                                        clickable: true,
-                                                                },
-                                                                autoplay: {
-                                                                delay: 3500,
-                                                                        disableOnInteraction: false,
-                                                                },
-                                                        });
-                                                        // Dữ liệu sản phẩm mẫu cho gợi ý
-                                                        const trendingProducts = [
-                                                                "Áo thun nam basic",
-                                                                "Váy nữ mùa hè",
-                                                                "Áo khoác bomber",
-                                                                "Quần jeans nam",
-                                                                "Áo sơ mi trắng",
-                                                                "Đầm dạ hội",
-                                                                "Áo hoodie unisex",
-                                                                "Chân váy chữ A"
-                                                        ];
-                                                        const searchInput = document.getElementById('searchInput');
-                                                        const suggestionsBox = document.getElementById('searchSuggestions');
-                                                        function showSuggestions(list) {
+                                                        pagination: {
+                                                            el: ".swiper-pagination",
+                                                            clickable: true,
+                                                        },
+                                                        autoplay: {
+                                                            delay: 3500,
+                                                            disableOnInteraction: false,
+                                                        },
+                                                    });
+                                                    // Dữ liệu sản phẩm mẫu cho gợi ý
+                                                    const trendingProducts = [
+                                                        "Áo thun nam basic",
+                                                        "Váy nữ mùa hè",
+                                                        "Áo khoác bomber",
+                                                        "Quần jeans nam",
+                                                        "Áo sơ mi trắng",
+                                                        "Đầm dạ hội",
+                                                        "Áo hoodie unisex",
+                                                        "Chân váy chữ A"
+                                                    ];
+                                                    const searchInput = document.getElementById('searchInput');
+                                                    const suggestionsBox = document.getElementById('searchSuggestions');
+                                                    function showSuggestions(list) {
                                                         if (list.length === 0) {
-                                                        suggestionsBox.style.display = 'none';
-                                                        return;
+                                                            suggestionsBox.style.display = 'none';
+                                                            return;
                                                         }
                                                         suggestionsBox.innerHTML = list.map(item => `<button type="button" class="list-group-item list-group-item-action">${item}</button>`).join('');
                                                         suggestionsBox.style.display = 'block';
-                                                        }
+                                                    }
 
-                                                        // Gợi ý xu hướng khi focus
-                                                        searchInput.addEventListener('focus', function () {
+                                                    // Gợi ý xu hướng khi focus
+                                                    searchInput.addEventListener('focus', function () {
                                                         showSuggestions(trendingProducts);
-                                                        });
-                                                        // Gợi ý theo tên khi nhập
-                                                        searchInput.addEventListener('input', function () {
+                                                    });
+                                                    // Gợi ý theo tên khi nhập
+                                                    searchInput.addEventListener('input', function () {
                                                         const value = this.value.trim().toLowerCase();
                                                         if (!value) {
-                                                        showSuggestions(trendingProducts);
+                                                            showSuggestions(trendingProducts);
                                                         } else {
-                                                        const filtered = trendingProducts.filter(p => p.toLowerCase().includes(value));
-                                                        showSuggestions(filtered);
+                                                            const filtered = trendingProducts.filter(p => p.toLowerCase().includes(value));
+                                                            showSuggestions(filtered);
                                                         }
-                                                        });
-                                                        // Ẩn gợi ý khi blur (trễ để click chọn)
-                                                        searchInput.addEventListener('blur', function () {
+                                                    });
+                                                    // Ẩn gợi ý khi blur (trễ để click chọn)
+                                                    searchInput.addEventListener('blur', function () {
                                                         setTimeout(() => {
-                                                        suggestionsBox.style.display = 'none';
+                                                            suggestionsBox.style.display = 'none';
                                                         }, 150);
-                                                        });
-                                                        // Chọn gợi ý
-                                                        suggestionsBox.addEventListener('mousedown', function (e) {
+                                                    });
+                                                    // Chọn gợi ý
+                                                    suggestionsBox.addEventListener('mousedown', function (e) {
                                                         if (e.target && e.target.matches('button')) {
-                                                        searchInput.value = e.target.textContent;
-                                                        suggestionsBox.style.display = 'none';
+                                                            searchInput.value = e.target.textContent;
+                                                            suggestionsBox.style.display = 'none';
                                                         }
-                                                        });
-                                                        document.addEventListener("DOMContentLoaded", function () {
+                                                    });
+                                                    document.addEventListener("DOMContentLoaded", function () {
                                                         const notifBtn = document.getElementById("notifDropdown");
                                                         const notifMenu = document.getElementById("notifMenu");
                                                         notifBtn.addEventListener("click", function () {
-                                                        fetch("NotificationServlet") // Gọi servlet NotificationServlet
-                                                                .then(res => res.text())
-                                                                .then(html => {
-                                                                notifMenu.innerHTML = html;
-                                                                updateNotifCount();
-                                                                });
+                                                            fetch("NotificationServlet") // Gọi servlet NotificationServlet
+                                                                    .then(res => res.text())
+                                                                    .then(html => {
+                                                                        notifMenu.innerHTML = html;
+                                                                        updateNotifCount();
+                                                                    });
                                                         });
                                                         notifMenu.addEventListener("click", function (e) {
-                                                        const target = e.target.closest(".notification-item");
-                                                        if (target) {
-                                                        const notiId = target.getAttribute("data-id");
-                                                        if (target.classList.contains("bg-light")) {
-                                                        fetch('MarkNotificationReadServlet?id=' + notiId, {
-                                                        method: 'POST'
-                                                        }).then(res => {
-                                                        if (res.ok) {
-                                                        target.classList.remove("bg-light", "text-dark");
-                                                        target.classList.add("bg-white");
-                                                        updateNotifCount();
-                                                        }
-                                                        });
-                                                        }
-                                                        }
+                                                            const target = e.target.closest(".notification-item");
+                                                            if (target) {
+                                                                const notiId = target.getAttribute("data-id");
+                                                                if (target.classList.contains("bg-light")) {
+                                                                    fetch('MarkNotificationReadServlet?id=' + notiId, {
+                                                                        method: 'POST'
+                                                                    }).then(res => {
+                                                                        if (res.ok) {
+                                                                            target.classList.remove("bg-light", "text-dark");
+                                                                            target.classList.add("bg-white");
+                                                                            updateNotifCount();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
                                                         });
                                                         function updateNotifCount() {
-                                                        fetch("CountUnreadServlet")
-                                                                .then(res => res.text())
-                                                                .then(count => {
-                                                                document.getElementById("notifCount").textContent = count === "0" ? "" : count;
-                                                                });
+                                                            fetch("CountUnreadServlet")
+                                                                    .then(res => res.text())
+                                                                    .then(count => {
+                                                                        document.getElementById("notifCount").textContent = count === "0" ? "" : count;
+                                                                    });
                                                         }
-                                                        });
-// Function để thêm sản phẩm vào giỏ hàng
-                                                        function addToCart(productId) {
-                                                        // Kiểm tra đăng nhập
-            <% if (session.getAttribute("user") == null) { %>
-                                                        alert('Vui lòng đăng nhập để mua hàng!');
-                                                        window.location.href = 'login';
-                                                        return;
-            <% } %>
-
-                                                        // Gửi request thêm vào giỏ hàng
-                                                        fetch('AddToCartServlet', {
-                                                        method: 'POST',
-                                                                headers: {
-                                                                'Content-Type': 'application/x-www-form-urlencoded',
-                                                                },
-                                                                body: 'productId=' + productId + '&quantity=1'
-                                                        })
-                                                                .then(response => response.json())
-                                                                .then(data => {
-                                                                if (data.success) {
-                                                                alert('Đã thêm sản phẩm vào giỏ hàng!');
-                                                                updateCartCount();
-                                                                } else {
-                                                                alert('Có lỗi xảy ra: ' + data.message);
-                                                                }
-                                                                })
-                                                                .catch(error => {
-                                                                console.error('Error:', error);
-                                                                alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
-                                                                });
-                                                        }
-
-// Function cập nhật số lượng giỏ hàng
-                                                        function updateCartCount() {
-                                                        fetch('GetCartCountServlet')
-                                                                .then(response => response.text())
-                                                                .then(count => {
-                                                                const cartBadge = document.querySelector('.cart-count');
-                                                                if (cartBadge) {
-                                                                cartBadge.textContent = count;
-                                                                }
-                                                                });
-                                                        }
-
-// Cập nhật danh sách sản phẩm cho tìm kiếm
-                                                        const trendingProducts = [
-            <c:forEach var="product" items="${productList}" varStatus="status">
-                                                        "${product.name}"<c:if test="${!status.last}">,</c:if>
-            </c:forEach>
-                                                        ];
+                                                    });
         </script>
+        <% if (session.getAttribute("user") == null) { %>
+        <script>
+            function addToCart(productId) {
+                alert('Vui lòng đăng nhập để mua hàng!');
+                window.location.href = '<%= request.getContextPath() %>/login';
+            }
+        </script>
+        <% } else { %>
+        <script>
+            function addToCart(productId) {
+                console.log('Gọi addToCart với productId:', productId);
+                fetch('<%= request.getContextPath() %>/AddToCartServlet', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'productId=' + productId + '&quantity=1'
+                })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Kết quả thêm vào giỏ:', data);
+                            if (data.success) {
+                                alert('Đã thêm sản phẩm vào giỏ hàng!');
+                            } else {
+                                alert('Có lỗi xảy ra: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+                        });
+            }
+        </script>
+        <% } %>
     </body>
 </html>
