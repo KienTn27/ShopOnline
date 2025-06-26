@@ -436,6 +436,11 @@
             <span class="menu-icon">🗂️</span>
             Cập nhật trạng thái đơn hàng
         </a>
+            
+             <a href="<%= request.getContextPath() %>/managerProduct">
+            <span class="menu-icon">🗂️</span>
+            Quản lí sản phẩm
+        </a>
     </div>
 </div>
 
