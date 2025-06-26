@@ -180,16 +180,16 @@ public class OrderDAO {
         }
         return userId;
     }
-    
+
     public boolean cancelOrder(int orderId, int userId) {
         Connection conn = DBContext.getInstance().getConnection();
-        
+
         String checkQuery = "SELECT Status FROM Orders WHERE OrderID = ? AND UserID = ?";
         try (PreparedStatement checkPs = conn.prepareStatement(checkQuery)) {
             checkPs.setInt(1, orderId);
             checkPs.setInt(2, userId);
             ResultSet rs = checkPs.executeQuery();
-            
+
             if (rs.next()) {
                 String status = rs.getString("Status");
                 // Chỉ cho phép hủy khi đơn hàng chưa được giao
@@ -209,7 +209,7 @@ public class OrderDAO {
         }
         return false;
     }
-    
+
     public boolean canCancelOrder(int orderId, int userId) {
         Connection conn = DBContext.getInstance().getConnection();
         String query = "SELECT Status FROM Orders WHERE OrderID = ? AND UserID = ?";
@@ -217,7 +217,7 @@ public class OrderDAO {
             ps.setInt(1, orderId);
             ps.setInt(2, userId);
             ResultSet rs = ps.executeQuery();
-            
+
             if (rs.next()) {
                 String status = rs.getString("Status");
                 // Chỉ cho phép hủy khi đơn hàng chưa được giao
@@ -227,5 +227,20 @@ public class OrderDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public int getLastOrderId(int userId) {
+        Connection conn = DBContext.getInstance().getConnection();
+        String query = "SELECT TOP 1 OrderID FROM Orders WHERE UserID = ? ORDER BY OrderID DESC";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("OrderID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 }
