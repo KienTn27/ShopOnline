@@ -15,7 +15,10 @@
     <h2>Danh sách tồn kho</h2>
 
     <div class="button-group">
-        <a href="/add-inventory-form" class="btn btn-primary">
+      <a href="admin/menu.jsp" class="btn btn-secondary" style="margin-right: 10px;">
+    <i class="fas fa-arrow-left"></i> Quay lại menu
+</a>
+        <a href="inventory?action=add" class="btn btn-primary">
             <i class="fas fa-plus-circle"></i> Thêm sản phẩm
         </a>
     </div>
@@ -35,10 +38,10 @@
                 <td data-label="Tên sản phẩm">${inv.productName}</td>
                 <td data-label="Số lượng tồn">${inv.stockQuantity}</td>
                 <td data-label="Hành động">
-                    <a href="/edit-inventory?id=${inv.productId}" class="btn-action btn-edit">
+                    <a href="inventory?action=edit&productId=${inv.productId}&productName=${inv.productName}&stockQuantity=${inv.stockQuantity}" class="btn-action btn-edit">
                         <i class="fas fa-edit"></i> Sửa
                     </a>
-                    <a href="/delete-inventory?id=${inv.productId}" class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                    <a href="inventory?action=delete&productId=${inv.productId}" class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
                         <i class="fas fa-trash-alt"></i> Xóa
                     </a>
                 </td>
