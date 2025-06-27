@@ -54,13 +54,62 @@ public class CartDAO {
 
     public void addToCart(int userId, int productId, int quantity) {
         Connection conn = DBContext.getInstance().getConnection();
-        String query = "INSERT INTO Carts (UserId, ProductId, Quantity, CreatedAt) VALUES (?, ?, ?, GETDATE())";
-        try (PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, userId);
-            ps.setInt(2, productId);
-            ps.setInt(3, quantity);
-            ps.executeUpdate();
+        
+        System.out.println("Debug CartDAO - Adding to cart: UserId=" + userId + ", ProductId=" + productId + ", Quantity=" + quantity);
+        
+        // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+        String checkQuery = "SELECT CartId, Quantity FROM Carts WHERE UserId = ? AND ProductId = ?";
+        String insertQuery = "INSERT INTO Carts (UserId, ProductId, Quantity, CreatedAt) VALUES (?, ?, ?, GETDATE())";
+        String updateQuery = "UPDATE Carts SET Quantity = ? WHERE CartId = ?";
+        
+        try (PreparedStatement checkPs = conn.prepareStatement(checkQuery)) {
+            checkPs.setInt(1, userId);
+            checkPs.setInt(2, productId);
+            
+            try (ResultSet rs = checkPs.executeQuery()) {
+                if (rs.next()) {
+                    // Sản phẩm đã có trong giỏ hàng, cập nhật số lượng
+                    int cartId = rs.getInt("CartId");
+                    int currentQuantity = rs.getInt("Quantity");
+                    int newQuantity = currentQuantity + quantity;
+                    
+                    System.out.println("Debug CartDAO - Product exists in cart: CartId=" + cartId + ", CurrentQty=" + currentQuantity + ", NewQty=" + newQuantity);
+                    
+                    // Kiểm tra số lượng tồn kho
+                    int stockQuantity = getProductStock(productId);
+                    if (newQuantity > stockQuantity) {
+                        newQuantity = stockQuantity;
+                        System.out.println("Debug CartDAO - Adjusted quantity to stock limit: " + newQuantity);
+                    }
+                    
+                    try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
+                        updatePs.setInt(1, newQuantity);
+                        updatePs.setInt(2, cartId);
+                        updatePs.executeUpdate();
+                        System.out.println("Debug CartDAO - Updated cart quantity successfully");
+                    }
+                } else {
+                    // Sản phẩm chưa có trong giỏ hàng, thêm mới
+                    System.out.println("Debug CartDAO - Product not in cart, adding new item");
+                    
+                    // Kiểm tra số lượng tồn kho trước khi thêm
+                    int stockQuantity = getProductStock(productId);
+                    if (quantity > stockQuantity) {
+                        quantity = stockQuantity;
+                        System.out.println("Debug CartDAO - Adjusted quantity to stock limit: " + quantity);
+                    }
+                    
+                    try (PreparedStatement insertPs = conn.prepareStatement(insertQuery)) {
+                        insertPs.setInt(1, userId);
+                        insertPs.setInt(2, productId);
+                        insertPs.setInt(3, quantity);
+                        insertPs.executeUpdate();
+                        System.out.println("Debug CartDAO - Added new cart item successfully");
+                    }
+                }
+            }
         } catch (Exception e) {
+            System.err.println("Debug CartDAO - Error in addToCart: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -126,9 +175,12 @@ public class CartDAO {
             ps.setInt(1, productId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getInt("Quantity");
+                int stock = rs.getInt("Quantity");
+                System.out.println("Debug CartDAO - getProductStock: ProductId=" + productId + ", Stock=" + stock);
+                return stock;
             }
         } catch (Exception e) {
+            System.err.println("Debug CartDAO - Error in getProductStock: " + e.getMessage());
             e.printStackTrace();
         }
         return 0;
@@ -166,5 +218,61 @@ public class CartDAO {
             }
         }
         return carts;
+    }
+
+    /**
+     * Kiểm tra sản phẩm đã có trong giỏ hàng chưa
+     * @param userId ID của người dùng
+     * @param productId ID của sản phẩm
+     * @return true nếu sản phẩm đã có trong giỏ hàng, false nếu chưa
+     */
+    public boolean isProductInCart(int userId, int productId) {
+        Connection conn = DBContext.getInstance().getConnection();
+        String query = "SELECT COUNT(*) FROM Carts WHERE UserId = ? AND ProductId = ?";
+        
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, productId);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    System.out.println("Debug CartDAO - isProductInCart: UserId=" + userId + ", ProductId=" + productId + ", Count=" + count);
+                    return count > 0;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Debug CartDAO - Error in isProductInCart: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Lấy số lượng sản phẩm trong giỏ hàng
+     * @param userId ID của người dùng
+     * @param productId ID của sản phẩm
+     * @return Số lượng sản phẩm trong giỏ hàng, 0 nếu không có
+     */
+    public int getProductQuantityInCart(int userId, int productId) {
+        Connection conn = DBContext.getInstance().getConnection();
+        String query = "SELECT Quantity FROM Carts WHERE UserId = ? AND ProductId = ?";
+        
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, productId);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int quantity = rs.getInt("Quantity");
+                    System.out.println("Debug CartDAO - getProductQuantityInCart: UserId=" + userId + ", ProductId=" + productId + ", Quantity=" + quantity);
+                    return quantity;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Debug CartDAO - Error in getProductQuantityInCart: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
