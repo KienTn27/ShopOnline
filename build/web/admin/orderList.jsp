@@ -364,6 +364,11 @@
 
             <!-- Orders Table -->
             <div class="orders-container">
+                <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle"></i>
+                    <strong>Thông báo:</strong> Chức năng cập nhật trạng thái đơn hàng đã được chuyển cho Shipper để tối ưu hóa quy trình giao hàng. 
+                    Admin chỉ có thể xem thông tin đơn hàng.
+                </div>
                 <h3 class="table-header">
                     <i class="fas fa-list"></i>
                     Danh Sách Đơn Hàng
@@ -396,13 +401,13 @@
                                                 <span class="status-badge status-${order.status.toLowerCase()}">
                                                     <c:choose>
                                                         <c:when test="${order.status == 'Pending'}">
-                                                            <i class="fas fa-clock"></i>Chờ xử lý
+                                                            <i class="fas fa-clock"></i>Chờ xác nhận
                                                         </c:when>
                                                         <c:when test="${order.status == 'Processing'}">
-                                                            <i class="fas fa-spinner"></i>Đang xử lý
+                                                            <i class="fas fa-spinner"></i>Chờ lấy hàng
                                                         </c:when>
                                                         <c:when test="${order.status == 'Shipped'}">
-                                                            <i class="fas fa-truck"></i>Đã gửi
+                                                            <i class="fas fa-truck"></i>Đang giao hàng
                                                         </c:when>
                                                         <c:when test="${order.status == 'Delivered'}">
                                                             <i class="fas fa-check-circle"></i>Đã giao
@@ -414,23 +419,33 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <form action="UpdateStatusServlet" method="post" class="update-form" onsubmit="showLoading(this)">
-                                                    <input type="hidden" name="orderId" value="${order.orderId}" />
-                                                    <select name="status" class="status-select">
-                                                        <option value="Pending" ${order.status == 'Pending' ? 'selected' : ''}>Chờ xử lý</option>
-                                                        <option value="Processing" ${order.status == 'Processing' ? 'selected' : ''}>Đang xử lý</option>
-                                                        <option value="Shipped" ${order.status == 'Shipped' ? 'selected' : ''}>Đã gửi</option>
-                                                        <option value="Delivered" ${order.status == 'Delivered' ? 'selected' : ''}>Đã giao</option>
-                                                        <option value="Cancelled" ${order.status == 'Cancelled' ? 'selected' : ''}>Đã hủy</option>
-                                                    </select>
-                                                    <button type="submit" class="btn-update">
-                                                        <i class="fas fa-sync-alt"></i>
-                                                        Cập nhật
-                                                        <div class="loading-spinner">
-                                                            <i class="fas fa-spinner fa-spin"></i>
+                                                <c:choose>
+                                                    <c:when test="${order.status == 'Pending' || order.status == 'Processing' || order.status == 'Cancelled'}">
+                                                        <form action="UpdateStatusServlet" method="post" class="update-form" onsubmit="showLoading(this)">
+                                                            <input type="hidden" name="orderId" value="${order.orderId}" />
+                                                            <select name="status" class="status-select">
+                                                                <option value="Pending" ${order.status == 'Pending' ? 'selected' : ''}>Chờ xác nhận</option>
+                                                                <option value="Processing" ${order.status == 'Processing' ? 'selected' : ''}>Chờ lấy hàng</option>
+                                                                <option value="Cancelled" ${order.status == 'Cancelled' ? 'selected' : ''}>Đã hủy</option>
+                                                            </select>
+                                                            <button type="submit" class="btn-update">
+                                                                <i class="fas fa-sync-alt"></i>
+                                                                Cập nhật
+                                                                <div class="loading-spinner">
+                                                                    <i class="fas fa-spinner fa-spin"></i>
+                                                                </div>
+                                                            </button>
+                                                        </form>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="info-text">
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-info-circle"></i>
+                                                                Chỉ shipper được phép thao tác trạng thái này
+                                                            </small>
                                                         </div>
-                                                    </button>
-                                                </form>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -461,7 +476,7 @@
                                                         const cards = document.querySelectorAll('.stat-card');
                                                         cards.forEach((card, index) => {
                                                             card.style.opacity = '0';
-                                                            card.style.transform = 'translateY(20px)';
+                                                            card.style.transform = 'translateY(30px)';
                                                             setTimeout(() => {
                                                                 card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
                                                                 card.style.opacity = '1';

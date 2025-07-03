@@ -158,6 +158,8 @@ public class LoginServlet extends HttpServlet {
                         response.sendRedirect(request.getContextPath() + "/Home");
                     } else if (user.getRole().equals("Admin")) {
                         response.sendRedirect(request.getContextPath() + "/Home");
+                    } else if (user.getRole().equals("Shipper")){
+                        response.sendRedirect(request.getContextPath() + "/shipper");
                     } else {
                         // Mặc định
                         response.sendRedirect(request.getContextPath() + "/Home");
