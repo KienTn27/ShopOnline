@@ -476,6 +476,10 @@
             </h1>
         </div>
 
+        <a href="<%=request.getContextPath()%>/admin/create-shipper" class="btn btn-primary mb-3">
+            <i class="fas fa-plus-circle"></i> Tạo tài khoản Shipper
+        </a>
+            
         <!-- Statistics Cards -->
         <div class="stats-container">
             <div class="stat-card total">

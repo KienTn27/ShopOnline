@@ -133,6 +133,18 @@ public class UpdateStatusServlet extends HttpServlet {
             return;
         }
 
+        if (order != null && ("Shipped".equals(order.getStatus()) || "Delivered".equals(order.getStatus()))) {
+            request.setAttribute("error", "Chỉ shipper được phép thao tác với các trạng thái này!");
+            try {
+                List<Order> orders = orderDAO.getAllOrders();
+                request.setAttribute("orders", orders);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            request.getRequestDispatcher("admin/orderList.jsp").forward(request, response);
+            return;
+        }
+        
         orderDAO.updateOrderStatus(orderId, status);
         
         int userId = orderDAO.getUserIdByOrderId(orderId);
@@ -159,6 +171,23 @@ public class UpdateStatusServlet extends HttpServlet {
             notificationDAO.addNotification(userId, message);
         }
         response.sendRedirect("UpdateStatusServlet");
+    }
+    
+    private String getStatusTextVN(String status) {
+        switch (status) {
+            case "Pending":
+                return "Chờ xác nhận";
+            case "Processing":
+                return "Chờ lấy hàng";
+            case "Shipped":
+                return "Đang giao hàng";
+            case "Delivered":
+                return "Đã giao";
+            case "Cancelled":
+                return "Đã hủy";
+            default:
+                return status;
+        }
     }
 
     /**
