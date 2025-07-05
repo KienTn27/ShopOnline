@@ -348,7 +348,6 @@
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Trang chủ"><i class="fa fa-home fa-lg"></i></a></li>
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Sản phẩm"><i class="fa fa-tshirt fa-lg"></i></a></li>
                         <li class="nav-item mx-2"><a class="nav-link" href="CartServlet" title="Giỏ hàng"><i class="fa fa-shopping-cart fa-lg"></i></a></li>
-                        <li class="nav-item mx-2"><a class="nav-link" href="#" title="Liên hệ"><i class="fa fa-envelope fa-lg"></i></a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link position-relative" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-bell"></i>
@@ -367,7 +366,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="<%= request.getContextPath() %>/view/profile.jsp">Thông tin cá nhân</a></li>
-                                <li><a class="dropdown-item" href="<%= request.getContextPath() %>/OrderServlet">Đơn hàng của tôi</a></li>
+                                <li><a class="dropdown-item" href="<%= request.getContextPath() %>/CartServlet?action=viewOrders">Đơn hàng của tôi</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
