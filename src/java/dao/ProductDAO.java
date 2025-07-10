@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.*;
 import model.Product;
 import model.Product1;
+import model.ProductVariant;
 import model.TopProduct;
 
 public class ProductDAO {
@@ -50,6 +51,11 @@ public class ProductDAO {
         return false;
     }
 
+    
+    
+    
+    
+    
     // Lấy danh sách sản phẩm bán chạy
     public List<TopProduct> getTopSellingProducts() {
         List<TopProduct> list = new ArrayList<>();
@@ -221,25 +227,57 @@ public class ProductDAO {
         return false;
     }
 
+    
+    public int getTotalVariantQuantityByProductId(int productId) {
+    // Câu lệnh SQL để tính tổng số lượng (Quantity) của các biến thể đang hoạt động
+    String sql = "SELECT SUM(Quantity) FROM ProductVariants WHERE ProductID = ? AND IsActive = 1";
+    
+    // Sử dụng try-with-resources để tự động quản lý Connection, PreparedStatement và ResultSet
+    try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setInt(1, productId);
+        
+        // ResultSet cũng được quản lý trong khối try-with-resources
+        try (ResultSet rs = ps.executeQuery()) {
+            // Kiểm tra xem có kết quả trả về không
+            if (rs.next()) {
+                // Lấy giá trị từ cột đầu tiên (là kết quả của hàm SUM).
+                // Nếu không có bản ghi nào khớp, SUM có thể trả về NULL, getInt sẽ coi là 0.
+                return rs.getInt(1);
+            }
+        }
+    } catch (SQLException e) {
+        System.err.println("Lỗi khi tính tổng số lượng biến thể (ProductID: " + productId + "): " + e.getMessage());
+        e.printStackTrace();
+    } catch (Exception e) {
+        System.err.println("Lỗi hệ thống không xác định khi tính tổng số lượng biến thể: " + e.getMessage());
+        e.printStackTrace();
+    }
+    
+    // Trả về 0 nếu có lỗi hoặc không có kết quả
+    return 0;
+}
+    
     /**
      * Update product quantity (for inventory management)
      */
-    public boolean updateProductQuantity(int productId, int newQuantity) {
-        String sql = "UPDATE Products SET Quantity = ? WHERE ProductID = ?";
-
-        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
-            st.setInt(1, newQuantity);
-            st.setInt(2, productId);
-
-            int rowsAffected = st.executeUpdate();
-            return rowsAffected > 0;
-
-        } catch (SQLException e) {
-            System.err.println("Error updating product quantity: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return false;
-    }
+//    public boolean updateProductQuantity(int productId, int newQuantity) {
+//        String sql = "UPDATE Products SET Quantity = ? WHERE ProductID = ?";
+//
+//        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
+//            st.setInt(1, newQuantity);
+//            st.setInt(2, productId);
+//
+//            int rowsAffected = st.executeUpdate();
+//            return rowsAffected > 0;
+//
+//        } catch (SQLException e) {
+//            System.err.println("Error updating product quantity: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
 
     /**
      * Get products with low stock (quantity <= threshold)
@@ -282,27 +320,58 @@ public class ProductDAO {
         return products;
     }
 
-    /**
-     * Get product by ID
-     */
-    public Product1 getProductById(int productId) {
-        String sql = "SELECT * FROM Products WHERE ProductID = ?";
+//    /**
+//     * Get product by ID
+//     */
+//    public Product1 getProductById(int productId) {
+//        String sql = "SELECT * FROM Products WHERE ProductID = ?";
+//
+//        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
+//            st.setInt(1, productId);
+//
+//            try (ResultSet rs = st.executeQuery()) {
+//                if (rs.next()) {
+//                    return mapResultSetToProduct(rs);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            System.err.println("Error getting product by ID: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
-        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
-            st.setInt(1, productId);
-
-            try (ResultSet rs = st.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToProduct(rs);
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error getting product by ID: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+    
+    public boolean updateProductQuantity(int productId, int newQuantity) {
+    String sql = "UPDATE Products SET Quantity = ? WHERE ProductID = ?";
+    
+    // Sử dụng try-with-resources để tự động quản lý Connection và PreparedStatement
+    try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        // Gán các tham số cho câu lệnh SQL
+        ps.setInt(1, newQuantity);
+        ps.setInt(2, productId);
+        
+        // Thực thi câu lệnh UPDATE và lấy số hàng bị ảnh hưởng
+        int rowsAffected = ps.executeUpdate();
+        
+        // Trả về true nếu có hàng được cập nhật, ngược lại là false
+        return rowsAffected > 0;
+        
+    } catch (SQLException e) {
+        System.err.println("Lỗi khi cập nhật số lượng sản phẩm (ProductID: " + productId + "): " + e.getMessage());
+        e.printStackTrace();
+    } catch (Exception e) {
+        System.err.println("Lỗi hệ thống không xác định khi cập nhật số lượng sản phẩm: " + e.getMessage());
+        e.printStackTrace();
     }
-
+    
+    // Trả về false nếu có bất kỳ lỗi nào xảy ra
+    return false;
+}
+    
+    
     public List<Product1> getAllProduct() {
         List<Product1> products = new ArrayList<>();
         String sql = "SELECT * FROM Products ORDER BY CreatedAt DESC";
@@ -479,6 +548,53 @@ public class ProductDAO {
         return products;
     }
 
+    
+    
+    public Product1 getProductById(int productId) {
+    // Câu lệnh SQL không đổi, đã tối ưu để lấy CategoryName
+    String sql = "SELECT p.*, c.Name as CategoryName FROM Products p " +
+                 "LEFT JOIN Categories c ON p.CategoryID = c.CategoryID " +
+                 "WHERE p.ProductID = ?";
+    
+    // Sử dụng try-with-resources để quản lý Connection và PreparedStatement
+    // conn và ps sẽ được tự động đóng sau khi khối try kết thúc
+    try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setInt(1, productId);
+        
+        // ResultSet cũng được quản lý trong một khối try-with-resources lồng nhau
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                // 1. Map thông tin cơ bản của sản phẩm từ ResultSet
+                Product1 product = mapResultSetToProduct(rs);
+                
+                // 2. Lấy thêm CategoryName từ kết quả JOIN
+                product.setCategoryName(rs.getString("CategoryName"));
+
+                // 3. Tạo DAO để lấy danh sách biến thể
+                ProductVariantDAO variantDAO = new ProductVariantDAO();
+                List<ProductVariant> variants = variantDAO.getProductVariantsByProductIdByAdmin(productId);
+                
+                // 4. Gán danh sách biến thể vào đối tượng sản phẩm
+                product.setVariants(variants);
+
+                return product;
+            }
+        }
+    } catch (SQLException e) {
+        // Ghi log lỗi chi tiết hơn
+        System.err.println("Lỗi khi lấy sản phẩm theo ID (ProductID: " + productId + "): " + e.getMessage());
+        e.printStackTrace();
+    } catch (Exception e) {
+        // Bắt các lỗi khác, ví dụ như lỗi khi kết nối DBContext
+        System.err.println("Lỗi hệ thống không xác định khi lấy sản phẩm: " + e.getMessage());
+        e.printStackTrace();
+    }
+    
+    return null; // Trả về null nếu không tìm thấy sản phẩm hoặc có lỗi
+}
+    
     public List<Product> getFeaturedProducts(int limit) {
         List<Product> products = new ArrayList<>();
 

@@ -1,5 +1,10 @@
 
         $(document).ready(function() {
+            
+            
+            
+            
+            
             // Initialize DataTable
             $('#productsTable').DataTable({
                 "language": {
@@ -53,142 +58,7 @@
             window.location.href = url;
         }
         
-        // Edit product
-        function editProduct(productId) {
-            showLoading();
-            
-            $.ajax({
-                url: 'ProductServlet',
-                method: 'GET',
-                data: {
-                    action: 'getProduct',
-                    productId: productId
-                },
-                success: function(response) {
-                    hideLoading();
-                    
-                    // Fill form with product data
-                                       // Fill form with product data
-                    $('#editProductID').val(response.productID);
-                    $('#editName').val(response.name);
-                    $('#editCategoryID').val(response.categoryID);
-                    $('#editPrice').val(response.price);
-                    $('#editQuantity').val(response.quantity);
-                    $('#editDescription').val(response.description);
-                    $('#editIsActive').prop('checked', response.isActive);
-                    
-                    // Show current image
-                    if (response.imageURL) {
-                        $('#currentImage').html(`
-                            <img src="${response.imageURL}" alt="Current Image" 
-                                 style="max-width: 200px; max-height: 150px; border-radius: 8px; border: 2px solid #e5e7eb;">
-                        `);
-                    } else {
-                        $('#currentImage').html('<p class="text-muted">Chưa có ảnh</p>');
-                    }
-                    
-                    // Show modal
-                    $('#editProductModal').modal('show');
-                },
-                error: function() {
-                    hideLoading();
-                    alert('Có lỗi xảy ra khi tải thông tin sản phẩm!');
-                }
-            });
-        }
-        
-        // Delete product
-        function deleteProduct(productId) {
-            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-                showLoading();
-                
-                $.ajax({
-                    url: 'ProductServlet',
-                    method: 'POST',
-                    data: {
-                        action: 'delete',
-                        productId: productId
-                    },
-                    success: function(response) {
-                        hideLoading();
-                        if (response.success) {
-                            alert('Xóa sản phẩm thành công!');
-                            refreshData();
-                        } else {
-                            alert('Có lỗi xảy ra: ' + response.message);
-                        }
-                    },
-                    error: function() {
-                        hideLoading();
-                        alert('Có lỗi xảy ra khi xóa sản phẩm!');
-                    }
-                });
-            }
-        }
-        
-        // Edit category
-        function editCategory(categoryId) {
-            const newName = prompt('Nhập tên danh mục mới:');
-            const newDescription = prompt('Nhập mô tả mới:');
-            
-            if (newName) {
-                showLoading();
-                
-                $.ajax({
-                    url: 'CategoryServlet',
-                    method: 'POST',
-                    data: {
-                        action: 'update',
-                        categoryId: categoryId,
-                        name: newName,
-                        description: newDescription || ''
-                    },
-                    success: function(response) {
-                        hideLoading();
-                        if (response.success) {
-                            alert('Cập nhật danh mục thành công!');
-                            refreshData();
-                        } else {
-                            alert('Có lỗi xảy ra: ' + response.message);
-                        }
-                    },
-                    error: function() {
-                        hideLoading();
-                        alert('Có lỗi xảy ra khi cập nhật danh mục!');
-                    }
-                });
-            }
-        }
-        
-        // Delete category
-        function deleteCategory(categoryId) {
-            if (confirm('Bạn có chắc chắn muốn xóa danh mục này? Tất cả sản phẩm trong danh mục sẽ bị ảnh hưởng.')) {
-                showLoading();
-                
-                $.ajax({
-                    url: 'CategoryServlet',
-                    method: 'POST',
-                    data: {
-                        action: 'delete',
-                        categoryId: categoryId
-                    },
-                    success: function(response) {
-                        hideLoading();
-                        if (response.success) {
-                            alert('Xóa danh mục thành công!');
-                            refreshData();
-                        } else {
-                            alert('Có lỗi xảy ra: ' + response.message);
-                        }
-                    },
-                    error: function() {
-                        hideLoading();
-                        alert('Có lỗi xảy ra khi xóa danh mục!');
-                    }
-                });
-            }
-        }
-        
+
         // Export to Excel
         function exportToExcel() {
             showLoading();
@@ -398,4 +268,8 @@
         function clearFormData(formId) {
             localStorage.removeItem(formId + '_data');
         }
+   
+   
+   
+   
    

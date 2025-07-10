@@ -15,6 +15,7 @@
             if (session != null) {
                 session.invalidate();
             }
-            response.sendRedirect(request.getContextPath() + "/view/home.jsp");
+//            response.sendRedirect(request.getContextPath() + "/view/home.jsp");
+response.sendRedirect("Home");
         }
     }
