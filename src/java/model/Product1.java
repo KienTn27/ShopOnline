@@ -2,6 +2,8 @@ package model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Product1 {
     private int productID;
@@ -14,9 +16,15 @@ public class Product1 {
     private Timestamp createdAt;
     private int categoryID;
     private String categoryName; // Thêm field này
+ private List<ProductVariant> variants;
 
     // Constructors
-    public Product1() {}
+    public Product1() {
+        // MỚI: Khởi tạo danh sách để đảm bảo nó không bao giờ là null
+        this.variants = new ArrayList<>();
+    }
+    
+   
 
     public Product1(int productID, String name, int categoryID, String description, 
                   BigDecimal price, int quantity, String imageURL, boolean isActive, 
@@ -32,6 +40,15 @@ public class Product1 {
         this.createdAt = createdAt != null ? new Timestamp(createdAt.getTime()) : null;
     }
 
+    
+      // MỚI: Getter và Setter cho danh sách các biến thể
+    public List<ProductVariant> getVariants() {
+        return variants;
+    }
+     public void setVariants(List<ProductVariant> variants) {
+        this.variants = variants;
+    }
+    
     // Getters and Setters
     public int getProductID() {
         return productID;

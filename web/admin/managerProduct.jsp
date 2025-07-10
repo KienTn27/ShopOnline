@@ -1,5 +1,4 @@
 
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -14,53 +13,142 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="css/../css/managerUser.css" rel="stylesheet">
-<style>
-    /* Styles đã có từ trước */
-    
-    /* Pagination styles */
-    .pagination .page-item.active .page-link {
-        background-color: #667eea;
-        border-color: #667eea;
-    }
-    
-    .pagination .page-link {
-        color: #667eea;
-    }
-    
-    .pagination .page-link:hover {
-        color: #764ba2;
-    }
-    
-    /* Filter form styles */
-    .search-section {
-        background-color: #fff;
-        border-radius: 0.5rem;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Loading styles */
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 9998;
-    }
-    
-    .loading-spinner {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 9999;
-    }
-</style>
 
-   
+    <style>
+        /* ========================================================================= */
+/* CSS CHO MODAL CHI TIẾT SẢN PHẨM NÂNG CẤP                             */
+/* ========================================================================= */
+
+/* Tổng thể modal */
+.product-detail-modal .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.product-detail-modal .modal-title {
+    font-weight: 600;
+    color: #343a40;
+}
+
+/* Hình ảnh sản phẩm */
+.product-main-image {
+    max-height: 500px;
+    width: auto;
+    object-fit: cover;
+    border: 1px solid #eee;
+}
+
+/* Tên sản phẩm */
+.product-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #212529;
+}
+
+/* Badge danh mục */
+.product-category-badge {
+    display: inline-block;
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 0.3em 0.8em;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Giá sản phẩm */
+.price-section .product-price {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #dc3545;
+}
+
+/* Khu vực chọn biến thể */
+.variant-group .variant-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.75rem;
+}
+
+/* Nút chọn biến thể (size, etc.) */
+.variant-option .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    min-width: 50px;
+    transition: all 0.2s ease;
+}
+
+/* Nút chọn khi được chọn (checked) */
+.variant-option .btn-check:checked + .btn {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Nút chọn khi bị vô hiệu hóa */
+.variant-option .btn-check:disabled + .btn {
+    background-color: #f8f9fa;
+    border-style: dashed;
+    cursor: not-allowed;
+    color: #adb5bd;
+}
+.variant-option .btn-check:disabled + .btn:hover {
+    background-color: #f8f9fa;
+    color: #adb5bd;
+    border-color: #dee2e6;
+}
+
+/* Nút chọn màu sắc (color swatch) */
+.color-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+}
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+.btn-check:checked + .color-swatch {
+    box-shadow: 0 0 0 3px white, 0 0 0 5px #0d6efd;
+    transform: scale(1.1);
+}
+
+/* Thông tin số lượng còn lại */
+.quantity-info {
+    font-size: 1.1rem;
+}
+.quantity-info .meta-label {
+    color: #6c757d;
+}
+
+/* Nút hành động (Mua ngay, thêm giỏ) */
+.action-buttons .btn {
+    padding: 0.75rem 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+.action-buttons .btn-outline-secondary {
+    width: 60px; /* Chiều rộng cố định cho nút thêm giỏ hàng */
+    flex-grow: 0 !important;
+}
+
+/* Mô tả */
+.description-heading {
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+.product-description-text {
+    color: #495057;
+    line-height: 1.6;
+}
+
+    </style>
 </head>
 <body>
     <!-- Loading Overlay -->
@@ -76,6 +164,8 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6">
+                    
+                    
                     <h1 class="mb-0">
                         <i class="fas fa-box-open me-3"></i>
                         Quản lý sản phẩm
@@ -90,18 +180,16 @@
                             </div>
                             <div>
                                 <div class="h4 mb-0">${totalProducts}</div>
-                                <small>Tổng sản phẩm</small>
+                                <small>Tổng sản phẩm                              
+
+
+                                
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-12">
-            <a class="btn btn-primary" href="admin/menu.jsp">
-                <i class="fas fa-arrow-left me-2"></i>Trở về
-            </a>
-        </div>               
     </div>
     
     <div class="container-fluid">
@@ -112,6 +200,12 @@
                     <div class="card-body">
                         <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
                             <div class="action-buttons">
+                                
+
+                                 <button class="btn btn-outline-danger" >
+                                       <li class="breadcrumb-item"><a href="Home">Trang chủ</a></li>
+
+                                </button>
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
                                     <i class="fas fa-plus me-2"></i>Thêm sản phẩm
                                 </button>
@@ -134,6 +228,17 @@
         
         
 <div class="search-section">
+       <%
+    String errorMessage = (String) session.getAttribute("errorMessage");
+    if (errorMessage != null) {
+%>
+    <div style="color: red;"><%= errorMessage %></div>
+<%
+        session.removeAttribute("errorMessage"); // Xóa để không hiển thị lại
+    }
+%></small>
+                                
+    
     <form id="filterForm" action="managerProduct" method="post">
         <input type="hidden" name="action" value="filter">
         <div class="row">
@@ -267,19 +372,27 @@
                                                 <fmt:formatDate value="${product.createdAt}" pattern="dd/MM/yyyy"/>
                                             </td>
                                             <td>
-                                                <div class="action-buttons">
-                                                    <button class="btn btn-sm btn-outline-primary" 
-                                                            onclick="editProduct(${product.productID})" 
-                                                            title="Sửa">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger" 
-                                                            onclick="deleteProduct(${product.productID})" 
-                                                            title="Xóa">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
+    <div class="action-buttons">
+       <a href="${pageContext.request.contextPath}/product-detail?id=${product.productID}" 
+   class="btn btn-sm btn-outline-info me-1" 
+   title="Xem chi tiết">
+    <i class="fas fa-eye"></i>
+</a>
+
+
+        <button class="btn btn-sm btn-outline-primary me-1" 
+                onclick="editProduct(${product.productID})" 
+                title="Sửa">
+            <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-danger" 
+                onclick="deleteProduct(${product.productID})" 
+                title="Xóa">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+</td>
+
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -324,6 +437,8 @@
         
     </div>
     
+            
+   
     <!-- Add Product Modal -->
     <div class="modal fade" id="addProductModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -396,6 +511,7 @@
         </div>
     </div>
     
+
     <!-- Edit Product Modal -->
     <div class="modal fade" id="editProductModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -447,12 +563,32 @@
                             <label class="form-label">Mô tả</label>
                             <textarea class="form-control" name="description" id="editDescription" rows="3"></textarea>
                         </div>
+                        
+                        
+                          <!-- ================================================================ -->
+  
+                        
                         <div class="mb-3">
                             <label class="form-label">Ảnh sản phẩm hiện tại</label>
                             <div id="currentImage" class="mb-2"></div>
                             <input type="file" class="form-control" name="image" accept="image/*">
                             <small class="text-muted">Để trống nếu không muốn thay đổi ảnh</small>
                         </div>
+                          
+                          
+                          
+                            <!-- MỚI: Nút để chuyển đến trang quản lý biến thể -->
+    <div class="mb-3 border-top pt-3">
+        <label class="form-label">Thao tác nâng cao</label>
+        <div>
+            <a href="#" id="manageVariantsBtn" class="btn btn-outline-success">
+                <i class="fas fa-sitemap me-2"></i>Quản lý các biến thể (Size, Màu sắc)
+            </a>
+        </div>
+        <small class="text-muted">Chuyển đến trang quản lý số lượng, giá của từng loại biến thể.</small>
+    </div>
+    <!-- ================================================================ -->
+                          
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="isActive" id="editIsActive" value="true">
@@ -537,9 +673,18 @@
                                         <td>
                                             <span class="badge bg-info">${category.productCount}</span>
                                         </td>
-                                        <td>
-                                           Đang hoạt động
-                                        </td>
+                                        <!-- Trong bảng danh mục -->
+<td>
+    <button class="btn btn-sm btn-primary me-1" 
+            onclick="editCategory(${category.categoryID}, '${fn:escapeXml(category.name)}', '${fn:escapeXml(category.description)}')">
+        <i class="fas fa-edit"></i> Sửa
+    </button>
+    <button class="btn btn-sm btn-danger" 
+            onclick="deleteCategory(${category.categoryID})">
+        <i class="fas fa-trash"></i> Xóa
+    </button>
+</td>
+
                                     </tr>
                                 </c:forEach>
                             </tbody>
@@ -549,6 +694,42 @@
             </div>
         </div>
     </div>
+    <!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Sửa danh mục</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editCategoryForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editCategoryId" name="categoryId">
+                    <div class="mb-3">
+                        <label class="form-label">Tên danh mục</label>
+                        <input type="text" class="form-control" id="editCategoryName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea class="form-control" id="editCategoryDescription" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                
+                
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+    
+    
     
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -558,8 +739,127 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <script src="js/managerUser.js"></script>
+  
+
     
-   <script>
+    
+    
+    
+    
+       <script>
+           
+           
+//        
+//function viewProduct(productId) {
+//    // Lấy context path từ biến đã được JSTL tạo ra
+//    const contextPath = "${contextPath}"; 
+//    
+//    // Kiểm tra xem productId có tồn tại không
+//    if (!productId) {
+//        console.error("Product ID is empty or null!");
+//        return;
+//    }
+//    
+//    // Chuyển hướng đến URL mong muốn
+//    window.location.href = `${contextPath}/webapp/product-detail?id=${productId}`;
+//}
+
+
+   
+     // Hàm mở modal sửa danh mục
+    function editCategory(categoryId, name, description) {
+        $('#editCategoryId').val(categoryId);
+        $('#editCategoryName').val(name);
+        $('#editCategoryDescription').val(description);
+        $('#editCategoryModal').modal('show');
+    }
+
+    $('#editCategoryForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        showLoading();
+        $.ajax({
+            url: 'CategoryServlet',
+            method: 'POST',
+            data: {
+                action: 'update',
+                categoryID: $('#editCategoryId').val(),
+                name: $('#editCategoryName').val(),
+                description: $('#editCategoryDescription').val()
+            },
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#editCategoryModal').modal('hide');
+                    refreshData();
+                } else {
+                    alert('Có lỗi: ' + response.message);
+                }
+            },
+            error: function(xhr) {
+                alert('Có lỗi khi cập nhật danh mục');
+            }
+        });
+    });
+
+    // Xóa danh mục
+    function deleteCategory(categoryId) {
+        if (!confirm('Bạn có chắc chắn muốn xóa danh mục này? Tất cả sản phẩm thuộc danh mục sẽ bị xóa!')) return;
+
+        showLoading();
+        $.ajax({
+            url: 'CategoryServlet',
+            method: 'POST',
+            data: {
+                action: 'delete',
+                categoryID: categoryId
+            },
+            success: function(response) {
+                hideLoading();
+                if (response.success) {
+                    refreshData();
+                } else {
+                    alert('Có lỗi: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                hideLoading();
+                console.error('Error details:', status, error, xhr.responseText);
+                alert('Có lỗi xảy ra khi cập nhật danh mục!');
+            }
+        });
+    }
+
+    // Xử lý form thêm danh mục
+    $('#addCategoryForm form').on('submit', function(e) {
+        e.preventDefault();
+        
+        showLoading();
+        $.ajax({
+            url: 'CategoryServlet',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                hideLoading();
+                if (response.success) {
+                    $('#addCategoryForm').collapse('hide');
+                    this.reset(); // Reset form
+                    refreshData();
+                } else {
+                    alert('Có lỗi: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                hideLoading();
+                console.error('Error details:', status, error, xhr.responseText);
+                alert('Có lỗi xảy ra khi cập nhật danh mục!');
+            }
+        });
+    });
+       
+           
 // Xử lý khi nhấn Enter trong ô tìm kiếm
 document.getElementById('searchInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
@@ -589,6 +889,8 @@ function exportToExcel() {
     // Chuyển hướng đến servlet xuất Excel
     window.location.href = 'ExportExcel';
 }
+
+
 function editProduct(productId) {
     // Hiển thị loading
     document.getElementById('loadingOverlay').style.display = 'block';
@@ -616,6 +918,11 @@ function editProduct(productId) {
             document.getElementById('editQuantity').value = data.quantity;
             document.getElementById('editIsActive').checked = data.isActive;
             
+            // ================================================================
+            // MỚI: Cập nhật đường dẫn cho nút quản lý biến thể
+            document.getElementById('manageVariantsBtn').href = 'managerVariants?productId=' + data.productID;
+            // ================================================================
+
             // Hiển thị ảnh hiện tại
             const currentImageDiv = document.getElementById('currentImage');
             if (data.imageURL) {
@@ -638,6 +945,8 @@ function editProduct(productId) {
         });
 }
 
+
+
 function deleteProduct(productId) {
     if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
         // Hiển thị loading
@@ -649,21 +958,8 @@ function deleteProduct(productId) {
     }
 }
 
-function editCategory(categoryId) {
-    // Chức năng sửa danh mục sẽ được phát triển sau
-    alert('Chức năng sửa danh mục đang được phát triển!');
-}
 
-function deleteCategory(categoryId) {
-    if (confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
-        // Hiển thị loading
-        document.getElementById('loadingOverlay').style.display = 'block';
-        document.getElementById('loadingSpinner').style.display = 'block';
-        
-        // Chuyển đến servlet xóa danh mục
-        window.location.href = 'CategoryServlet?action=delete&categoryId=' + categoryId;
-    }
-}
+
 
 // Khởi tạo DataTable khi trang đã load xong
 document.addEventListener('DOMContentLoaded', function() {
@@ -673,7 +969,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+
+
+
+
+
 </script>
+
+    
+    
+    
+    
 
 </body>
 </html>

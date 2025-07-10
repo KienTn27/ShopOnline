@@ -93,11 +93,11 @@ public class HomeControl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // false = không tạo mới nếu chưa có
-        if (session == null || session.getAttribute("user") == null) {
-        request.getRequestDispatcher("./view/login.jsp").forward(request, response);
-            return;
-        }
+//        HttpSession session = request.getSession(false); // false = không tạo mới nếu chưa có
+//        if (session == null || session.getAttribute("user") == null) {
+//        request.getRequestDispatcher("./view/login.jsp").forward(request, response);
+//            return;
+//        }
 
         try {
             // Nếu đã đăng nhập, gọi xử lý chính

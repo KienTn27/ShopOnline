@@ -465,16 +465,13 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </div>
-                                            <button class="btn btn-buy w-100 mt-2" 
-                                                    ${product.quantity <= 0 ? 'disabled' : ''}
-                                                    onclick="addToCart('${product.productId}')">
-                                                ${product.quantity <= 0 ? 'Hết hàng' : 'Xem chi tiết'}
-                                            </button>
-                                            <button class="btn btn-buy w-100 mt-2" 
+                                                    <a class="btn btn-buy w-100 mt-2" href="product-detail?id=${product.productId}">Xem chi tiết</a>
+                                                   
+<!--                                            <button class="btn btn-buy w-100 mt-2" 
                                                     ${product.quantity <= 0 ? 'disabled' : ''}
                                                     onclick="addToCart('${product.productId}')">
                                                 ${product.quantity <= 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
-                                            </button>
+                                            </button>-->
                                         </div>
                                     </div>
                                 </div>

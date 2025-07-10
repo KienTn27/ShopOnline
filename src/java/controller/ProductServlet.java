@@ -2,6 +2,7 @@ package controller;
 
 import dao.CategoryDAO;
 import dao.ProductDAO;
+import dao.ProductVariantDAO;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.UUID;
+import model.Product;
 import model.Product1;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -190,6 +192,7 @@ public class ProductServlet extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
+        ProductVariantDAO dao = new ProductVariantDAO();
         
         try {
             // Lấy thông tin sản phẩm từ form
@@ -249,6 +252,9 @@ public class ProductServlet extends HttpServlet {
             product.setDescription(description);
             product.setCategoryID(categoryID);
             product.setPrice(price);
+            
+                  dao.updatePriceByProductId(productID, price);
+
             product.setQuantity(quantity);
             product.setImageURL(imageURL);
             product.setIsActive(isActive);
