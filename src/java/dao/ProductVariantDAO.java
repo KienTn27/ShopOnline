@@ -5,6 +5,7 @@ package dao;
 
 import model.ProductVariant;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,7 +26,8 @@ public class ProductVariantDAO extends DBContext {
    public boolean updatePriceByProductId(int productId, BigDecimal newPrice) {
     String sql = "UPDATE ProductVariants SET Price = ? WHERE ProductID = ?";
     
-    try (PreparedStatement st = connection.prepareStatement(sql)) {
+    try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
         st.setBigDecimal(1, newPrice);
         st.setInt(2, productId);
         
@@ -82,7 +84,8 @@ public class ProductVariantDAO extends DBContext {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, variant.getProductID());
             st.setString(2, variant.getSize());
             st.setString(3, variant.getColor());
@@ -132,7 +135,8 @@ public class ProductVariantDAO extends DBContext {
             WHERE VariantID = ?
         """;
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, variant.getProductID());
             st.setString(2, variant.getSize());
             st.setString(3, variant.getColor());
@@ -171,7 +175,8 @@ public class ProductVariantDAO extends DBContext {
     public boolean deleteProductVariant(int variantId) {
         String sql = "UPDATE ProductVariants SET IsActive = 0 WHERE VariantID = ?";
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, variantId);
             
             int rowsAffected = st.executeUpdate();
@@ -187,7 +192,8 @@ public class ProductVariantDAO extends DBContext {
     public boolean hardDeleteProductVariant(int variantId) {
         String sql = "DELETE FROM ProductVariants WHERE VariantID = ?";
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, variantId);
             
             int rowsAffected = st.executeUpdate();
@@ -205,7 +211,8 @@ public class ProductVariantDAO extends DBContext {
         List<ProductVariant> variants = new ArrayList<>();
         String sql = "SELECT * FROM ProductVariants ORDER BY CreatedAt DESC";
         
-        try (PreparedStatement st = connection.prepareStatement(sql);
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {
             
             while (rs.next()) {
@@ -221,7 +228,8 @@ public class ProductVariantDAO extends DBContext {
     public ProductVariant getProductVariantById(int variantId) {
         String sql = "SELECT * FROM ProductVariants WHERE VariantID = ?";
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, variantId);
             
             try (ResultSet rs = st.executeQuery()) {
@@ -240,7 +248,8 @@ public class ProductVariantDAO extends DBContext {
         List<ProductVariant> variants = new ArrayList<>();
         String sql = "SELECT * FROM ProductVariants WHERE ProductID = ? AND IsActive = 1 ORDER BY Size, Color";
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, productId);
             
             try (ResultSet rs = st.executeQuery()) {
@@ -260,7 +269,8 @@ public class ProductVariantDAO extends DBContext {
         List<ProductVariant> variants = new ArrayList<>();
         String sql = "SELECT * FROM ProductVariants WHERE ProductID = ?  ORDER BY Size, Color";
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, productId);
             
             try (ResultSet rs = st.executeQuery()) {
@@ -278,7 +288,8 @@ public class ProductVariantDAO extends DBContext {
     public ProductVariant getProductVariantBySKU(String sku) {
         String sql = "SELECT * FROM ProductVariants WHERE SKU = ?";
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, sku);
             
             try (ResultSet rs = st.executeQuery()) {
@@ -298,7 +309,8 @@ public class ProductVariantDAO extends DBContext {
         List<ProductVariant> variants = new ArrayList<>();
         String sql = "SELECT * FROM ProductVariants WHERE Quantity <= ? AND IsActive = 1 ORDER BY Quantity ASC";
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, threshold);
             
             try (ResultSet rs = st.executeQuery()) {
@@ -318,7 +330,8 @@ public class ProductVariantDAO extends DBContext {
         List<ProductVariant> variants = new ArrayList<>();
         String sql = "SELECT * FROM ProductVariants WHERE IsActive = 1 ORDER BY CreatedAt DESC";
         
-        try (PreparedStatement st = connection.prepareStatement(sql);
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {
             
             while (rs.next()) {
@@ -340,7 +353,8 @@ public class ProductVariantDAO extends DBContext {
             OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, (page - 1) * pageSize);
             st.setInt(2, pageSize);
             
@@ -360,7 +374,8 @@ public class ProductVariantDAO extends DBContext {
     public int getTotalProductVariantCount() {
         String sql = "SELECT COUNT(*) FROM ProductVariants WHERE IsActive = 1";
         
-        try (PreparedStatement st = connection.prepareStatement(sql);
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {
             
             if (rs.next()) {
@@ -382,7 +397,8 @@ public class ProductVariantDAO extends DBContext {
     public boolean updateProductVariantQuantity(int variantId, int newQuantity) {
         String sql = "UPDATE ProductVariants SET Quantity = ? WHERE VariantID = ?";
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, newQuantity);
             st.setInt(2, variantId);
             
@@ -405,7 +421,8 @@ public class ProductVariantDAO extends DBContext {
     public boolean updateProductVariantPrice(int variantId, BigDecimal newPrice) {
         String sql = "UPDATE ProductVariants SET Price = ? WHERE VariantID = ?";
         
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
             st.setBigDecimal(1, newPrice);
             st.setInt(2, variantId);
             
