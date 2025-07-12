@@ -601,6 +601,9 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
+            // Lưu productID vào biến JavaScript
+            const productID = '${product.productID}';
+            
             document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM đã được tải hoàn toàn.');
                     // Product variant selection logic
@@ -693,33 +696,37 @@
             
             // Add to cart functionality
             if (addToCartBtn) {
-            addToCartBtn.addEventListener('click', function() {
-            if (!variantSelect) return;
+                addToCartBtn.addEventListener('click', function() {
+                    if (!variantSelect) return;
                     const selectedOption = variantSelect.options[variantSelect.selectedIndex];
                     const variantId = selectedOption.value;
-                    if (!variantId) {
-            alert('Vui lòng chọn phiên bản sản phẩm!');
-                    return;
-            }
-            // Tạo form ẩn để submit
-            const form = document.createElement('form');
+                    // Sửa logic kiểm tra: chỉ kiểm tra empty string và null
+                    if (!variantId || variantId.trim() === "") {
+                        alert('Vui lòng chọn phiên bản sản phẩm!');
+                        return;
+                    }
+                    // Tạo form ẩn để submit
+                    const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = 'AddToCartServlet'; // Đổi thành servlet đúng nếu cần
+                    form.action = 'AddToCartServlet';
+                    
                     // Thêm input variantID
                     const inputVariant = document.createElement('input');
                     inputVariant.type = 'hidden';
                     inputVariant.name = 'variantID';
                     inputVariant.value = variantId;
                     form.appendChild(inputVariant);
-                    // Thêm input action
-                    const inputAction = document.createElement('input');
-                    inputAction.type = 'hidden';
-                    inputAction.name = 'action';
-                    inputAction.value = 'add';
-                    form.appendChild(inputAction);
+                    
+                    // Thêm input productId
+                    const inputProduct = document.createElement('input');
+                    inputProduct.type = 'hidden';
+                    inputProduct.name = 'productId';
+                    inputProduct.value = productID;
+                    form.appendChild(inputProduct);
+                    
                     document.body.appendChild(form);
                     form.submit();
-            });
+                });
             }
 
             // Reviews functionality
