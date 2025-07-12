@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Map;
 import model.CartDTO;
 import model.Order;
 
@@ -48,6 +49,21 @@ public class CartServlet extends HttpServlet {
             case "viewCart" -> {
                 try {
                     List<CartDTO> carts = cartDAO.getCartWithStockInfo(userId);
+                    Map<Integer, model.ProductVariant> cartVariants = (Map<Integer, model.ProductVariant>) session.getAttribute("cartVariants");
+                    if (cartVariants != null) {
+                        for (CartDTO cart : carts) {
+                            model.ProductVariant variant = cartVariants.get(cart.getProductId());
+                            if (variant != null) {
+                                cart.setVariantID(variant.getVariantID());
+                                cart.setColor(variant.getColor());
+                                cart.setSize(variant.getSize());
+                                // Cập nhật giá từ variant nếu có
+                                if (variant.getPrice() != null) {
+                                    cart.setPrice(variant.getPrice().doubleValue());
+                                }
+                            }
+                        }
+                    }
                     session.setAttribute("carts", carts);
 
                     double cartTotal = 0;
@@ -150,25 +166,25 @@ public class CartServlet extends HttpServlet {
 
                     // Lấy danh sách giỏ hàng trước khi xóa
                     List<CartDTO> cartItems = cartDAO.getCartWithStockInfo(userId);
-                    
+
                     // Tạo đơn hàng
                     orderDAO.createOrder(userId, totalAmount, shippingAddress);
-                    
+
                     // Lấy OrderId vừa tạo
                     int orderId = orderDAO.getLastOrderId(userId);
-                    
+
                     // Tạo chi tiết đơn hàng và cập nhật số lượng sản phẩm
                     OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
                     ProductDAO productDAO = new ProductDAO();
-                    
+
                     for (CartDTO cartItem : cartItems) {
                         // Thêm chi tiết đơn hàng
                         orderDetailDAO.addOrderDetail(orderId, cartItem.getProductId(), cartItem.getQuantity(), cartItem.getPrice());
-                        
+
                         // Cập nhật số lượng sản phẩm (giảm đi)
                         productDAO.decreaseProductQuantity(cartItem.getProductId(), cartItem.getQuantity());
                     }
-                    
+
                     // Xóa giỏ hàng
                     cartDAO.clearCartByUserId(userId);
                     response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewOrders");
@@ -274,12 +290,12 @@ public class CartServlet extends HttpServlet {
             case "updateQuantityAjax" -> {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                
+
                 try {
                     int cartId = Integer.parseInt(request.getParameter("cartId"));
                     String operation = request.getParameter("operation"); // "increase", "decrease", hoặc "set"
                     int newQuantity = -1;
-                    
+
                     if ("set".equals(operation)) {
                         newQuantity = Integer.parseInt(request.getParameter("quantity"));
                     }
@@ -296,7 +312,7 @@ public class CartServlet extends HttpServlet {
 
                     if (currentCart != null) {
                         int currentQuantity = currentCart.getQuantity();
-                        
+
                         if ("increase".equals(operation)) {
                             newQuantity = Math.min(currentQuantity + 1, currentCart.getStockQuantity());
                         } else if ("decrease".equals(operation)) {
@@ -309,7 +325,7 @@ public class CartServlet extends HttpServlet {
                         // Chỉ cập nhật nếu số lượng thay đổi
                         if (newQuantity != currentQuantity) {
                             cartDAO.updateCartQuantity(cartId, newQuantity);
-                            
+
                             // Tính lại tổng giỏ hàng
                             List<CartDTO> updatedCarts = cartDAO.getCartWithStockInfo(userId);
                             double cartTotal = 0;
@@ -318,25 +334,25 @@ public class CartServlet extends HttpServlet {
                             }
                             session.setAttribute("carts", updatedCarts);
                             session.setAttribute("cartTotal", cartTotal);
-                            
+
                             // Trả về JSON response
                             String jsonResponse = String.format(
-                                "{\"success\": true, \"newQuantity\": %d, \"cartTotal\": %.0f, \"isMaxStock\": %s, \"isMinQuantity\": %s, \"stockQuantity\": %d}",
-                                newQuantity, cartTotal, 
-                                newQuantity >= currentCart.getStockQuantity() ? "true" : "false",
-                                newQuantity <= 1 ? "true" : "false",
-                                currentCart.getStockQuantity()
+                                    "{\"success\": true, \"newQuantity\": %d, \"cartTotal\": %.0f, \"isMaxStock\": %s, \"isMinQuantity\": %s, \"stockQuantity\": %d}",
+                                    newQuantity, cartTotal,
+                                    newQuantity >= currentCart.getStockQuantity() ? "true" : "false",
+                                    newQuantity <= 1 ? "true" : "false",
+                                    currentCart.getStockQuantity()
                             );
                             response.getWriter().write(jsonResponse);
                         } else {
                             // Không có thay đổi
                             String jsonResponse = String.format(
-                                "{\"success\": true, \"newQuantity\": %d, \"cartTotal\": %.0f, \"isMaxStock\": %s, \"isMinQuantity\": %s, \"stockQuantity\": %d, \"noChange\": true}",
-                                currentQuantity, 
-                                (Double) session.getAttribute("cartTotal"), 
-                                currentQuantity >= currentCart.getStockQuantity() ? "true" : "false",
-                                currentQuantity <= 1 ? "true" : "false",
-                                currentCart.getStockQuantity()
+                                    "{\"success\": true, \"newQuantity\": %d, \"cartTotal\": %.0f, \"isMaxStock\": %s, \"isMinQuantity\": %s, \"stockQuantity\": %d, \"noChange\": true}",
+                                    currentQuantity,
+                                    (Double) session.getAttribute("cartTotal"),
+                                    currentQuantity >= currentCart.getStockQuantity() ? "true" : "false",
+                                    currentQuantity <= 1 ? "true" : "false",
+                                    currentCart.getStockQuantity()
                             );
                             response.getWriter().write(jsonResponse);
                         }

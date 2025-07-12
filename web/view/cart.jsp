@@ -149,6 +149,12 @@
                 border-left: 4px solid var(--warning-color);
             }
 
+            .alert-success {
+                background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+                color: #15803d;
+                border-left: 4px solid var(--success-color);
+            }
+
             .alert-danger {
                 background: linear-gradient(135deg, #fef2f2, #fee2e2);
                 color: #991b1b;
@@ -654,6 +660,14 @@
             <!-- Content Section -->
             <div class="content-section">
                 <!-- Alert Messages -->
+                <c:if test="${not empty sessionScope.successMessage}">
+                    <div class="alert-modern alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <span>${sessionScope.successMessage}</span>
+                    </div>
+                    <% session.removeAttribute("successMessage"); %>
+                </c:if>
+
                 <c:if test="${not empty sessionScope.warningMessage}">
                     <div class="alert-modern alert-warning">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -688,6 +702,18 @@
 
                                     <div class="product-info">
                                         <h5 class="product-name">${cart.productName}</h5>
+                                        <c:if test="${not empty cart.color or not empty cart.size}">
+                                            <div class="variant-info">
+                                                <i class="fas fa-palette me-1"></i>
+                                                <c:if test="${not empty cart.color}">
+                                                    <span class="badge bg-primary me-2">Màu: ${cart.color}</span>
+                                                </c:if>
+                                                <c:if test="${not empty cart.size}">
+                                                    <span class="badge bg-info">Size: ${cart.size}</span>
+                                                </c:if>
+                                            </div>
+                                        </c:if>
+
                                         <div class="product-price">
                                             <fmt:formatNumber value="${cart.price}" type="number" />₫
                                         </div>
@@ -836,7 +862,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 // Auto-hide alert messages after 8 seconds
                 const alertMessages = document.querySelectorAll('.alert-modern');
                 alertMessages.forEach(msg => {
@@ -854,55 +880,55 @@
                 const quantityInputs = document.querySelectorAll('.quantity-input');
                 quantityInputs.forEach(input => {
                     // Xử lý khi nhấn Enter
-                    input.addEventListener('keypress', function(e) {
+                    input.addEventListener('keypress', function (e) {
                         if (e.key === 'Enter') {
                             e.preventDefault();
                             updateQuantity(this);
                         }
                     });
-                    
+
                     // Xử lý khi mất focus
-                    input.addEventListener('blur', function() {
+                    input.addEventListener('blur', function () {
                         updateQuantity(this);
                     });
                 });
-                
+
                 // Hàm cập nhật số lượng
                 function updateQuantity(input) {
                     const cartItem = input.closest('.cart-item');
                     const cartId = cartItem.querySelector('input[name="cartId"]').value;
                     const quantity = parseInt(input.value) || 1;
-                    
+
                     // Tạo form và submit
                     const form = document.createElement('form');
                     form.method = 'POST';
                     form.action = '${pageContext.request.contextPath}/CartServlet';
-                    
+
                     const actionInput = document.createElement('input');
                     actionInput.type = 'hidden';
                     actionInput.name = 'action';
                     actionInput.value = 'updatequantity';
-                    
+
                     const cartIdInput = document.createElement('input');
                     cartIdInput.type = 'hidden';
                     cartIdInput.name = 'cartId';
                     cartIdInput.value = cartId;
-                    
+
                     const operationInput = document.createElement('input');
                     operationInput.type = 'hidden';
                     operationInput.name = 'operation';
                     operationInput.value = 'set';
-                    
+
                     const quantityInput = document.createElement('input');
                     quantityInput.type = 'hidden';
                     quantityInput.name = 'quantity';
                     quantityInput.value = quantity;
-                    
+
                     form.appendChild(actionInput);
                     form.appendChild(cartIdInput);
                     form.appendChild(operationInput);
                     form.appendChild(quantityInput);
-                    
+
                     document.body.appendChild(form);
                     form.submit();
                 }
@@ -910,7 +936,7 @@
                 // Form submission loading state
                 const forms = document.querySelectorAll('form');
                 forms.forEach(form => {
-                    form.addEventListener('submit', function(e) {
+                    form.addEventListener('submit', function (e) {
                         // Chỉ áp dụng loading state cho form đặt hàng, không áp dụng cho form tăng/giảm số lượng
                         if (form.querySelector('input[name="action"][value="placeOrder"]')) {
                             const submitButton = form.querySelector('button[type="submit"]');
