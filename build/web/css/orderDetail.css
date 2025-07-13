@@ -51,6 +51,46 @@ h2 {
     color: #333;
 }
 
+.product-variants {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.variant-badge {
+    background: #ecf0f1;
+    color: #34495e;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.variant-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.size-badge {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+}
+
+.color-badge {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+}
+
+.variant-badge i {
+    font-size: 10px;
+}
+
 .product-meta {
     color: #777;
     font-size: 14px;

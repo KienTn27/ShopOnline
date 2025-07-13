@@ -386,6 +386,7 @@
                                         <th><i class="fas fa-calendar me-1"></i>Ngày Đặt</th>
                                         <th><i class="fas fa-money-bill me-1"></i>Tổng Tiền</th>
                                         <th><i class="fas fa-info-circle me-1"></i>Trạng Thái</th>
+                                        <th><i class="fas fa-eye me-1"></i>Chi Tiết</th>
                                         <th><i class="fas fa-edit me-1"></i>Cập Nhật</th>
                                     </tr>
                                 </thead>
@@ -417,6 +418,13 @@
                                                         </c:when>
                                                     </c:choose>
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <a href="${pageContext.request.contextPath}/admin/orderDetail.jsp?orderId=${order.orderId}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                    Xem chi tiết
+                                                </a>
                                             </td>
                                             <td>
                                                 <c:choose>

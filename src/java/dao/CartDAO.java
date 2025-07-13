@@ -194,6 +194,8 @@ public class CartDAO {
      */
     public List<CartDTO> getCartWithStockInfo(int userId) throws SQLException {
         List<CartDTO> carts = new ArrayList<>();
+        System.out.println("🔍 Debug CartDAO - Getting cart with stock info for userId: " + userId);
+        
         try (Connection conn = dbContext.getConnection(); PreparedStatement ps = conn.prepareStatement(
                 "SELECT c.CartId, c.UserId, c.ProductId, c.Quantity, c.CreatedAt, "
                 + "p.Name AS ProductName, p.Price, p.ImageURL, p.CategoryID, p.Quantity AS StockQuantity "
@@ -214,9 +216,16 @@ public class CartDAO {
                     cart.setCategoryId(rs.getInt("CategoryID"));
                     cart.setStockQuantity(rs.getInt("StockQuantity")); // Thêm thông tin tồn kho
                     carts.add(cart);
+                    System.out.println("🔍 Debug CartDAO - Added cart item: CartId=" + cart.getCartId() + ", ProductId=" + cart.getProductId() + ", Quantity=" + cart.getQuantity());
                 }
             }
+        } catch (Exception e) {
+            System.err.println("❌ Debug CartDAO - Error in getCartWithStockInfo: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
+        
+        System.out.println("🔍 Debug CartDAO - Total cart items found: " + carts.size());
         return carts;
     }
 
