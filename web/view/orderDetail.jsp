@@ -5,6 +5,8 @@
 <%@page import="dao.OrderDAO"%>
 <%@page import="java.text.DecimalFormat"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="model.User" %>
+<%@ page import="dao.ReviewDAO" %>
 <html>
     <head>
         <title>Chi tiết đơn hàng</title>
@@ -252,6 +254,105 @@
                 color: var(--danger-color);
             }
 
+            .review-section {
+                background: #f8f9fa;
+                border-top: 1px solid #ecf0f1;
+                padding: 2rem;
+            }
+
+            .review-header {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 1.5rem;
+                font-weight: 600;
+                color: #2c3e50;
+                font-size: 1.1rem;
+            }
+
+            .review-header i {
+                color: #f39c12;
+            }
+
+            .rating-container {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .star-rating {
+                display: flex;
+                flex-direction: row-reverse;
+                gap: 0.2rem;
+            }
+
+            .star-rating input[type="radio"] {
+                display: none;
+            }
+
+            .star-rating label {
+                cursor: pointer;
+                font-size: 1.8rem;
+                color: #ddd;
+                transition: all 0.2s ease;
+            }
+
+            .star-rating label:hover,
+            .star-rating label:hover ~ label {
+                color: #f39c12;
+                transform: scale(1.1);
+            }
+
+            .star-rating input[type="radio"]:checked ~ label {
+                color: #f39c12;
+            }
+
+            .rating-text {
+                color: #7f8c8d;
+                font-size: 0.9rem;
+            }
+
+            .comment-container textarea {
+                width: 100%;
+                min-height: 100px;
+                padding: 1rem;
+                border: 2px solid #ecf0f1;
+                border-radius: 10px;
+                font-family: inherit;
+                font-size: 0.95rem;
+                resize: vertical;
+                transition: border-color 0.3s ease;
+                margin-bottom: 1rem;
+            }
+
+            .comment-container textarea:focus {
+                outline: none;
+                border-color: #3498db;
+                box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            }
+
+            .submit-review-btn {
+                background: linear-gradient(45deg, #3498db, #2980b9);
+                color: white;
+                border: none;
+                padding: 0.8rem 2rem;
+                border-radius: 25px;
+                font-size: 0.95rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .submit-review-btn:hover {
+                background: linear-gradient(45deg, #2980b9, #21618c);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            }
+
             .action-buttons {
                 padding: 1.5rem;
                 text-align: center;
@@ -395,7 +496,25 @@
                         totalOrderAmount += detail.getTotalPrice();
                     }
                 }
+                
+                // Hiển thị thông báo thành công/lỗi
+                String successMessage = (String) request.getAttribute("successMessage");
+                String errorMessage = (String) request.getAttribute("errorMessage");
             %>
+
+            <% if (successMessage != null && !successMessage.isEmpty()) { %>
+            <div class="alert alert-success" style="margin-bottom: 20px; border-radius: 10px; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; color: #155724;">
+                <i class="fas fa-check-circle"></i>
+                <%= successMessage %>
+            </div>
+            <% } %>
+
+            <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
+            <div class="alert alert-danger" style="margin-bottom: 20px; border-radius: 10px; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <%= errorMessage %>
+            </div>
+            <% } %>
 
             <div class="order-container">
                 <h3 class="order-header">
@@ -414,17 +533,17 @@
                         <div class="status-content">
                             <div class="status-badge status-<%= order.getStatus().toLowerCase() %>">
                                 <% if ("Pending".equals(order.getStatus())) { %>
-                                    <i class="fas fa-clock"></i> Chờ xác nhận
+                                <i class="fas fa-clock"></i> Chờ xác nhận
                                 <% } else if ("Processing".equals(order.getStatus())) { %>
-                                    <i class="fas fa-spinner"></i> Đang xử lý
+                                <i class="fas fa-spinner"></i> Đang xử lý
                                 <% } else if ("Shipped".equals(order.getStatus())) { %>
-                                    <i class="fas fa-truck"></i> Đang giao hàng
+                                <i class="fas fa-truck"></i> Đang giao hàng
                                 <% } else if ("Delivered".equals(order.getStatus())) { %>
-                                    <i class="fas fa-check-circle"></i> Đã giao hàng
+                                <i class="fas fa-check-circle"></i> Đã giao hàng
                                 <% } else if ("Cancelled".equals(order.getStatus())) { %>
-                                    <i class="fas fa-times-circle"></i> Đã hủy
+                                <i class="fas fa-times-circle"></i> Đã hủy
                                 <% } else { %>
-                                    <i class="fas fa-question-circle"></i> <%= order.getStatus() %>
+                                <i class="fas fa-question-circle"></i> <%= order.getStatus() %>
                                 <% } %>
                             </div>
                             <div class="order-info">
@@ -464,9 +583,12 @@
                     <h3><i class="fas fa-box"></i> Sản phẩm trong đơn hàng</h3>
 
                     <%
-                        if (orderDetails != null && !orderDetails.isEmpty()) {
-                            for (OrderDetailView detail : orderDetails) {
+                        User currentUser = (User) session.getAttribute("user");
+                        int currentUserId = currentUser != null ? currentUser.getUserId() : -1;
+                        ReviewDAO reviewDAO = new ReviewDAO();
                     %>
+                    <% if (order != null && !orderDetails.isEmpty()) {
+                        for (OrderDetailView detail : orderDetails) { %>
                     <div class="order-item-card">
                         <div class="product-main">
                             <div class="product-image">
@@ -476,23 +598,23 @@
                             </div>
                             <div class="product-details">
                                 <h4 class="product-name"><%= detail.getProductName() %></h4>
-                                
+
                                 <!-- Hiển thị Size và Color -->
                                 <div class="product-variants">
                                     <% if (detail.getSize() != null && !detail.getSize().trim().isEmpty()) { %>
-                                        <span class="variant-badge size-badge">
-                                            <i class="fas fa-ruler"></i>
-                                            Size: <%= detail.getSize() %>
-                                        </span>
+                                    <span class="variant-badge size-badge">
+                                        <i class="fas fa-ruler"></i>
+                                        Size: <%= detail.getSize() %>
+                                    </span>
                                     <% } %>
                                     <% if (detail.getColor() != null && !detail.getColor().trim().isEmpty()) { %>
-                                        <span class="variant-badge color-badge">
-                                            <i class="fas fa-palette"></i>
-                                            Màu: <%= detail.getColor() %>
-                                        </span>
+                                    <span class="variant-badge color-badge">
+                                        <i class="fas fa-palette"></i>
+                                        Màu: <%= detail.getColor() %>
+                                    </span>
                                     <% } %>
                                 </div>
-                                
+
                                 <div class="product-pricing">
                                     <div class="price-info">
                                         <span class="unit-price">
@@ -512,26 +634,76 @@
                             </div>
                         </div>
                     </div>
+                    <% if (order != null && "Delivered".equals(order.getStatus())) { 
+                        boolean hasReviewed = reviewDAO.hasUserReviewedProduct(currentUserId, detail.getProductId());
+                        if (hasReviewed) { %>
+                    <div class="review-section" style="background: #f8f9fa; border-top: 1px solid #ecf0f1; padding: 1.5rem; text-align: center;">
+                        <div style="color: #28a745; font-size: 1.1rem;">
+                            <i class="fas fa-check-circle"></i>
+                            Bạn đã đánh giá sản phẩm này rồi.
+                        </div>
+                    </div>
+                    <% } else { %>
+                    <div class="review-section">
+                        <div class="review-header">
+                            <i class="fas fa-star"></i>
+                            <span>Đánh giá sản phẩm</span>
+                        </div>
+                        <form action="${pageContext.request.contextPath}/ReviewServlet" method="post" class="review-form">
+                            <input type="hidden" name="productId" value="<%= detail.getProductId() %>">
+                            <input type="hidden" name="orderId" value="<%= detail.getOrderId() %>">
+                            <div class="rating-container">
+                                <div class="star-rating">
+                                    <% for (int i = 5; i >= 1; i--) { %>
+                                    <input type="radio" id="star<%= i %>-<%= detail.getProductId() %>" 
+                                           name="rating" value="<%= i %>" required>
+                                    <label for="star<%= i %>-<%= detail.getProductId() %>">
+                                        <i class="fas fa-star"></i>
+                                    </label>
+                                    <% } %>
+                                </div>
+                                <span class="rating-text">Chọn số sao</span>
+                            </div>
+                            <div class="comment-container">
+                                <textarea name="comment" placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..." required></textarea>
+                            </div>
+                            <button type="submit" class="submit-review-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                Gửi đánh giá
+                            </button>
+                        </form>
+                    </div>
+                    <% } 
+                    } else if (order != null && !"Delivered".equals(order.getStatus())) { %>
+                    <div class="review-section" style="background: #f8f9fa; border-top: 1px solid #ecf0f1; padding: 1.5rem; text-align: center;">
+                        <div style="color: #6c757d; font-size: 0.9rem;">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Bạn chỉ có thể đánh giá sản phẩm sau khi đơn hàng đã được giao thành công.</span>
+                        </div>
+                    </div>
+                    <% } %>
                     <%  }
-                       } else {
-                    %>
-                    <div class="alert alert-info">
+                   } else { %>
+                    <div class="no-items">
                         <i class="fas fa-inbox"></i>
-                        <strong>Thông báo:</strong> Đơn hàng này không có chi tiết sản phẩm.
+                        <h3>Không có sản phẩm nào</h3>
+                        <p>Đơn hàng này không có chi tiết sản phẩm.</p>
                     </div>
                     <% } %>
                 </div>
+            </div>
 
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <a href="${pageContext.request.contextPath}/admin/orderList.jsp" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i>
-                        Quay lại danh sách
-                    </a>
-                </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="${pageContext.request.contextPath}/view/order.jsp" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Quay lại danh sách
+                </a>
             </div>
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html> 
