@@ -1,4 +1,3 @@
-```jsp
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.*, model.RevenueStat"%>
 <!DOCTYPE html>
@@ -12,8 +11,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/revenue.css">
+    <style>
+.btn-back-menu {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #e3f2fd;
+    color: #2563eb;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    margin-bottom: 1.2rem;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(72,187,255,0.08);
+    transition: background 0.2s, color 0.2s;
+}
+.btn-back-menu:hover {
+    background: #90cdf4;
+    color: #fff;
+}
+</style>
 </head>
 <body>
+    
+    <a href="admin/menu.jsp" class="btn-back-menu"><i class="fas fa-arrow-left"></i> Quay lại menu</a>
     <%
         // Khai báo và lấy stats, type từ request
         List<RevenueStat> stats = (List<RevenueStat>) request.getAttribute("stats");
@@ -30,7 +52,7 @@
     %>
 
     <!-- Menu chung (nếu có) -->
-    <jsp:include page="menu.jsp" />
+    
 
     <div class="dashboard">
         <!-- Dashboard Header -->
@@ -374,4 +396,3 @@
     </script>
 </body>
 </html>
-```
