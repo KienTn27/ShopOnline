@@ -1,5 +1,4 @@
-```jsp
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@page import="java.util.List, java.util.ArrayList, model.RevenueStat"%>
 <%
     List<RevenueStat> stats = (List<RevenueStat>) request.getAttribute("stats");
@@ -12,6 +11,7 @@
     double maxAvgRevenue = stats.stream().mapToDouble(s -> s.getAvgRevenue()).max().orElse(0);
 %>
 
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -23,26 +23,275 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/average-revenue.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .header-actions .action-btn {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .header-actions .action-btn.secondary {
+            background-color: #f39c12;
+        }
+
+        .header-actions .action-btn:hover {
+            background-color: #357ab8;
+        }
+
+        .header-actions .action-btn.secondary:hover {
+            background-color: #e67e22;
+        }
+
+        .stats-summary {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .tabs-container {
+            margin-bottom: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            padding: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            background: transparent;
+            transition: border-bottom 0.3s;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid #4a90e2;
+            color: #4a90e2;
+        }
+
+        .tab-content {
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            background: #f9f9f9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .chart-section {
+            margin-bottom: 2rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+        }
+        @media (max-width: 900px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .chart-card {
+            background: #fff;
+            border-radius: 0.5rem;
+            padding: 0.7rem 0.7rem 1rem 0.7rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .chart-container {
+            width: 100%;
+            height: 180px;
+            min-height: 140px;
+        }
+        .chart-container canvas {
+            width: 100% !important;
+            height: 160px !important;
+            min-height: 140px !important;
+        }
+        .chart-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+        }
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.7rem;
+        }
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .chart-btn {
+            background: #e3f2fd;
+            color: #2563eb;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 0.9rem;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .chart-btn:hover {
+            background: #90cdf4;
+            color: #fff;
+        }
+
+        .table-section {
+            margin-bottom: 2rem;
+        }
+
+        .table-card {
+            background: #fff;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f1f1f1;
+            font-weight: 600;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #999;
+        }
+
+        .btn-back-menu {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #e3f2fd;
+            color: #2563eb;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            margin-bottom: 1.2rem;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(72,187,255,0.08);
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn-back-menu:hover {
+            background: #90cdf4;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 1rem;
+            }
+
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+
+            .header-actions .action-btn {
+                padding: 0.5rem 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <a href="admin/menu.jsp" class="btn-back-menu"><i class="fas fa-arrow-left"></i> Quay lại menu</a>
     <div class="dashboard">
         <!-- Dashboard Header -->
         <div class="dashboard-header">
-            <div class="header-content">
-                <div class="header-text">
-                    <h1 class="dashboard-title"><span>📊</span> Doanh thu trung bình/ngày</h1>
-                    <p class="dashboard-subtitle">Theo dõi và phân tích doanh thu trung bình theo từng ngày</p>
-                </div>
-                <div class="header-actions">
-                    <button class="action-btn primary" onclick="exportData()">
-                        <span class="btn-icon">📥</span>
-                        Xuất báo cáo
-                    </button>
-                    <button class="action-btn secondary" onclick="refreshData()">
-                        <span class="btn-icon">🔄</span>
-                        Làm mới
-                    </button>
-                </div>
+            <h1 class="dashboard-title"><span>📊</span> Doanh thu trung bình/ngày</h1>
+            <div class="header-actions">
+                <button class="action-btn primary" onclick="exportData()">
+                    <span class="btn-icon">📥</span>
+                    Xuất báo cáo
+                </button>
+                <button class="action-btn secondary" onclick="refreshData()">
+                    <span class="btn-icon">🔄</span>
+                    Làm mới
+                </button>
             </div>
         </div>
 
@@ -106,7 +355,7 @@
                 <p class="section-subtitle">Trực quan hóa dữ liệu doanh thu và đơn hàng</p>
             </div>
             <div class="charts-grid">
-                <!-- Average Revenue Bar Chart -->
+                <!-- Chart 1: Doanh thu trung bình/đơn -->
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3 class="chart-title">Doanh thu trung bình/đơn</h3>
@@ -120,7 +369,7 @@
                         <canvas id="avgRevenueChart"></canvas>
                     </div>
                 </div>
-                <!-- Total Revenue Line Chart -->
+                <!-- Chart 2: Tổng doanh thu theo ngày -->
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3 class="chart-title">Tổng doanh thu theo ngày</h3>
@@ -134,7 +383,7 @@
                         <canvas id="totalRevenueChart"></canvas>
                     </div>
                 </div>
-                <!-- Total Orders Area Chart -->
+                <!-- Chart 3: Số đơn hàng theo ngày -->
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3 class="chart-title">Số đơn hàng theo ngày</h3>
@@ -148,7 +397,7 @@
                         <canvas id="totalOrdersChart"></canvas>
                     </div>
                 </div>
-                <!-- New Pie Chart for Revenue Contribution -->
+                <!-- Chart 4: Tỷ lệ đóng góp doanh thu -->
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3 class="chart-title">Tỷ lệ đóng góp doanh thu</h3>
@@ -223,13 +472,33 @@
     </div>
 
     <script>
+        // Sinh dữ liệu JS và vẽ chart trong cùng scope
         const labels = [<%= stats.stream().map(s -> "\"" + s.getLabel() + "\"").collect(java.util.stream.Collectors.joining(",")) %>];
         const avgRevenueData = [<%= stats.stream().map(s -> String.valueOf(s.getAvgRevenue())).collect(java.util.stream.Collectors.joining(",")) %>];
         const totalRevenueData = [<%= stats.stream().map(s -> String.valueOf(s.getTotalRevenue())).collect(java.util.stream.Collectors.joining(",")) %>];
         const totalOrdersData = [<%= stats.stream().map(s -> String.valueOf(s.getTotalOrders())).collect(java.util.stream.Collectors.joining(",")) %>];
-        const revenueContribution = [<%= stats.stream().map(s -> String.valueOf(s.getTotalRevenue() / totalRevenue * 100)).map(v -> v + "").collect(java.util.stream.Collectors.joining(",")) %>];
+        <% if (stats.size() > 0 && totalRevenue > 0) { %>
+        const revenueContribution = [<%= stats.stream().map(s -> String.valueOf((s.getTotalRevenue() / totalRevenue) * 100)).collect(java.util.stream.Collectors.joining(",")) %>];
+        <% } else { %>
+        const revenueContribution = [];
+        <% } %>
 
-        // Average Revenue Bar Chart
+        // Pastel but rõ nét hơn
+        const pastelBlue = 'rgba(80, 130, 255, 0.85)';
+        const pastelGreen = 'rgba(60, 190, 170, 0.55)';
+        const pastelPurple = 'rgba(140, 120, 255, 0.45)';
+        const pastelYellow = 'rgba(255, 220, 80, 0.55)';
+        const pastelGray = 'rgba(180, 190, 200, 0.18)';
+        const pastelBorder = 'rgba(80, 130, 255, 1)';
+        const pastelPie = [
+            'rgba(80, 130, 255, 0.85)',
+            'rgba(60, 190, 170, 0.7)',
+            'rgba(140, 120, 255, 0.7)',
+            'rgba(255, 220, 80, 0.7)',
+            'rgba(180, 190, 200, 0.7)'
+        ];
+
+        // Chart 1: Doanh thu trung bình/đơn
         new Chart(document.getElementById('avgRevenueChart'), {
             type: 'bar',
             data: {
@@ -237,11 +506,11 @@
                 datasets: [{
                     label: 'Doanh thu trung bình (VND)',
                     data: avgRevenueData,
-                    backgroundColor: 'rgba(58, 134, 255, 0.6)',
-                    borderColor: 'rgba(58, 134, 255, 1)',
-                    borderWidth: 1,
-                    borderRadius: 6,
-                    maxBarThickness: 60
+                    backgroundColor: pastelBlue,
+                    borderColor: pastelBorder,
+                    borderWidth: 3,
+                    borderRadius: 12,
+                    maxBarThickness: 80
                 }]
             },
             options: {
@@ -253,12 +522,18 @@
                         labels: {
                             font: {
                                 family: "'Poppins', sans-serif",
-                                size: 14,
-                                weight: '600'
-                            }
+                                size: 16,
+                                weight: '700'
+                            },
+                            color: '#2d3748'
                         }
                     },
                     tooltip: {
+                        backgroundColor: '#fff',
+                        borderColor: pastelBorder,
+                        borderWidth: 1.5,
+                        titleColor: '#2563eb',
+                        bodyColor: '#2d3748',
                         callbacks: {
                             label: function(context) {
                                 let value = context.raw;
@@ -276,20 +551,22 @@
                             },
                             font: {
                                 family: "'Roboto Mono', monospace",
-                                size: 12
-                            }
+                                size: 14
+                            },
+                            color: '#2d3748'
                         },
                         grid: {
                             drawBorder: false,
-                            color: 'rgba(0, 0, 0, 0.05)'
+                            color: pastelGray
                         }
                     },
                     x: {
                         ticks: {
                             font: {
                                 family: "'Poppins', sans-serif",
-                                size: 12
-                            }
+                                size: 13
+                            },
+                            color: '#2d3748'
                         },
                         grid: {
                             display: false
@@ -299,7 +576,7 @@
             }
         });
 
-        // Total Revenue Line Chart
+        // Chart 2: Tổng doanh thu theo ngày
         new Chart(document.getElementById('totalRevenueChart'), {
             type: 'line',
             data: {
@@ -307,15 +584,15 @@
                 datasets: [{
                     label: 'Tổng doanh thu (VND)',
                     data: totalRevenueData,
-                    backgroundColor: 'rgba(46, 204, 113, 0.2)',
-                    borderColor: '#2ecc71',
-                    borderWidth: 3,
+                    backgroundColor: pastelGreen,
+                    borderColor: pastelBorder,
+                    borderWidth: 4,
                     fill: true,
                     tension: 0.4,
-                    pointBackgroundColor: '#2ecc71',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5
+                    pointBackgroundColor: pastelBorder,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2.5,
+                    pointRadius: 7
                 }]
             },
             options: {
@@ -327,12 +604,18 @@
                         labels: {
                             font: {
                                 family: "'Poppins', sans-serif",
-                                size: 14,
-                                weight: '600'
-                            }
+                                size: 16,
+                                weight: '700'
+                            },
+                            color: '#2d3748'
                         }
                     },
                     tooltip: {
+                        backgroundColor: '#fff',
+                        borderColor: pastelBorder,
+                        borderWidth: 1.5,
+                        titleColor: '#2563eb',
+                        bodyColor: '#2d3748',
                         callbacks: {
                             label: function(context) {
                                 let value = context.raw;
@@ -350,20 +633,22 @@
                             },
                             font: {
                                 family: "'Roboto Mono', monospace",
-                                size: 12
-                            }
+                                size: 14
+                            },
+                            color: '#2d3748'
                         },
                         grid: {
                             drawBorder: false,
-                            color: 'rgba(0, 0, 0, 0.05)'
+                            color: pastelGray
                         }
                     },
                     x: {
                         ticks: {
                             font: {
                                 family: "'Poppins', sans-serif",
-                                size: 12
-                            }
+                                size: 13
+                            },
+                            color: '#2d3748'
                         },
                         grid: {
                             display: false
@@ -373,7 +658,7 @@
             }
         });
 
-        // Total Orders Area Chart
+        // Chart 3: Số đơn hàng theo ngày
         new Chart(document.getElementById('totalOrdersChart'), {
             type: 'line',
             data: {
@@ -381,15 +666,15 @@
                 datasets: [{
                     label: 'Số đơn hàng',
                     data: totalOrdersData,
-                    backgroundColor: 'rgba(255, 159, 64, 0.3)',
-                    borderColor: '#ff9f40',
-                    borderWidth: 3,
+                    backgroundColor: pastelPurple,
+                    borderColor: pastelGreen,
+                    borderWidth: 4,
                     fill: true,
                     tension: 0.4,
-                    pointBackgroundColor: '#ff9f40',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5
+                    pointBackgroundColor: pastelBorder,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2.5,
+                    pointRadius: 7
                 }]
             },
             options: {
@@ -401,12 +686,18 @@
                         labels: {
                             font: {
                                 family: "'Poppins', sans-serif",
-                                size: 14,
-                                weight: '600'
-                            }
+                                size: 16,
+                                weight: '700'
+                            },
+                            color: '#2d3748'
                         }
                     },
                     tooltip: {
+                        backgroundColor: '#fff',
+                        borderColor: pastelBorder,
+                        borderWidth: 1.5,
+                        titleColor: '#2563eb',
+                        bodyColor: '#2d3748',
                         callbacks: {
                             label: function(context) {
                                 let value = context.raw;
@@ -419,22 +710,27 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            },
                             font: {
                                 family: "'Roboto Mono', monospace",
-                                size: 12
-                            }
+                                size: 14
+                            },
+                            color: '#2d3748'
                         },
                         grid: {
                             drawBorder: false,
-                            color: 'rgba(0, 0, 0, 0.05)'
+                            color: pastelGray
                         }
                     },
                     x: {
                         ticks: {
                             font: {
                                 family: "'Poppins', sans-serif",
-                                size: 12
-                            }
+                                size: 13
+                            },
+                            color: '#2d3748'
                         },
                         grid: {
                             display: false
@@ -444,90 +740,49 @@
             }
         });
 
-        // Revenue Contribution Pie Chart
+        // Chart 4: Tỷ lệ đóng góp doanh thu
         new Chart(document.getElementById('revenuePieChart'), {
             type: 'pie',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Tỷ lệ đóng góp (%)',
+                    label: 'Tỷ lệ đóng góp',
                     data: revenueContribution,
-                    backgroundColor: [
-                        'rgba(58, 134, 255, 0.8)',
-                        'rgba(46, 204, 113, 0.8)',
-                        'rgba(255, 159, 64, 0.8)',
-                        'rgba(16, 185, 129, 0.8)'
-                    ],
-                    borderColor: [
-                        'rgba(58, 134, 255, 1)',
-                        'rgba(46, 204, 113, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(16, 185, 129, 1)'
-                    ],
-                    borderWidth: 1
+                    backgroundColor: pastelPie,
+                    borderColor: '#fff',
+                    borderWidth: 3
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'top',
+                        position: 'bottom',
                         labels: {
                             font: {
                                 family: "'Poppins', sans-serif",
-                                size: 14,
-                                weight: '600'
-                            }
+                                size: 15
+                            },
+                            color: '#2d3748'
                         }
                     },
                     tooltip: {
+                        backgroundColor: '#fff',
+                        borderColor: pastelBorder,
+                        borderWidth: 1.5,
+                        titleColor: '#2563eb',
+                        bodyColor: '#2d3748',
                         callbacks: {
                             label: function(context) {
-                                let label = context.label || '';
-                                let value = context.raw || 0;
-                                return label + ': ' + value.toFixed(2) + '%';
+                                let value = context.raw;
+                                return value.toLocaleString(undefined, {maximumFractionDigits: 2}) + '%';
                             }
                         }
                     }
                 }
             }
         });
-
-        function openTab(event, tabName) {
-            var i, tabcontent, tabs;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-            tabs = document.getElementsByClassName("tab");
-            for (i = 0; i < tabs.length; i++) {
-                tabs[i].className = tabs[i].className.replace(" active", "");
-            }
-            document.getElementById(tabName).style.display = "block";
-            event.currentTarget.className += " active";
-        }
-
-        function downloadChart(chartId) {
-            const chart = document.getElementById(chartId);
-            const link = document.createElement('a');
-            link.download = chartId + '.png';
-            link.href = chart.toDataURL('image/png');
-            link.click();
-        }
-
-        function exportData() {
-            alert('Chức năng xuất báo cáo đang được phát triển.');
-        }
-
-        function refreshData() {
-            location.reload();
-        }
-
-        function exportTable() {
-            alert('Chức năng xuất Excel đang được phát triển.');
-        }
     </script>
 </body>
 </html>
-```
+   
