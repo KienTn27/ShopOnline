@@ -728,7 +728,9 @@
                                                 </button>
                                             </form>
 
-                                            <input type="text" class="quantity-input" value="${cart.quantity}" placeholder="Nhập số lượng"/>
+                                            <input type="text" class="quantity-input" value="${cart.quantity}" placeholder="Nhập số lượng"
+                                                   min="1" max="${cart.stockQuantity}" 
+                                                   oninput="if (parseInt(this.value) > ${cart.stockQuantity}) this.value = ${cart.stockQuantity}; if (parseInt(this.value) < 1) this.value = 1;"/>
 
                                             <form method="post" action="${pageContext.request.contextPath}/CartServlet" class="d-inline">
                                                 <input type="hidden" name="action" value="updatequantity"/>
@@ -897,7 +899,10 @@
                 function updateQuantity(input) {
                     const cartItem = input.closest('.cart-item');
                     const cartId = cartItem.querySelector('input[name="cartId"]').value;
-                    const quantity = parseInt(input.value) || 1;
+                    let quantity = parseInt(input.value) || 1;
+                    const max = parseInt(input.getAttribute('max')) || 9999;
+                    if (quantity > max) quantity = max;
+                    if (quantity < 1) quantity = 1;
 
                     // Tạo form và submit
                     const form = document.createElement('form');
