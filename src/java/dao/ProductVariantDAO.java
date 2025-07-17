@@ -436,6 +436,21 @@ public class ProductVariantDAO extends DBContext {
         return false;
     }
 
+    public boolean updateVariantQuantity(int variantId, int newQuantity) {
+        String sql = "UPDATE ProductVariants SET Quantity = ? WHERE VariantID = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setInt(1, newQuantity);
+            st.setInt(2, variantId);
+            int rowsAffected = st.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating variant quantity: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         ProductVariantDAO dao = new ProductVariantDAO();
 

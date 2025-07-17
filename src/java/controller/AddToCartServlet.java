@@ -45,7 +45,18 @@
                 }
 
                 int variantId = Integer.parseInt(variantIdStr);
-                int quantity = 1; // Mặc định số lượng là 1
+                // Lấy số lượng người dùng nhập (nếu có), mặc định là 1
+                String quantityStr = request.getParameter("quantity");
+                int quantity = 1;
+                if (quantityStr != null && !quantityStr.trim().isEmpty()) {
+                    try {
+                        quantity = Integer.parseInt(quantityStr);
+                    } catch (NumberFormatException e) {
+                        session.setAttribute("errorMessage", "Số lượng không hợp lệ.");
+                        response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
+                        return;
+                    }
+                }
 
                 // Lấy thông tin variant
                 ProductVariant variant = productVariantDAO.getProductVariantById(variantId);
@@ -74,6 +85,7 @@
                     response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
                     return;
                 }
+                // Kiểm tra tồn kho của biến thể
                 if (variant.getQuantity() < quantity) {
                     session.setAttribute("errorMessage", "Số lượng sản phẩm không đủ trong kho.");
                     response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
@@ -84,27 +96,43 @@
                 model.User user = (model.User) userObj;
                 int userId = user.getUserId();
                 dao.CartDAO cartDAO = new dao.CartDAO();
-                // Kiểm tra sản phẩm đã có trong giỏ chưa
+                // Kiểm tra sản phẩm đã có trong giỏ chưa (theo productId và variantId)
                 java.util.List<model.CartDTO> carts = cartDAO.getCartByUserId(userId);
                 boolean found = false;
                 for (model.CartDTO cart : carts) {
-                    if (cart.getProductId() == productId) {
-                        // Nếu đã có, tăng số lượng
-                        cartDAO.updateCartQuantity(cart.getCartId(), cart.getQuantity() + quantity);
+                    // So sánh cả productId và variantID (nếu có)
+                    Integer cartVariantId = cart.getVariantID();
+                    if (cart.getProductId() == productId && cartVariantId != null && cartVariantId == variantId) {
+                        int newQuantity = cart.getQuantity() + quantity;
+                        if (variant.getQuantity() < newQuantity) {
+                            session.setAttribute("errorMessage", "Số lượng sản phẩm không đủ trong kho.");
+                            response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewCart");
+                            return;
+                        }
+                        cartDAO.updateCartQuantity(cart.getCartId(), newQuantity);
                         found = true;
                         break;
                     }
                 }
                 if (!found) {
                     // Nếu chưa có, thêm mới
-                    cartDAO.addToCart(userId, productId, quantity);
+                    cartDAO.addToCart(userId, productId, quantity); // Không thay đổi DB, vẫn dùng productId
                 }
-                Map<Integer, ProductVariant> cartVariants = (Map<Integer, ProductVariant>) session.getAttribute("cartVariants");
-                if (cartVariants == null) {
-                    cartVariants = new HashMap<>();
+                // Lưu variant mapping vào session (key: cartId)
+                Map<Integer, ProductVariant> cartVariantsByCartId = (Map<Integer, ProductVariant>) session.getAttribute("cartVariantsByCartId");
+                if (cartVariantsByCartId == null) {
+                    cartVariantsByCartId = new HashMap<>();
                 }
-                cartVariants.put(productId, variant);
-                session.setAttribute("cartVariants", cartVariants);
+                // Lấy lại danh sách giỏ hàng để lấy cartId vừa thêm/cập nhật
+                java.util.List<model.CartDTO> updatedCarts = cartDAO.getCartByUserId(userId);
+                for (model.CartDTO cart : updatedCarts) {
+                    // Tìm cart đúng productId và (nếu có) variantID
+                    Integer cartVariantId = cart.getVariantID();
+                    if (cart.getProductId() == productId && (cartVariantId == null || cartVariantId == variantId)) {
+                        cartVariantsByCartId.put(cart.getCartId(), variant);
+                    }
+                }
+                session.setAttribute("cartVariantsByCartId", cartVariantsByCartId);
 
                 // Chuyển hướng sang trang giỏ hàng với thông báo thành công
                 session.setAttribute("successMessage", "Đã thêm sản phẩm vào giỏ hàng!");

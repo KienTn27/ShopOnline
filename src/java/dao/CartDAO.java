@@ -70,35 +70,15 @@ public class CartDAO {
                 if (rs.next()) {
                     // Sản phẩm đã có trong giỏ hàng, cập nhật số lượng
                     int cartId = rs.getInt("CartId");
-                    int currentQuantity = rs.getInt("Quantity");
-                    int newQuantity = currentQuantity + quantity;
-                    
-                    System.out.println("Debug CartDAO - Product exists in cart: CartId=" + cartId + ", CurrentQty=" + currentQuantity + ", NewQty=" + newQuantity);
-                    
-                    // Kiểm tra số lượng tồn kho
-                    int stockQuantity = getProductStock(productId);
-                    if (newQuantity > stockQuantity) {
-                        newQuantity = stockQuantity;
-                        System.out.println("Debug CartDAO - Adjusted quantity to stock limit: " + newQuantity);
-                    }
-                    
+                    // Không kiểm tra tồn kho ở đây nữa
                     try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
-                        updatePs.setInt(1, newQuantity);
+                        updatePs.setInt(1, quantity);
                         updatePs.setInt(2, cartId);
                         updatePs.executeUpdate();
                         System.out.println("Debug CartDAO - Updated cart quantity successfully");
                     }
                 } else {
                     // Sản phẩm chưa có trong giỏ hàng, thêm mới
-                    System.out.println("Debug CartDAO - Product not in cart, adding new item");
-                    
-                    // Kiểm tra số lượng tồn kho trước khi thêm
-                    int stockQuantity = getProductStock(productId);
-                    if (quantity > stockQuantity) {
-                        quantity = stockQuantity;
-                        System.out.println("Debug CartDAO - Adjusted quantity to stock limit: " + quantity);
-                    }
-                    
                     try (PreparedStatement insertPs = conn.prepareStatement(insertQuery)) {
                         insertPs.setInt(1, userId);
                         insertPs.setInt(2, productId);
@@ -127,36 +107,12 @@ public class CartDAO {
 
     public void updateCartQuantity(int cartId, int quantity) {
         Connection conn = DBContext.getInstance().getConnection();
-
-        // Kiểm tra số lượng tồn kho trước khi cập nhật
-        String checkStockQuery = "SELECT p.Quantity AS StockQuantity, c.Quantity AS CurrentQuantity "
-                + "FROM Carts c "
-                + "JOIN Products p ON c.ProductId = p.ProductId "
-                + "WHERE c.CartId = ?";
-
-        try (PreparedStatement checkPs = conn.prepareStatement(checkStockQuery)) {
-            checkPs.setInt(1, cartId);
-            ResultSet rs = checkPs.executeQuery();
-
-            if (rs.next()) {
-                int stockQuantity = rs.getInt("StockQuantity");
-                int currentQuantity = rs.getInt("CurrentQuantity");
-
-                // Kiểm tra giới hạn
-                if (quantity < 1) {
-                    quantity = 1; // Không cho phép < 1
-                } else if (quantity > stockQuantity) {
-                    quantity = stockQuantity; // Không cho phép vượt quá tồn kho
-                }
-
-                // Cập nhật số lượng
-                String updateQuery = "UPDATE Carts SET Quantity = ? WHERE CartId = ?";
-                try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
-                    updatePs.setInt(1, quantity);
-                    updatePs.setInt(2, cartId);
-                    updatePs.executeUpdate();
-                }
-            }
+        // Không kiểm tra tồn kho ở đây nữa, chỉ cập nhật đúng số lượng truyền vào
+        String updateQuery = "UPDATE Carts SET Quantity = ? WHERE CartId = ?";
+        try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
+            updatePs.setInt(1, quantity);
+            updatePs.setInt(2, cartId);
+            updatePs.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
