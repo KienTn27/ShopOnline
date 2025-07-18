@@ -145,7 +145,7 @@
                                 </c:choose>
                             </td>
                             <td>
-                                <a class="order-detail-link" href="${pageContext.request.contextPath}/CartServlet?action=viewOrderDetails&orderId=${order.orderId}">
+                                <a class="order-detail-link" href="${pageContext.request.contextPath}/view/orderDetail.jsp?orderId=${order.orderId}">
                                     <i class="fas fa-eye"></i> Xem chi tiết
                                 </a>
                             </td>
