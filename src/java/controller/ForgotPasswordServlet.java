@@ -46,7 +46,8 @@ public class ForgotPasswordServlet extends HttpServlet {
             userDAO.savePasswordResetToken(userId, token, Timestamp.valueOf(expiryTime));
 
             // Gửi email
-            String resetLink = "http://localhost:9999/Shop/reset-password?token=" + token;
+            String contextPath = request.getContextPath();
+            String resetLink = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + contextPath + "/reset-password?token=" + token;
             String subject = "Yêu cầu đặt lại mật khẩu";
             String content = "<p>Chào bạn,</p>"
                     + "<p>Bạn vừa yêu cầu đặt lại mật khẩu. Click vào link bên dưới để thực hiện:</p>"
