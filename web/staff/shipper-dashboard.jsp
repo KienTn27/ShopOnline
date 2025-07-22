@@ -464,6 +464,13 @@
                                 <h6><i class="fas fa-box"></i> Sản phẩm:</h6>
                                 <div class="product-item">
                                     ${order.productNames}
+                                    <div class="mt-2">
+                                        <a href="${pageContext.request.contextPath}/staff/shipper-orderDetail.jsp?orderId=${order.orderId}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                            Xem chi tiết sản phẩm
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
 

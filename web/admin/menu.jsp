@@ -2,245 +2,132 @@
 <!DOCTYPE html>
 <html>
 <head>
+    
     <meta charset="UTF-8">
     <title>Menu Quản trị</title>
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 35%, #16213e 100%);
+            background: #f6f8fa;
             min-height: 100vh;
             padding: 2rem;
-            position: relative;
             overflow-x: hidden;
         }
-
-        /* Animated background particles */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23ffffff08" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* Header section */
         .admin-header {
             text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
+            margin-bottom: 2.5rem;
         }
-
         .admin-header h1 {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 2.5rem;
-            font-weight: 700;
+            color: #2d3748;
+            font-size: 2.3rem;
+            font-weight: 800;
             margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.01em;
         }
-
         .admin-header p {
-            color: #94a3b8;
+            color: #4a5568;
             font-size: 1.1rem;
             font-weight: 400;
         }
-
         .menu-wrapper {
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
             gap: 2rem;
         }
-
         .menu-group {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px 0 rgba(60,72,88,0.08);
+            transition: box-shadow 0.3s, transform 0.3s;
             overflow: hidden;
-            position: relative;
+            border: 1.5px solid #e2e8f0;
         }
-
-        .menu-group::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        }
-
         .menu-group:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(72,187,255,0.15);
+            border-color: #90cdf4;
+            transform: translateY(-4px) scale(1.01);
         }
-
         .group-header {
-            padding: 2rem;
-            cursor: pointer;
+            padding: 1.7rem 2rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-            transition: all 0.3s ease;
-            position: relative;
+            background: #f7fafc;
+            cursor: pointer;
+            border-bottom: 1px solid #e2e8f0;
         }
-
-        .group-header:hover {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-        }
-
         .group-title {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.1rem;
         }
-
         .group-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
-            position: relative;
-            overflow: hidden;
+            font-size: 1.7rem;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            color: #2563eb;
+            box-shadow: 0 2px 8px 0 rgba(72,187,255,0.10);
         }
-
-        /* Fashion-themed gradients for each category */
-        .menu-group:nth-child(1) .group-icon {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .menu-group:nth-child(2) .group-icon {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .menu-group:nth-child(3) .group-icon {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        .menu-group:nth-child(4) .group-icon {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        }
-
-        .menu-group:nth-child(5) .group-icon {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
-
-        .group-icon::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.2);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .group-header:hover .group-icon::before {
-            opacity: 1;
-        }
-
+        .menu-group:nth-child(2) .group-icon { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); color: #b83280; }
+        .menu-group:nth-child(3) .group-icon { background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%); color: #b7791f; }
+        .menu-group:nth-child(4) .group-icon { background: linear-gradient(135deg, #c2e9fb 0%, #81ecec 100%); color: #0984e3; }
+        .menu-group:nth-child(5) .group-icon { background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); color: #38a169; }
         .group-header h3 {
-            color: #ffffff;
-            font-size: 1.2rem;
-            font-weight: 600;
-            letter-spacing: -0.01em;
+            color: #2d3748;
+            font-size: 1.18rem;
+            font-weight: 700;
+            margin: 0;
         }
-
         .arrow {
-            font-size: 1.4rem;
-            color: #94a3b8;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.3rem;
+            color: #a0aec0;
+            transition: transform 0.3s, color 0.3s;
         }
-
+        .arrow[style*="rotate(90deg)"] {
+            color: #4299e1;
+        }
         .group-content {
             display: none;
             flex-direction: column;
-            padding: 0;
-            background: rgba(0, 0, 0, 0.1);
+            background: #f9fafb;
         }
-
         .group-content[style*="flex"] {
             display: flex;
             animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
         .group-content a {
             display: flex;
             align-items: center;
-            gap: 1.2rem;
-            padding: 1.5rem 2rem;
+            gap: 1.1rem;
+            padding: 1.2rem 2rem;
             text-decoration: none;
-            color: #cbd5e1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
+            color: #2d3748;
+            background: transparent;
+            border-bottom: 1px solid #e2e8f0;
             font-weight: 500;
+            font-size: 1.05rem;
+            position: relative;
+            transition: background 0.2s, color 0.2s, padding-left 0.2s;
         }
-
-        .group-content a:last-child {
-            border-bottom: none;
-        }
-
-        .group-content a::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.3s ease;
-        }
-
+        .group-content a:last-child { border-bottom: none; }
         .group-content a:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.03);
-            transform: translateX(8px);
+            background: #e3f2fd;
+            color: #2563eb;
+            padding-left: 2.5rem;
         }
-
-        .group-content a:hover::before {
-            width: 4px;
-        }
-
-        /* Fashion-specific icons */
         .group-content a .menu-icon {
             width: 24px;
             height: 24px;
@@ -248,61 +135,28 @@
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
+            opacity: 0.85;
+            transition: opacity 0.2s;
         }
-
         .group-content a:hover .menu-icon {
             opacity: 1;
         }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-
-            .admin-header h1 {
-                font-size: 2rem;
-            }
-
-            .menu-wrapper {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .group-header {
-                padding: 1.5rem;
-            }
-
-            .group-content a {
-                padding: 1.2rem 1.5rem;
-            }
-        }
-
-        /* Arrow rotation */
-        .arrow[style*="rotate(90deg)"] {
-            transform: rotate(90deg);
-            color: #667eea;
-        }
-
-        /* Glowing effect on hover */
-        .menu-group:hover {
-            box-shadow: 
-                0 30px 60px rgba(0, 0, 0, 0.4),
-                0 0 40px rgba(102, 126, 234, 0.2);
-        }
-
-        /* Stats badge for some items */
         .stats-badge {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            font-size: 0.7rem;
-            padding: 0.2rem 0.6rem;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            color: #2563eb;
+            font-size: 0.75rem;
+            padding: 0.18rem 0.7rem;
             border-radius: 12px;
             margin-left: auto;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(240, 147, 251, 0.3);
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(72,187,255,0.10);
+        }
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .admin-header h1 { font-size: 1.5rem; }
+            .menu-wrapper { grid-template-columns: 1fr; gap: 1.2rem; }
+            .group-header { padding: 1.2rem 1rem; }
+            .group-content a { padding: 1rem 1rem; font-size: 0.98rem; }
         }
     </style>
     <script>

@@ -139,17 +139,36 @@ public class OrderDAO {
         return orders;
     }
 
-    public void createOrder(int userId, double totalAmount, String shippingAddress) {
+    public int createOrder(int userId, double totalAmount, String shippingAddress) {
         Connection conn = DBContext.getInstance().getConnection();
-        String query = "INSERT INTO Orders (UserId, OrderDate, TotalAmount, ShippingAddress) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(query)) {
+        String query = "INSERT INTO Orders (UserId, OrderDate, TotalAmount, ShippingAddress, Status) VALUES (?, ?, ?, ?, 'Pending')";
+        try (PreparedStatement ps = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, userId);
             ps.setDate(2, new java.sql.Date(new Date().getTime()));
             ps.setDouble(3, totalAmount);
             ps.setString(4, shippingAddress);
-            ps.executeUpdate();
+            
+            System.out.println("🔍 Debug OrderDAO - Creating order: userId=" + userId + ", totalAmount=" + totalAmount + ", shippingAddress=" + shippingAddress);
+            
+            int rowsAffected = ps.executeUpdate();
+            System.out.println("🔍 Debug OrderDAO - Rows affected: " + rowsAffected);
+            
+            if (rowsAffected > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int orderId = rs.getInt(1);
+                        System.out.println("✅ Debug OrderDAO - Order created successfully with ID: " + orderId);
+                        return orderId;
+                    }
+                }
+            }
+            
+            System.err.println("❌ Debug OrderDAO - Failed to get generated order ID");
+            return -1;
         } catch (Exception e) {
+            System.err.println("❌ Debug OrderDAO - Error creating order: " + e.getMessage());
             e.printStackTrace();
+            return -1;
         }
     }
 
@@ -229,6 +248,22 @@ public class OrderDAO {
         return false;
     }
 
+    public boolean orderExists(int orderId) {
+        Connection conn = DBContext.getInstance().getConnection();
+        String query = "SELECT COUNT(*) FROM Orders WHERE OrderId = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Debug OrderDAO - Error checking order existence: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public int getLastOrderId(int userId) {
         Connection conn = DBContext.getInstance().getConnection();
         String query = "SELECT TOP 1 OrderID FROM Orders WHERE UserID = ? ORDER BY OrderID DESC";
@@ -242,5 +277,42 @@ public class OrderDAO {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    /**
+     * Kiểm tra đơn hàng có thuộc về user không
+     */
+    public boolean orderBelongsToUser(int orderId, int userId) {
+        Connection conn = DBContext.getInstance().getConnection();
+        String query = "SELECT COUNT(*) FROM Orders WHERE OrderID = ? AND UserID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, orderId);
+            ps.setInt(2, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Lấy trạng thái đơn hàng
+     */
+    public String getOrderStatus(int orderId) {
+        Connection conn = DBContext.getInstance().getConnection();
+        String query = "SELECT Status FROM Orders WHERE OrderID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("Status");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -1,40 +1,199 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #f7f7f7;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 20px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 30px;
 }
 
 h2 {
     color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.message {
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     background: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
+    padding: 15px;
+    border: none;
     text-align: center;
+    border-bottom: 1px solid #eee;
 }
 
 th {
-    background: #f0f0f0;
-    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+tr:hover {
+    background-color: #f8f9fa;
+}
+
+tr:last-child td {
+    border-bottom: none;
 }
 
 a {
-    color: #ee4d2d;
+    color: #667eea;
     text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
 a:hover {
+    color: #764ba2;
     text-decoration: underline;
 }
 
+.cancel-btn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.cancel-btn:hover {
+    background: linear-gradient(135deg, #ee5a52 0%, #ff6b6b 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.cancel-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.action-column {
+    width: 150px;
+}
+
+.status-pending {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.status-processing {
+    color: #17a2b8;
+    font-weight: 600;
+}
+
+.status-confirmed {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.status-cancelled {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.status-shipped {
+    color: #6f42c1;
+    font-weight: 600;
+}
+
+.status-delivered {
+    color: #20c997;
+    font-weight: 600;
+}
+
 .links {
-    margin-top: 20px;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.links a {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.links a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    table {
+        font-size: 0.9rem;
+    }
+    
+    th, td {
+        padding: 10px 5px;
+    }
+    
+    .action-column {
+        width: 120px;
+    }
+    
+    .cancel-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
 }
