@@ -166,7 +166,7 @@ public class UpdateStatusServlet extends HttpServlet {
             } else {
                 productName = "Sản phẩm";
             }
-            String message = "Đơn hàng của bạn với sản phẩm " + productName + " đã được cập nhật trạng thái: " + status;
+            String message = "Đơn hàng của bạn với sản phẩm " + productName + " đã được cập nhật trạng thái: " + getStatusTextVN(status);
             NotificationDAO notificationDAO = new NotificationDAO();
             notificationDAO.addNotification(userId, message);
         }

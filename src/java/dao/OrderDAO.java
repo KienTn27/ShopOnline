@@ -38,7 +38,7 @@ public class OrderDAO {
     public List<Order> getOrdersByStatus(String status) {
         List<Order> orders = new ArrayList<>();
         Connection conn = DBContext.getInstance().getConnection();
-        String query = "SELECT * FROM Orders WHERE Status = ?";
+        String query = "SELECT * FROM Orders WHERE Status = ? ORDER BY OrderDate DESC";
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, status);
             ResultSet rs = ps.executeQuery();

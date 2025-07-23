@@ -365,7 +365,7 @@
             <!-- Orders Table -->
             <div class="orders-container">
                 <div class="alert alert-info" role="alert">
-                <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-info-circle"></i>
                     <strong>Thông báo:</strong> Chức năng cập nhật trạng thái đơn hàng đã được chuyển cho Shipper để tối ưu hóa quy trình giao hàng. 
                     Admin chỉ có thể xem thông tin đơn hàng.
                 </div>
@@ -460,6 +460,56 @@
                                 </tbody>
                             </table>
                         </div>
+                        <c:if test="${totalPages > 1}">
+                            <div style="text-align:center; margin: 20px 0;">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <!-- Previous Button -->
+                                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/UpdateStatusServlet?page=${currentPage - 1}" aria-label="Previous">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                        <!-- First page -->
+                                        <li class="page-item ${currentPage == 1 ? 'active' : ''}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/UpdateStatusServlet?page=1">1</a>
+                                        </li>
+                                        <!-- Dots if needed -->
+                                        <c:if test="${currentPage > 4}">
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        </c:if>
+                                        <!-- Pages around current -->
+                                        <c:forEach begin="${currentPage > 4 ? currentPage - 1 : 2}"
+                                                   end="${currentPage < totalPages - 3 ? currentPage + 1 : totalPages - 1}"
+                                                   var="i">
+                                            <c:if test="${i > 1 && i < totalPages}">
+                                                <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                                    <a class="page-link" href="${pageContext.request.contextPath}/UpdateStatusServlet?page=${i}">${i}</a>
+                                                </li>
+                                            </c:if>
+                                        </c:forEach>
+                                        <!-- Dots if needed -->
+                                        <c:if test="${currentPage < totalPages - 3}">
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        </c:if>
+                                        <!-- Last page -->
+                                        <li class="page-item ${currentPage == totalPages ? 'active' : ''}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/UpdateStatusServlet?page=${totalPages}">${totalPages}</a>
+                                        </li>
+                                        <!-- Next Button -->
+                                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/UpdateStatusServlet?page=${currentPage + 1}" aria-label="Next">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </c:if>
                     </c:when>
                     <c:otherwise>
                         <div class="no-orders">
@@ -474,48 +524,48 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                                                    function showLoading(form) {
-                                                        form.classList.add('form-updating');
-                                                        form.querySelector('.btn-update').disabled = true;
-                                                    }
+                                                            function showLoading(form) {
+                                                                form.classList.add('form-updating');
+                                                                form.querySelector('.btn-update').disabled = true;
+                                                            }
 
-                                                    // Add smooth animations on page load
-                                                    document.addEventListener('DOMContentLoaded', function () {
-                                                        const cards = document.querySelectorAll('.stat-card');
-                                                        cards.forEach((card, index) => {
-                                                            card.style.opacity = '0';
-                                                            card.style.transform = 'translateY(30px)';
-                                                            setTimeout(() => {
-                                                                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                                                                card.style.opacity = '1';
-                                                                card.style.transform = 'translateY(0)';
-                                                            }, index * 100);
-                                                        });
+                                                            // Add smooth animations on page load
+                                                            document.addEventListener('DOMContentLoaded', function () {
+                                                                const cards = document.querySelectorAll('.stat-card');
+                                                                cards.forEach((card, index) => {
+                                                                    card.style.opacity = '0';
+                                                                    card.style.transform = 'translateY(30px)';
+                                                                    setTimeout(() => {
+                                                                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                                                                        card.style.opacity = '1';
+                                                                        card.style.transform = 'translateY(0)';
+                                                                    }, index * 100);
+                                                                });
 
-                                                        const tableContainer = document.querySelector('.orders-container');
-                                                        if (tableContainer) {
-                                                            tableContainer.style.opacity = '0';
-                                                            tableContainer.style.transform = 'translateY(30px)';
-                                                            setTimeout(() => {
-                                                                tableContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                                                                tableContainer.style.opacity = '1';
-                                                                tableContainer.style.transform = 'translateY(0)';
-                                                            }, 400);
-                                                        }
-                                                    });
-
-                                                    // Auto-refresh functionality (optional)
-                                                    let autoRefresh = false;
-                                                    function toggleAutoRefresh() {
-                                                        autoRefresh = !autoRefresh;
-                                                        if (autoRefresh) {
-                                                            setInterval(() => {
-                                                                if (autoRefresh) {
-                                                                    location.reload();
+                                                                const tableContainer = document.querySelector('.orders-container');
+                                                                if (tableContainer) {
+                                                                    tableContainer.style.opacity = '0';
+                                                                    tableContainer.style.transform = 'translateY(30px)';
+                                                                    setTimeout(() => {
+                                                                        tableContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                                                                        tableContainer.style.opacity = '1';
+                                                                        tableContainer.style.transform = 'translateY(0)';
+                                                                    }, 400);
                                                                 }
-                                                            }, 30000); // Refresh every 30 seconds
-                                                        }
-                                                    }
+                                                            });
+
+                                                            // Auto-refresh functionality (optional)
+                                                            let autoRefresh = false;
+                                                            function toggleAutoRefresh() {
+                                                                autoRefresh = !autoRefresh;
+                                                                if (autoRefresh) {
+                                                                    setInterval(() => {
+                                                                        if (autoRefresh) {
+                                                                            location.reload();
+                                                                        }
+                                                                    }, 30000); // Refresh every 30 seconds
+                                                                }
+                                                            }
         </script>
     </body>
 </html>
