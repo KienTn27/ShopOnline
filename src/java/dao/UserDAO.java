@@ -338,8 +338,7 @@ public class UserDAO extends DBContext {
     // Thêm tài khoản Super Admin
     public boolean createSuperAdmin(String username, String password, String fullName, String email, String phone) {
         String sql = "INSERT INTO Users (Username, Password, FullName, Email, Phone, Role, CreatedAt, IsActive, is_deleted) VALUES (?, ?, ?, ?, ?, 'SuperAdmin', GETDATE(), 1, 0)";
-        try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
             ps.setString(2, password);
             ps.setString(3, fullName);
@@ -355,8 +354,7 @@ public class UserDAO extends DBContext {
     // Block user (set IsActive = 0)
     public boolean blockUser(int userId) {
         String sql = "UPDATE Users SET IsActive = 0 WHERE UserID = ?";
-        try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -368,8 +366,7 @@ public class UserDAO extends DBContext {
     // Unblock user (set IsActive = 1)
     public boolean unblockUser(int userId) {
         String sql = "UPDATE Users SET IsActive = 1 WHERE UserID = ?";
-        try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -381,16 +378,16 @@ public class UserDAO extends DBContext {
     // Xóa mềm user (is_deleted = 1)
     public boolean softDeleteUser(int userId) {
         String sql = "UPDATE Users SET is_deleted = 1 WHERE UserID = ?";
-        try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-    } 
-     public Integer getIsDeletedByUsername(String username) {
+    }
+
+    public Integer getIsDeletedByUsername(String username) {
         String sql = "SELECT is_deleted FROM [Users] WHERE [Username] = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
@@ -403,5 +400,53 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
         return null;
+    }
+
+    // Phân trang Top User theo chi tiêu
+    public List<TopUser> getTopUserPage(int page, int pageSize) {
+        List<TopUser> list = new ArrayList<>();
+        String sql = "SELECT * FROM ("
+                + "SELECT u.FullName, COUNT(o.OrderID) AS TotalOrders, "
+                + "SUM(ISNULL(o.TotalAmount, 0)) AS TotalSpent, "
+                + "ROW_NUMBER() OVER (ORDER BY SUM(ISNULL(o.TotalAmount, 0)) DESC) AS rn "
+                + "FROM dbo.Users u "
+                + "JOIN dbo.Orders o ON u.UserId = o.UserId "
+                + "GROUP BY u.FullName) t "
+                + "WHERE rn BETWEEN ? AND ?";
+
+        try (Connection conn = dbContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            int start = (page - 1) * pageSize + 1;
+            int end = page * pageSize;
+            ps.setInt(1, start);
+            ps.setInt(2, end);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String fullName = rs.getString("FullName");
+                int orders = rs.getInt("TotalOrders");
+                double spent = rs.getDouble("TotalSpent");
+                list.add(new TopUser(fullName, orders, spent));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Lấy tổng số top user
+    public int getTotalTopUserCount() {
+        String sql = "SELECT COUNT(*) FROM ("
+                + "SELECT u.FullName "
+                + "FROM dbo.Users u "
+                + "JOIN dbo.Orders o ON u.UserId = o.UserId "
+                + "GROUP BY u.FullName) t";
+
+        try (Connection conn = dbContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
