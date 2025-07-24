@@ -203,7 +203,7 @@
                                 
 
                                  <button class="btn btn-outline-danger" >
-                                       <li class="breadcrumb-item"><a href="Home">Trang chủ</a></li>
+                                       <li class="breadcrumb-item"><a href="admin/menu.jsp">Quay lại</a></li>
 
                                 </button>
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">

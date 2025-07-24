@@ -307,6 +307,9 @@
                     <i class="fas fa-shopping-cart"></i>
                     Quản Lý Đơn Hàng
                 </h1>
+                <a href="admin/menu.jsp" class="btn btn-outline-secondary mt-3">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại menu
+                </a>
             </div>
         </div>
 
@@ -316,8 +319,8 @@
                 <div class="stat-card">
                     <div class="stat-number" style="color: var(--info-color);">
                         <c:choose>
-                            <c:when test="${not empty orders}">
-                                ${orders.size()}
+                            <c:when test="${not empty totalOrders}">
+                                ${totalOrders}
                             </c:when>
                             <c:otherwise>0</c:otherwise>
                         </c:choose>
@@ -460,6 +463,57 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- PHÂN TRANG KIỂU HOME -->
+                        <c:if test="${totalPages > 1}">
+                            <div style="text-align:center; margin: 20px 0;">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <!-- Previous Button -->
+                                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/UpdateStatusServlet?page=${currentPage - 1}" aria-label="Previous">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                        <!-- First page -->
+                                        <li class="page-item ${currentPage == 1 ? 'active' : ''}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/UpdateStatusServlet?page=1">1</a>
+                                        </li>
+                                        <!-- Dots if needed -->
+                                        <c:if test="${currentPage > 4}">
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        </c:if>
+                                        <!-- Pages around current -->
+                                        <c:forEach begin="${currentPage > 4 ? currentPage - 1 : 2}"
+                                                   end="${currentPage < totalPages - 3 ? currentPage + 1 : totalPages - 1}"
+                                                   var="i">
+                                            <c:if test="${i > 1 && i < totalPages}">
+                                                <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                                    <a class="page-link" href="${pageContext.request.contextPath}/UpdateStatusServlet?page=${i}">${i}</a>
+                                                </li>
+                                            </c:if>
+                                        </c:forEach>
+                                        <!-- Dots if needed -->
+                                        <c:if test="${currentPage < totalPages - 3}">
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        </c:if>
+                                        <!-- Last page -->
+                                        <li class="page-item ${currentPage == totalPages ? 'active' : ''}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/UpdateStatusServlet?page=${totalPages}">${totalPages}</a>
+                                        </li>
+                                        <!-- Next Button -->
+                                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/UpdateStatusServlet?page=${currentPage + 1}" aria-label="Next">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </c:if>
                     </c:when>
                     <c:otherwise>
                         <div class="no-orders">

@@ -84,6 +84,39 @@ public class ProductDAO {
         return list;
     }
 
+    // Lấy danh sách sản phẩm bán chạy có phân trang
+    public List<TopProduct> getTopSellingProductsPage(int page, int pageSize) {
+        List<TopProduct> list = new ArrayList<>();
+        String sql = "SELECT * FROM (SELECT p.Name AS ProductName, SUM(od.Quantity) AS SoldQuantity, SUM(od.Quantity * p.Price) AS Revenue, ROW_NUMBER() OVER (ORDER BY SUM(od.Quantity) DESC) AS rn FROM OrderDetails od JOIN Products p ON od.ProductID = p.ProductID GROUP BY p.Name) t WHERE rn BETWEEN ? AND ?";
+        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            int start = (page - 1) * pageSize + 1;
+            int end = page * pageSize;
+            ps.setInt(1, start);
+            ps.setInt(2, end);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String name = rs.getString("ProductName");
+                int quantity = rs.getInt("SoldQuantity");
+                double revenue = rs.getDouble("Revenue");
+                list.add(new TopProduct(name, quantity, revenue));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Đếm tổng số sản phẩm bán chạy (dòng)
+    public int getTotalTopSellingProductsCount() {
+        String sql = "SELECT COUNT(*) FROM (SELECT p.Name FROM OrderDetails od JOIN Products p ON od.ProductID = p.ProductID GROUP BY p.Name) t";
+        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public List<Product> getProductsByCategory(int categoryId) {
         List<Product> list = new ArrayList<>();
         String sql = "SELECT * FROM Products WHERE CategoryID = ?";

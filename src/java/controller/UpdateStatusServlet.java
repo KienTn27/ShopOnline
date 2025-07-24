@@ -66,12 +66,27 @@ public class UpdateStatusServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            List<Order> orders = orderDAO.getAllOrders();
+            int page = 1;
+            int pageSize = 10;
+            String pageParam = request.getParameter("page");
+            if (pageParam != null) {
+                try {
+                    page = Integer.parseInt(pageParam);
+                    if (page < 1) page = 1;
+                } catch (NumberFormatException ignored) {}
+            }
+            List<Order> allOrders = orderDAO.getAllOrders();
+            int totalOrders = allOrders.size();
+            int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+            if (page > totalPages && totalPages > 0) page = totalPages;
+            int fromIndex = (page - 1) * pageSize;
+            int toIndex = Math.min(fromIndex + pageSize, totalOrders);
+            List<Order> pageOrders = allOrders.subList(fromIndex, toIndex);
             // Tạo danh sách chứa thông tin mở rộng
             java.util.List<java.util.Map<String, Object>> orderViews = new java.util.ArrayList<>();
             dao.UserDAO userDAO = new dao.UserDAO();
             dao.OrderDetailDAO orderDetailDAO = new dao.OrderDetailDAO();
-            for (Order order : orders) {
+            for (Order order : pageOrders) {
                 java.util.Map<String, Object> map = new java.util.HashMap<>();
                 map.put("orderId", order.getOrderId());
                 map.put("orderDate", order.getOrderDate());
@@ -96,6 +111,10 @@ public class UpdateStatusServlet extends HttpServlet {
                 orderViews.add(map);
             }
             request.setAttribute("orders", orderViews);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("totalOrders", totalOrders);
             request.getRequestDispatcher("admin/orderList.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,7 +185,7 @@ public class UpdateStatusServlet extends HttpServlet {
             } else {
                 productName = "Sản phẩm";
             }
-            String message = "Đơn hàng của bạn với sản phẩm " + productName + " đã được cập nhật trạng thái: " + status;
+            String message = "Đơn hàng của bạn với sản phẩm " + productName + " đã được cập nhật trạng thái: " + getStatusTextVN(status);
             NotificationDAO notificationDAO = new NotificationDAO();
             notificationDAO.addNotification(userId, message);
         }

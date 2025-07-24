@@ -901,8 +901,10 @@
                     const cartId = cartItem.querySelector('input[name="cartId"]').value;
                     let quantity = parseInt(input.value) || 1;
                     const max = parseInt(input.getAttribute('max')) || 9999;
-                    if (quantity > max) quantity = max;
-                    if (quantity < 1) quantity = 1;
+                    if (quantity > max)
+                        quantity = max;
+                    if (quantity < 1)
+                        quantity = 1;
 
                     // Tạo form và submit
                     const form = document.createElement('form');

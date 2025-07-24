@@ -12,10 +12,6 @@ public class UserDAO extends DBContext {
 
     private final DBContext dbContext = DBContext.getInstance();
 
- 
-
-    
-
     // Tìm kiếm sản phẩm
     public List<Product> searchProducts(String keyword) throws SQLException {
         List<Product> products = new ArrayList<>();
@@ -41,10 +37,10 @@ public class UserDAO extends DBContext {
     }
 
     // Lấy danh sách top người dùng chi tiêu nhiều nhất
-   public List<TopUser> getTopUser() {
-    List<TopUser> list = new ArrayList<>();
+    public List<TopUser> getTopUser() {
+        List<TopUser> list = new ArrayList<>();
 
-    String sql = """
+        String sql = """
         SELECT u.FullName, COUNT(o.OrderID) AS TotalOrders, 
                SUM(ISNULL(o.TotalAmount, 0)) AS TotalSpent
         FROM dbo.Users u
@@ -53,28 +49,25 @@ public class UserDAO extends DBContext {
         ORDER BY TotalSpent DESC
     """;
 
-    try (Connection conn = DBContext.getInstance().getConnection(); 
-         PreparedStatement ps = conn.prepareStatement(sql); 
-         ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
-        while (rs.next()) {
-            String fullName = rs.getString("FullName");
-            int orders = rs.getInt("TotalOrders");
-            double spent = rs.getDouble("TotalSpent");
+            while (rs.next()) {
+                String fullName = rs.getString("FullName");
+                int orders = rs.getInt("TotalOrders");
+                double spent = rs.getDouble("TotalSpent");
 
-            System.out.println("📊 " + fullName + " - " + orders + " đơn - " + spent + "đ");
+                System.out.println("📊 " + fullName + " - " + orders + " đơn - " + spent + "đ");
 
-            list.add(new TopUser(fullName, orders, spent));
+                list.add(new TopUser(fullName, orders, spent));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Phải in lỗi để debug
         }
 
-    } catch (Exception e) {
-        e.printStackTrace(); // Phải in lỗi để debug
+        return list;
     }
 
-    return list;
-}
-
-   
 //dang nhap
     public User login(String username, String password) {
         String sql = "SELECT * FROM [Users] WHERE [Username] = ? AND is_deleted = 0";
@@ -82,7 +75,7 @@ public class UserDAO extends DBContext {
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     String hashedPassword = rs.getString("Password");
@@ -107,7 +100,7 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
 
-        return null; 
+        return null;
 // Không tìm thấy user
     }
 
@@ -203,6 +196,7 @@ public class UserDAO extends DBContext {
         }
         return false;
     }
+
     //// Lấy tất cả người dùng, admin lên đầu
     public List<User> getAllUsers() throws SQLException {
         List<User> userList = new ArrayList<>();
@@ -224,8 +218,7 @@ public class UserDAO extends DBContext {
         }
         return userList;
     }
-    
-    
+
     // Block User
     public boolean updateUserStatus(int userId, boolean isActive) {
         String sql = "UPDATE Users SET isActive = ? WHERE UserID = ?";
@@ -239,6 +232,7 @@ public class UserDAO extends DBContext {
         }
         return false;
     }
+
     //XOA USER
     public boolean deleteUser(int userId) throws SQLException {
         String sql = "DELETE FROM Users WHERE UserID = ?";
@@ -248,6 +242,7 @@ public class UserDAO extends DBContext {
             return rows > 0;
         }
     }
+
     public User getUserById(int userId) {
         String sql = "SELECT * FROM Users WHERE UserID = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -272,11 +267,9 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
-    
-
 
 ////Quen Pass
- //Lấy userId theo email
+    //Lấy userId theo email
     public Integer getUserIdByEmail(String email) {
         String sql = "SELECT UserID FROM Users WHERE Email = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -321,7 +314,7 @@ public class UserDAO extends DBContext {
     public boolean updatePasswordByToken(String token, String newPassword) {
         String sql = "UPDATE Users SET Password = ? WHERE UserID = "
                 + "(SELECT user_id FROM password_reset_tokens WHERE token = ? AND is_used = 0 AND expiry > GETDATE())";
-        
+
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             ps.setString(1, hashedPassword);

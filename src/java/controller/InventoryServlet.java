@@ -43,9 +43,24 @@ public class InventoryServlet extends HttpServlet {
             return;
         } else {
             // Hiển thị danh sách tồn kho
+            int page = 1;
+            int pageSize = 10; // Số dòng mỗi trang, có thể chỉnh
+            try {
+                String pageParam = request.getParameter("page");
+                if (pageParam != null) {
+                    page = Integer.parseInt(pageParam);
+                    if (page < 1) page = 1;
+                }
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
             InventoryDAO dao = new InventoryDAO();
-            List<InventoryStat> inventoryList = dao.getInventoryStats();
+            List<InventoryStat> inventoryList = dao.getInventoryStatsPage(page, pageSize);
+            int totalRecords = dao.getTotalInventoryCount();
+            int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
             request.setAttribute("inventoryList", inventoryList);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
             request.getRequestDispatcher("admin/inventory.jsp").forward(request, response);
         }
     }
