@@ -68,45 +68,6 @@ public class UserDAO extends DBContext {
         return list;
     }
 
-
-    return list;
-}
-
-    // Lấy top user có phân trang
-    public List<TopUser> getTopUserPage(int page, int pageSize) {
-        List<TopUser> list = new ArrayList<>();
-        String sql = "SELECT * FROM (SELECT u.FullName, COUNT(o.OrderID) AS TotalOrders, SUM(ISNULL(o.TotalAmount, 0)) AS TotalSpent, ROW_NUMBER() OVER (ORDER BY SUM(ISNULL(o.TotalAmount, 0)) DESC) AS rn FROM dbo.Users u JOIN dbo.Orders o ON u.UserId = o.UserId GROUP BY u.FullName) t WHERE rn BETWEEN ? AND ?";
-        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            int start = (page - 1) * pageSize + 1;
-            int end = page * pageSize;
-            ps.setInt(1, start);
-            ps.setInt(2, end);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String fullName = rs.getString("FullName");
-                int orders = rs.getInt("TotalOrders");
-                double spent = rs.getDouble("TotalSpent");
-                list.add(new TopUser(fullName, orders, spent));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    // Đếm tổng số top user
-    public int getTotalTopUserCount() {
-        String sql = "SELECT COUNT(*) FROM (SELECT u.FullName FROM dbo.Users u JOIN dbo.Orders o ON u.UserId = o.UserId GROUP BY u.FullName) t";
-        try (Connection conn = DBContext.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) return rs.getInt(1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-   
-====
-
 //dang nhap
     public User login(String username, String password) {
         String sql = "SELECT * FROM [Users] WHERE [Username] = ?";
@@ -374,26 +335,4 @@ public class UserDAO extends DBContext {
         return false;
     }
 
-    public List<User> getAllAdmins() {
-        List<User> adminList = new ArrayList<>();
-        String sql = "SELECT * FROM Users WHERE Role = 'Admin' AND IsActive = 1";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                User user = new User();
-                user.setUserId(rs.getInt("UserID"));
-                user.setUsername(rs.getString("Username"));
-                user.setPassword(rs.getString("Password"));
-                user.setFullName(rs.getString("FullName"));
-                user.setEmail(rs.getString("Email"));
-                user.setPhone(rs.getString("Phone"));
-                user.setRole(rs.getString("Role"));
-                user.setIsActive(rs.getBoolean("IsActive"));
-                user.setCreateAt(rs.getTimestamp("CreatedAt"));
-                adminList.add(user);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return adminList;
-    }
 }
