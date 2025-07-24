@@ -573,19 +573,7 @@
             </div>
         </div>
 
-        <footer class="footer text-center mt-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 text-md-start mb-2 mb-md-0">
-                        <b>FashionShop</b> &copy; 2024. All rights reserved.
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <span><i class="fa fa-phone"></i> 0123 456 789</span> &nbsp;|&nbsp;
-                        <span><i class="fa fa-envelope"></i> support@fashionshop.vn</span>
-                    </div>
-                </div>
-            </div>
-        </footer>
+        
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
