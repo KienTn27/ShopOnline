@@ -390,4 +390,18 @@ public class UserDAO extends DBContext {
             return false;
         }
     } 
+     public Integer getIsDeletedByUsername(String username) {
+        String sql = "SELECT is_deleted FROM [Users] WHERE [Username] = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("is_deleted");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
