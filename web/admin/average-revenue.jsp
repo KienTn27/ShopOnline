@@ -26,8 +26,8 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f4f7fa;
-            color: #333;
+            background: #e3f0ff;
+            color: #1a237e;
             margin: 0;
             padding: 0;
         }
@@ -80,12 +80,20 @@
         }
 
         .section-header {
-            margin-bottom: 1rem;
+            margin-bottom: 28px;
         }
 
         .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #2563eb;
+            letter-spacing: 1px;
+        }
+
+        .section-subtitle {
+            color: #5c6bc0;
+            font-size: 1.2rem;
+            margin-top: 8px;
         }
 
         .tabs-container {
@@ -207,266 +215,280 @@
         }
 
         .table-section {
-            margin-bottom: 2rem;
-        }
-
-        .table-card {
+            max-width: 1200px;
+            margin: 48px auto 0 auto;
             background: #fff;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 32px;
+            box-shadow: 0 8px 32px rgba(60, 100, 180, 0.10);
+            padding: 48px 36px 36px 36px;
         }
-
+        .table-card {
+            background: #f6faff;
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(60, 100, 180, 0.07);
+            padding: 32px 18px 18px 18px;
+        }
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #e3eafc;
+            border-radius: 6px;
+            padding: 2px 8px;
+        }
+        .search-input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 1rem;
+            padding: 6px 4px;
+        }
+        .search-btn {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        .table-btn {
+            background: #e3eafc;
+            color: #2563eb;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .table-btn:hover {
+            background: #2563eb;
+            color: #fff;
+        }
         .table-responsive {
             overflow-x: auto;
         }
-
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #f6faff;
+            border-radius: 16px;
+            overflow: hidden;
+            font-size: 1.18rem;
         }
-
         th, td {
-            padding: 1rem;
+            padding: 22px 16px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
-
         th {
-            background: #f1f1f1;
-            font-weight: 600;
+            background: #b6d4fe;
+            color: #2563eb;
+            font-weight: 700;
+            font-size: 1.18rem;
+            border-bottom: 3px solid #2563eb;
         }
-
+        tr:nth-child(even) {
+            background: #e3f0ff;
+        }
+        tr:nth-child(odd) {
+            background: #f6faff;
+        }
+        .currency {
+            font-weight: 600;
+            color: #2563eb;
+        }
+        .highlight {
+            background: #e0f2fe;
+            border-radius: 8px;
+        }
         .no-data {
             text-align: center;
-            color: #999;
+            color: #888;
+            padding: 32px 0;
+            font-size: 1.2rem;
         }
-
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+        .page-btn {
+            background: #b6d4fe;
+            color: #2563eb;
+            border: none;
+            border-radius: 32px;
+            padding: 14px 32px;
+            font-size: 1.18rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(60, 100, 180, 0.07);
+        }
+        .page-btn:hover {
+            background: #2563eb;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(60, 100, 180, 0.13);
+        }
+        .page-btn.active {
+            background: #2563eb;
+            color: #fff;
+            font-weight: 800;
+        }
+        .page-btn.disabled {
+            background: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        @media (max-width: 1200px) {
+            .table-section {
+                padding: 18px 2px 18px 2px;
+            }
+            .table-card {
+                padding: 10px 2px 10px 2px;
+            }
+            th, td {
+                padding: 10px 4px;
+            }
+        }
+        @media (max-width: 700px) {
+            .section-title {
+                font-size: 1.3rem;
+            }
+            .table-section {
+                padding: 2px;
+            }
+            .table-card {
+                padding: 2px;
+            }
+            th, td {
+                padding: 6px 2px;
+                font-size: 1rem;
+            }
+        }
         .btn-back-menu {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            background: #e3f2fd;
+            gap: 0.7rem;
+            background: #b6d4fe;
             color: #2563eb;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1rem;
             border: none;
-            border-radius: 8px;
-            padding: 0.6rem 1.2rem;
-            margin-bottom: 1.2rem;
+            border-radius: 32px;
+            padding: 8px 18px;
+            margin: 16px 0 24px 0;
             text-decoration: none;
-            box-shadow: 0 2px 8px rgba(72,187,255,0.08);
-            transition: background 0.2s, color 0.2s;
+            box-shadow: 0 2px 12px rgba(60, 100, 180, 0.10);
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .btn-back-menu i {
+            font-size: 1.1em;
         }
         .btn-back-menu:hover {
-            background: #90cdf4;
+            background: #2563eb;
             color: #fff;
+            box-shadow: 0 4px 18px rgba(60, 100, 180, 0.18);
         }
-
-        @media (max-width: 768px) {
-            .dashboard {
-                padding: 1rem;
-            }
-
-            .dashboard-title {
-                font-size: 1.5rem;
-            }
-
-            .header-actions .action-btn {
-                padding: 0.5rem 1rem;
+        @media (max-width: 700px) {
+            .btn-back-menu {
+                font-size: 0.95rem;
+                padding: 6px 12px;
             }
         }
     </style>
 </head>
 <body>
     <a href="admin/menu.jsp" class="btn-back-menu"><i class="fas fa-arrow-left"></i> Quay lại menu</a>
-    <div class="dashboard">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <h1 class="dashboard-title"><span>📊</span> Doanh thu trung bình/ngày</h1>
-            <div class="header-actions">
-                <button class="action-btn primary" onclick="exportData()">
-                    <span class="btn-icon">📥</span>
-                    Xuất báo cáo
-                </button>
-                <button class="action-btn secondary" onclick="refreshData()">
-                    <span class="btn-icon">🔄</span>
-                    Làm mới
-                </button>
-            </div>
+    <div class="table-section" id="table-section">
+        <div class="section-header">
+            <h2 class="section-title">📋 Bảng chi tiết doanh thu</h2>
+            <p class="section-subtitle">Dữ liệu chi tiết về doanh thu và đơn hàng</p>
         </div>
-
-        <!-- Stats Summary with Tabs -->
-        <div class="stats-summary">
-            <div class="section-header">
-                <h2 class="section-title">📈 Tổng quan</h2>
-                <p class="section-subtitle">Các chỉ số quan trọng về doanh thu</p>
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab active" onclick="openTab(event, 'table-overview')">Tổng quan</button>
+                
             </div>
-            <div class="tabs-container">
-                <div class="tabs">
-                    <button class="tab active" onclick="openTab(event, 'overview')">Tổng quan</button>
-                    <button class="tab" onclick="openTab(event, 'details')">Chi tiết</button>
-                </div>
-                <div class="tab-content" id="overview" style="display: block;">
-                    <div class="stats-grid">
-                        <div class="stat-card primary">
-                            <div class="stat-icon">💰</div>
-                            <div class="stat-content">
-                                <div class="stat-title">Tổng doanh thu</div>
-                                <div class="stat-value"><%= String.format("%,.0f", totalRevenue) %> đ</div>
-                                <div class="stat-trend positive">+15% so với tháng trước</div>
-                            </div>
-                        </div>
-                        <div class="stat-card secondary">
-                            <div class="stat-icon">📦</div>
-                            <div class="stat-content">
-                                <div class="stat-title">Tổng đơn hàng</div>
-                                <div class="stat-value"><%= totalOrders %></div>
-                                <div class="stat-trend positive">+10% so với tuần trước</div>
-                            </div>
-                        </div>
-                        <div class="stat-card success">
-                            <div class="stat-icon">📈</div>
-                            <div class="stat-content">
-                                <div class="stat-title">Doanh thu trung bình/đơn</div>
-                                <div class="stat-value"><%= String.format("%,.0f", avgRevenueAll) %> đ</div>
-                                <div class="stat-trend neutral">Ổn định</div>
-                            </div>
-                        </div>
-                        <div class="stat-card warning">
-                            <div class="stat-icon">🏆</div>
-                            <div class="stat-content">
-                                <div class="stat-title">Doanh thu TB cao nhất</div>
-                                <div class="stat-value"><%= String.format("%,.0f", maxAvgRevenue) %> đ</div>
-                                <div class="stat-trend positive">Kỷ lục mới</div>
-                            </div>
+            <div class="tab-content" id="table-overview" style="display: block;">
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 class="table-title">Dữ liệu doanh thu</h3>
+                        <div class="table-actions">
                         </div>
                     </div>
-                </div>
-                <div class="tab-content" id="details" style="display: none;">
-                    <p class="no-data">Chưa có dữ liệu chi tiết để hiển thị. Vui lòng làm mới hoặc thêm dữ liệu.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Chart Section -->
-        <div class="chart-section">
-            <div class="section-header">
-                <h2 class="section-title">📊 Biểu đồ phân tích</h2>
-                <p class="section-subtitle">Trực quan hóa dữ liệu doanh thu và đơn hàng</p>
-            </div>
-            <div class="charts-grid">
-                <!-- Chart 1: Doanh thu trung bình/đơn -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3 class="chart-title">Doanh thu trung bình/đơn</h3>
-                        <div class="chart-actions">
-                            <button class="chart-btn" onclick="downloadChart('avgRevenueChart')" title="Tải xuống">
-                                <span class="btn-icon">📥</span>
-                            </button>
-                        </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ngày</th>
+                                    <th>Số đơn hàng</th>
+                                    <th>Tổng doanh thu</th>
+                                    <th>Doanh thu trung bình</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (RevenueStat s : stats) { %>
+                                <tr>
+                                    <td class="date-cell"><%= s.getLabel() %></td>
+                                    <td class="order-cell"><%= s.getTotalOrders() %></td>
+                                    <td class="currency revenue-cell"><%= String.format("%,.0f", s.getTotalRevenue()) %> đ</td>
+                                    <td class="currency avg-revenue-cell highlight"><%= String.format("%,.0f", s.getAvgRevenue()) %> đ</td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="chart-container">
-                        <canvas id="avgRevenueChart"></canvas>
-                    </div>
-                </div>
-                <!-- Chart 2: Tổng doanh thu theo ngày -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3 class="chart-title">Tổng doanh thu theo ngày</h3>
-                        <div class="chart-actions">
-                            <button class="chart-btn" onclick="downloadChart('totalRevenueChart')" title="Tải xuống">
-                                <span class="btn-icon">📥</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="totalRevenueChart"></canvas>
-                    </div>
-                </div>
-                <!-- Chart 3: Số đơn hàng theo ngày -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3 class="chart-title">Số đơn hàng theo ngày</h3>
-                        <div class="chart-actions">
-                            <button class="chart-btn" onclick="downloadChart('totalOrdersChart')" title="Tải xuống">
-                                <span class="btn-icon">📥</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="totalOrdersChart"></canvas>
-                    </div>
-                </div>
-                <!-- Chart 4: Tỷ lệ đóng góp doanh thu -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3 class="chart-title">Tỷ lệ đóng góp doanh thu</h3>
-                        <div class="chart-actions">
-                            <button class="chart-btn" onclick="downloadChart('revenuePieChart')" title="Tải xuống">
-                                <span class="btn-icon">📥</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="revenuePieChart"></canvas>
+                    <!-- PHÂN TRANG -->
+                    <div class="pagination">
+<%
+    Integer currentPage = (Integer) request.getAttribute("currentPage");
+    Integer totalPages = (Integer) request.getAttribute("totalPages");
+    if (totalPages != null && totalPages > 1) {
+        // Nút Trước
+        if (currentPage > 1) {
+            out.print("<a href='average-revenue?page=" + (currentPage - 1) + "' class='page-btn'>Trước</a>");
+        } else {
+            out.print("<span class='page-btn disabled'>Trước</span>");
+        }
+        // Các nút số trang
+        for (int i = 1; i <= totalPages; i++) {
+            if (i == currentPage) {
+                out.print("<span class='page-btn active'>" + i + "</span>");
+            } else {
+                out.print("<a href='average-revenue?page=" + i + "' class='page-btn'>" + i + "</a>");
+            }
+        }
+        // Nút Sau
+        if (currentPage < totalPages) {
+            out.print("<a href='average-revenue?page=" + (currentPage + 1) + "' class='page-btn'>Sau</a>");
+        } else {
+            out.print("<span class='page-btn disabled'>Sau</span>");
+        }
+    }
+%>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Table Section with Tabs -->
-        <div class="table-section">
-            <div class="section-header">
-                <h2 class="section-title">📋 Bảng chi tiết doanh thu</h2>
-                <p class="section-subtitle">Dữ liệu chi tiết về doanh thu và đơn hàng</p>
-            </div>
-            <div class="tabs-container">
-                <div class="tabs">
-                    <button class="tab active" onclick="openTab(event, 'table-overview')">Tổng quan</button>
-                    <button class="tab" onclick="openTab(event, 'table-details')">Chi tiết</button>
-                </div>
-                <div class="tab-content" id="table-overview" style="display: block;">
-                    <div class="table-card">
-                        <div class="table-header">
-                            <h3 class="table-title">Dữ liệu doanh thu</h3>
-                            <div class="table-actions">
-                                <div class="search-box">
-                                    <input type="text" placeholder="Tìm kiếm..." class="search-input">
-                                    <button class="search-btn">🔍</button>
-                                </div>
-                                <button class="table-btn" onclick="exportTable()">
-                                    <span class="btn-icon">📊</span>
-                                    Xuất Excel
-                                </button>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Ngày</th>
-                                        <th>Số đơn hàng</th>
-                                        <th>Tổng doanh thu</th>
-                                        <th>Doanh thu trung bình</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% for (RevenueStat s : stats) { %>
-                                    <tr>
-                                        <td class="date-cell"><%= s.getLabel() %></td>
-                                        <td class="order-cell"><%= s.getTotalOrders() %></td>
-                                        <td class="currency revenue-cell"><%= String.format("%,.0f", s.getTotalRevenue()) %> đ</td>
-                                        <td class="currency avg-revenue-cell highlight"><%= String.format("%,.0f", s.getAvgRevenue()) %> đ</td>
-                                    </tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-content" id="table-details" style="display: none;">
-                    <p class="no-data">Chưa có dữ liệu chi tiết bổ sung để hiển thị.</p>
-                </div>
+            <div class="tab-content" id="table-details" style="display: none;">
+                <p class="no-data">Chưa có dữ liệu chi tiết bổ sung để hiển thị.</p>
             </div>
         </div>
     </div>
@@ -781,6 +803,14 @@
                     }
                 }
             }
+        });
+
+        document.getElementById('show-detail-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('table-section').style.display = 'block';
+            document.getElementById('show-detail-btn').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('table-section').scrollIntoView({behavior: 'smooth'});
         });
     </script>
 </body>

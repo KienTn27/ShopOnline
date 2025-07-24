@@ -56,9 +56,26 @@ public class TopProductServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        int page = 1;
+        int pageSize = 10; // Số dòng mỗi trang, có thể chỉnh
+        try {
+            String pageParam = request.getParameter("page");
+            if (pageParam != null) {
+                page = Integer.parseInt(pageParam);
+                if (page < 1) page = 1;
+            }
+        } catch (NumberFormatException e) {
+            page = 1;
+        }
 
-        List<TopProduct> topProducts = new ProductDAO().getTopSellingProducts();
+        ProductDAO dao = new ProductDAO();
+        List<TopProduct> topProducts = dao.getTopSellingProductsPage(page, pageSize);
+        int totalRecords = dao.getTotalTopSellingProductsCount();
+        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+
         request.setAttribute("topProducts", topProducts);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("/admin/top-products.jsp").forward(request, response);
     } 
 

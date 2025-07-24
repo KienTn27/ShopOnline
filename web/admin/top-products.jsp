@@ -203,6 +203,35 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- PHÂN TRANG -->
+                        <div class="pagination">
+<%
+    Integer currentPage = (Integer) request.getAttribute("currentPage");
+    Integer totalPages = (Integer) request.getAttribute("totalPages");
+    if (totalPages != null && totalPages > 1) {
+        // Nút Trước
+        if (currentPage > 1) {
+            out.print("<a href='TopProductsServlet?page=" + (currentPage - 1) + "' class='page-btn'>Trước</a>");
+        } else {
+            out.print("<span class='page-btn disabled'>Trước</span>");
+        }
+        // Các nút số trang
+        for (int i = 1; i <= totalPages; i++) {
+            if (i == currentPage) {
+                out.print("<span class='page-btn active'>" + i + "</span>");
+            } else {
+                out.print("<a href='TopProductsServlet?page=" + i + "' class='page-btn'>" + i + "</a>");
+            }
+        }
+        // Nút Sau
+        if (currentPage < totalPages) {
+            out.print("<a href='TopProductsServlet?page=" + (currentPage + 1) + "' class='page-btn'>Sau</a>");
+        } else {
+            out.print("<span class='page-btn disabled'>Sau</span>");
+        }
+    }
+%>
+                        </div>
                     </div>
                 </div>
                 <div class="tab-content" id="table-details" style="display: none;">

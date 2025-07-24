@@ -4,6 +4,7 @@
 <%
     List<ProductSalesStat> stats = (List<ProductSalesStat>) request.getAttribute("stats");
     if (stats == null) stats = new ArrayList<>();
+    Boolean showTable = (Boolean) request.getAttribute("showTable");
 %>
 
 <!DOCTYPE html>
@@ -213,6 +214,47 @@
             color: #ccc;
         }
 
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem 0 1rem 0;
+        }
+        .page-btn {
+            border: 2px solid #2563eb;
+            background: #fff;
+            color: #2563eb;
+            border-radius: 999px;
+            padding: 6px 18px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            margin: 0 2px;
+            outline: none;
+            box-shadow: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .page-btn:hover:not(.active):not(.disabled) {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+        .page-btn.active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+            cursor: default;
+        }
+        .page-btn.disabled {
+            background: #f1f5f9;
+            color: #b0b8c9;
+            border-color: #e2e8f0;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         @media (max-width: 900px) {
             .content { padding: 20px; }
             .section-title { font-size: 1.3rem; }
@@ -252,7 +294,87 @@
 
         <div class="content">
             <a href="admin/menu.jsp" class="btn-back-menu"><i class="fas fa-arrow-left"></i> Quay lại menu</a>
-            <% if (stats != null && !stats.isEmpty()) { %>
+<% if (showTable == null || !showTable) { %>
+    <a href="#" class="btn-summary-table" id="show-detail-btn" style="display:block;max-width:350px;margin:16px auto 0 auto;font-weight:600;font-size:1.1em;padding:12px 24px;background:#1976d2;color:#fff;border-radius:12px;text-align:center;text-decoration:none;">
+        <span style="font-size:1.3em;vertical-align:middle;">📋</span>
+        <span style="vertical-align:middle;">Xem bảng tổng hợp bán hàng</span>
+    </a>
+<% } %>
+<% if (showTable != null && showTable) { %>
+<%
+    int totalProducts = 0;
+    for (ProductSalesStat s : stats) {
+        totalProducts += s.getTotalQuantity();
+    }
+    double avgDaily = stats.size() > 0 ? (double) totalProducts / stats.size() : 0;
+%>
+            <div class="table-section" id="sales-table-section" style="display:block;">
+                <h2 class="section-title">
+                    <i class="fas fa-table"></i>
+                    Bảng chi tiết bán hàng
+                </h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-calendar-alt"></i> Ngày bán</th>
+                                <th><i class="fas fa-shopping-cart"></i> Số lượng sản phẩm</th>
+                                <th><i class="fas fa-percentage"></i> Tỷ lệ so với trung bình</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (ProductSalesStat s : stats) { 
+                                double percentage = avgDaily > 0 ? (s.getTotalQuantity() / avgDaily) * 100 : 0;
+                                String percentageClass = percentage >= 100 ? "text-success" : "text-warning";
+                            %>
+                            <tr>
+                                <td><%= s.getSaleDate() %></td>
+                                <td><strong><%= s.getTotalQuantity() %></strong> sản phẩm</td>
+                                <td class="<%= percentageClass %>">
+                                    <%= String.format("%.1f", percentage) %>%
+                                    <% if (percentage >= 100) { %>
+                                        <i class="fas fa-arrow-up" style="color: green;"></i>
+                                    <% } else { %>
+                                        <i class="fas fa-arrow-down" style="color: orange;"></i>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- PHÂN TRANG -->
+                <div class="pagination">
+<%
+    Integer currentPage = (Integer) request.getAttribute("currentPage");
+    Integer totalPages = (Integer) request.getAttribute("totalPages");
+    if (totalPages != null && totalPages > 1) {
+        // Nút Trước
+        if (currentPage > 1) {
+            out.print("<a href='product-sales?page=" + (currentPage - 1) + "&showTable=1' class='page-btn'>Trước</a>");
+        } else {
+            out.print("<span class='page-btn disabled'>Trước</span>");
+        }
+        // Các nút số trang
+        for (int i = 1; i <= totalPages; i++) {
+            if (i == currentPage) {
+                out.print("<span class='page-btn active'>" + i + "</span>");
+            } else {
+                out.print("<a href='product-sales?page=" + i + "&showTable=1' class='page-btn'>" + i + "</a>");
+            }
+        }
+        // Nút Sau
+        if (currentPage < totalPages) {
+            out.print("<a href='product-sales?page=" + (currentPage + 1) + "&showTable=1' class='page-btn'>Sau</a>");
+        } else {
+            out.print("<span class='page-btn disabled'>Sau</span>");
+        }
+    }
+%>
+                </div>
+            </div>
+<% } else if (stats != null && !stats.isEmpty()) { %>
+            <div id="dashboard-section">
                 <!-- Thống kê tổng quan -->
                 <div class="stats-overview">
                     <%
@@ -298,51 +420,79 @@
                         <canvas id="productSalesChart" height="100"></canvas>
                     </div>
                 </div>
-
-                <!-- Bảng chi tiết -->
-                <div class="table-section">
-                    <h2 class="section-title">
-                        <i class="fas fa-table"></i>
-                        Bảng chi tiết bán hàng
-                    </h2>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th><i class="fas fa-calendar-alt"></i> Ngày bán</th>
-                                    <th><i class="fas fa-shopping-cart"></i> Số lượng sản phẩm</th>
-                                    <th><i class="fas fa-percentage"></i> Tỷ lệ so với trung bình</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% for (ProductSalesStat s : stats) { 
-                                    double percentage = avgDaily > 0 ? (s.getTotalQuantity() / avgDaily) * 100 : 0;
-                                    String percentageClass = percentage >= 100 ? "text-success" : "text-warning";
-                                %>
-                                <tr>
-                                    <td><%= s.getSaleDate() %></td>
-                                    <td><strong><%= s.getTotalQuantity() %></strong> sản phẩm</td>
-                                    <td class="<%= percentageClass %>">
-                                        <%= String.format("%.1f", percentage) %>%
-                                        <% if (percentage >= 100) { %>
-                                            <i class="fas fa-arrow-up" style="color: green;"></i>
-                                        <% } else { %>
-                                            <i class="fas fa-arrow-down" style="color: orange;"></i>
-                                        <% } %>
-                                    </td>
-                                </tr>
-                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+            <div class="table-section" id="sales-table-section" style="display:none;">
+                <h2 class="section-title">
+                    <i class="fas fa-table"></i>
+                    Bảng chi tiết bán hàng
+                </h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-calendar-alt"></i> Ngày bán</th>
+                                <th><i class="fas fa-shopping-cart"></i> Số lượng sản phẩm</th>
+                                <th><i class="fas fa-percentage"></i> Tỷ lệ so với trung bình</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (ProductSalesStat s : stats) { 
+                                double percentage = avgDaily > 0 ? (s.getTotalQuantity() / avgDaily) * 100 : 0;
+                                String percentageClass = percentage >= 100 ? "text-success" : "text-warning";
+                            %>
+                            <tr>
+                                <td><%= s.getSaleDate() %></td>
+                                <td><strong><%= s.getTotalQuantity() %></strong> sản phẩm</td>
+                                <td class="<%= percentageClass %>">
+                                    <%= String.format("%.1f", percentage) %>%
+                                    <% if (percentage >= 100) { %>
+                                        <i class="fas fa-arrow-up" style="color: green;"></i>
+                                    <% } else { %>
+                                        <i class="fas fa-arrow-down" style="color: orange;"></i>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
                 </div>
-            <% } else { %>
-                <div class="no-data">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>Chưa có dữ liệu bán hàng</h3>
-                    <p>Hiện tại chưa có thông tin về số lượng sản phẩm bán ra.</p>
+                <!-- PHÂN TRANG -->
+                <div class="pagination">
+<%
+    Integer currentPage = (Integer) request.getAttribute("currentPage");
+    Integer totalPages = (Integer) request.getAttribute("totalPages");
+    if (totalPages != null && totalPages > 1) {
+        // Nút Trước
+        if (currentPage > 1) {
+            out.print("<a href='product-sales?page=" + (currentPage - 1) + "&showTable=1' class='page-btn'>Trước</a>");
+        } else {
+            out.print("<span class='page-btn disabled'>Trước</span>");
+        }
+        // Các nút số trang
+        for (int i = 1; i <= totalPages; i++) {
+            if (i == currentPage) {
+                out.print("<span class='page-btn active'>" + i + "</span>");
+            } else {
+                out.print("<a href='product-sales?page=" + i + "&showTable=1' class='page-btn'>" + i + "</a>");
+            }
+        }
+        // Nút Sau
+        if (currentPage < totalPages) {
+            out.print("<a href='product-sales?page=" + (currentPage + 1) + "&showTable=1' class='page-btn'>Sau</a>");
+        } else {
+            out.print("<span class='page-btn disabled'>Sau</span>");
+        }
+    }
+%>
                 </div>
-            <% } %>
+            </div>
+<% } else { %>
+            <div class="no-data">
+                <i class="fas fa-chart-line"></i>
+                <h3>Chưa có dữ liệu bán hàng</h3>
+                <p>Hiện tại chưa có thông tin về số lượng sản phẩm bán ra.</p>
+            </div>
+<% } %>
         </div>
     </div>
 
@@ -353,7 +503,7 @@
 
     <!-- Đặt plugin ChartDataLabels trước -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
-    <% if (stats != null && !stats.isEmpty()) { %>
+<% if (stats != null && !stats.isEmpty()) { %>
     <script>
     function chartProductSales() {
         const labels = [<% for (ProductSalesStat s : stats) { %>"<%= s.getSaleDate() %>"<%= stats.indexOf(s) < stats.size() - 1 ? "," : "" %><% } %>];
@@ -452,11 +602,11 @@
         });
     }
     </script>
-    <% } else { %>
+<% } else { %>
     <script>
     function chartProductSales() {}
     </script>
-    <% } %>
+<% } %>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.stat-card');
@@ -472,5 +622,11 @@
             chartProductSales();
         });
     </script>
+    <script>
+    document.getElementById('show-detail-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'product-sales?page=1&showTable=1';
+    });
+</script>
 </body>
 </html>
