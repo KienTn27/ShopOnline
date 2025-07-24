@@ -77,7 +77,7 @@ public class UserDAO extends DBContext {
    
 //dang nhap
     public User login(String username, String password) {
-        String sql = "SELECT * FROM [Users] WHERE [Username] = ?";
+        String sql = "SELECT * FROM [Users] WHERE [Username] = ? AND is_deleted = 0";
 
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -206,7 +206,7 @@ public class UserDAO extends DBContext {
     //// Lấy tất cả người dùng, admin lên đầu
     public List<User> getAllUsers() throws SQLException {
         List<User> userList = new ArrayList<>();
-        String sql = "SELECT * FROM Users ORDER BY CASE WHEN Role = 'Admin' THEN 0 ELSE 1 END, UserID";
+        String sql = "SELECT * FROM Users WHERE is_deleted = 0 ORDER BY CASE WHEN Role = 'Admin' THEN 0 ELSE 1 END, UserID";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 User user = new User();
@@ -340,6 +340,62 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // Thêm tài khoản Super Admin
+    public boolean createSuperAdmin(String username, String password, String fullName, String email, String phone) {
+        String sql = "INSERT INTO Users (Username, Password, FullName, Email, Phone, Role, CreatedAt, IsActive, is_deleted) VALUES (?, ?, ?, ?, ?, 'SuperAdmin', GETDATE(), 1, 0)";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setString(3, fullName);
+            ps.setString(4, email);
+            ps.setString(5, phone);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Block user (set IsActive = 0)
+    public boolean blockUser(int userId) {
+        String sql = "UPDATE Users SET IsActive = 0 WHERE UserID = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Unblock user (set IsActive = 1)
+    public boolean unblockUser(int userId) {
+        String sql = "UPDATE Users SET IsActive = 1 WHERE UserID = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Xóa mềm user (is_deleted = 1)
+    public boolean softDeleteUser(int userId) {
+        String sql = "UPDATE Users SET is_deleted = 1 WHERE UserID = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

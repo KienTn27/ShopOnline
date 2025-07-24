@@ -94,7 +94,7 @@
         <button type="submit" class="btn btn-create">
             <i class="fas fa-plus-circle"></i> Tạo tài khoản Shipper
         </button>
-        <a href="<%=request.getContextPath()%>/adminUser.jsp" class="btn btn-link mt-2">&larr; Quay lại danh sách user</a>
+        <a href="<%=request.getContextPath()%>/admin/user-management" class="btn btn-link mt-2">&larr; Quay lại danh sách user</a>
     </form>
 </div>
 </body>
