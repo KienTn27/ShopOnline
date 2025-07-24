@@ -172,8 +172,9 @@ public class LoginServlet extends HttpServlet {
                     request.getRequestDispatcher("./view/login.jsp").forward(request, response);
                 }
             } else {
-                // Kiểm tra tài khoản có tồn tại nhưng bị xóa mềm không
-                if (userDAO.isUsernameExists(username)) {
+                // Kiểm tra trạng thái is_deleted của username
+                Integer isDeleted = userDAO.getIsDeletedByUsername(username);
+                if (isDeleted != null && isDeleted == 1) {
                     request.setAttribute("errorMessage", "Tài khoản của bạn đã bị xóa khỏi hệ thống. Vui lòng liên hệ quản trị viên nếu đây là nhầm lẫn.");
                 } else {
                     request.setAttribute("errorMessage", "Tên đăng nhập hoặc mật khẩu không đúng.");
@@ -186,6 +187,5 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại sau.");
             request.getRequestDispatcher("./view/login.jsp").forward(request, response);
         }
-    } 
+    }
 }
- 
