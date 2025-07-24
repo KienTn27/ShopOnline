@@ -382,10 +382,23 @@
                                                 <% } %>
                                     </li>
                                     <li class="nav-item mx-2">
-                                        <form class="d-flex position-relative" autocomplete="off" onsubmit="return false;">
-                                            <input class="form-control me-2" type="search" id="searchInput" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" style="min-width:220px;">
-                                            <div id="searchSuggestions" class="list-group position-absolute w-100" style="top:100%; z-index:1000; display:none;"></div>
-                                        </form>
+        <form id="filterForm" action="Home" method="get">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div style="display: flex; background: white; justify-content: space-between; border-radius: 10px; align-items: center">
+                        <label style="margin-left: 5px; margin-top: 8px" class="form-label">Tìm kiếm sản phẩm</label>
+                        <select style="max-width: 40%" class="form-select" id="categoryFilter" name="categoryFilter" onchange="this.form.submit()">
+                            <option value="0">Tất cả</option>
+                            <c:forEach var="category" items="${categories}">
+                                <option value="${category.categoryID}" ${categorySelected == category.categoryID ? 'selected' : ''}>
+                                    ${category.name}
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>    
                                     </li>
                                 </ul>
                             </div>
