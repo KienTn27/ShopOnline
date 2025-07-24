@@ -396,6 +396,5 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
             return false;
         }
-    }
-
+    } 
 }

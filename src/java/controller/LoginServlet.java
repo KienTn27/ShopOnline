@@ -186,5 +186,6 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại sau.");
             request.getRequestDispatcher("./view/login.jsp").forward(request, response);
         }
-    }
+    } 
 }
+ 
