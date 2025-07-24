@@ -307,6 +307,9 @@
                     <i class="fas fa-shopping-cart"></i>
                     Quản Lý Đơn Hàng
                 </h1>
+                <a href="admin/menu.jsp" class="btn btn-outline-secondary mt-3">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại menu
+                </a>
             </div>
         </div>
 
@@ -316,8 +319,8 @@
                 <div class="stat-card">
                     <div class="stat-number" style="color: var(--info-color);">
                         <c:choose>
-                            <c:when test="${not empty orders}">
-                                ${orders.size()}
+                            <c:when test="${not empty totalOrders}">
+                                ${totalOrders}
                             </c:when>
                             <c:otherwise>0</c:otherwise>
                         </c:choose>
@@ -365,7 +368,7 @@
             <!-- Orders Table -->
             <div class="orders-container">
                 <div class="alert alert-info" role="alert">
-                    <i class="fas fa-info-circle"></i>
+                <i class="fas fa-info-circle"></i>
                     <strong>Thông báo:</strong> Chức năng cập nhật trạng thái đơn hàng đã được chuyển cho Shipper để tối ưu hóa quy trình giao hàng. 
                     Admin chỉ có thể xem thông tin đơn hàng.
                 </div>
@@ -460,6 +463,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- PHÂN TRANG KIỂU HOME -->
                         <c:if test="${totalPages > 1}">
                             <div style="text-align:center; margin: 20px 0;">
                                 <nav aria-label="Page navigation">
@@ -524,48 +528,48 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                                                            function showLoading(form) {
-                                                                form.classList.add('form-updating');
-                                                                form.querySelector('.btn-update').disabled = true;
-                                                            }
+                                                    function showLoading(form) {
+                                                        form.classList.add('form-updating');
+                                                        form.querySelector('.btn-update').disabled = true;
+                                                    }
 
-                                                            // Add smooth animations on page load
-                                                            document.addEventListener('DOMContentLoaded', function () {
-                                                                const cards = document.querySelectorAll('.stat-card');
-                                                                cards.forEach((card, index) => {
-                                                                    card.style.opacity = '0';
-                                                                    card.style.transform = 'translateY(30px)';
-                                                                    setTimeout(() => {
-                                                                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                                                                        card.style.opacity = '1';
-                                                                        card.style.transform = 'translateY(0)';
-                                                                    }, index * 100);
-                                                                });
+                                                    // Add smooth animations on page load
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        const cards = document.querySelectorAll('.stat-card');
+                                                        cards.forEach((card, index) => {
+                                                            card.style.opacity = '0';
+                                                            card.style.transform = 'translateY(30px)';
+                                                            setTimeout(() => {
+                                                                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                                                                card.style.opacity = '1';
+                                                                card.style.transform = 'translateY(0)';
+                                                            }, index * 100);
+                                                        });
 
-                                                                const tableContainer = document.querySelector('.orders-container');
-                                                                if (tableContainer) {
-                                                                    tableContainer.style.opacity = '0';
-                                                                    tableContainer.style.transform = 'translateY(30px)';
-                                                                    setTimeout(() => {
-                                                                        tableContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                                                                        tableContainer.style.opacity = '1';
-                                                                        tableContainer.style.transform = 'translateY(0)';
-                                                                    }, 400);
-                                                                }
-                                                            });
+                                                        const tableContainer = document.querySelector('.orders-container');
+                                                        if (tableContainer) {
+                                                            tableContainer.style.opacity = '0';
+                                                            tableContainer.style.transform = 'translateY(30px)';
+                                                            setTimeout(() => {
+                                                                tableContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                                                                tableContainer.style.opacity = '1';
+                                                                tableContainer.style.transform = 'translateY(0)';
+                                                            }, 400);
+                                                        }
+                                                    });
 
-                                                            // Auto-refresh functionality (optional)
-                                                            let autoRefresh = false;
-                                                            function toggleAutoRefresh() {
-                                                                autoRefresh = !autoRefresh;
+                                                    // Auto-refresh functionality (optional)
+                                                    let autoRefresh = false;
+                                                    function toggleAutoRefresh() {
+                                                        autoRefresh = !autoRefresh;
+                                                        if (autoRefresh) {
+                                                            setInterval(() => {
                                                                 if (autoRefresh) {
-                                                                    setInterval(() => {
-                                                                        if (autoRefresh) {
-                                                                            location.reload();
-                                                                        }
-                                                                    }, 30000); // Refresh every 30 seconds
+                                                                    location.reload();
                                                                 }
-                                                            }
+                                                            }, 30000); // Refresh every 30 seconds
+                                                        }
+                                                    }
         </script>
     </body>
 </html>

@@ -19,6 +19,7 @@
     String userSpentArray = "[" + userSpent.toString() + "]";
     if (userLabels.length() == 0) userLabelsArray = "[]";
     if (userSpent.length() == 0) userSpentArray = "[]";
+    Boolean showTable = (Boolean) request.getAttribute("showTable");
 %>
 
 <!DOCTYPE html>
@@ -176,27 +177,98 @@
         canvas {
             height: 480px !important;
         }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem 0 1rem 0;
+        }
+        .page-btn {
+            border: 2px solid #2563eb;
+            background: #fff;
+            color: #2563eb;
+            border-radius: 999px;
+            padding: 6px 18px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            margin: 0 2px;
+            outline: none;
+            box-shadow: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .page-btn:hover:not(.active):not(.disabled) {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+        .page-btn.active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+            cursor: default;
+        }
+        .page-btn.disabled {
+            background: #f1f5f9;
+            color: #b0b8c9;
+            border-color: #e2e8f0;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #e3f2fd;
+            color: #2563eb;
+            font-weight: 600;
+            border: none;
+            border-radius: 999px;
+            padding: 0.7rem 1.5rem;
+            font-size: 1.08em;
+            margin-bottom: 0;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(72,187,255,0.08);
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .btn-action:hover {
+            background: #2563eb;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.10);
+        }
+        .btn-action i, .btn-action span[style*='vertical-align:middle'] {
+            color: inherit !important;
+        }
         @media (max-width: 900px) {
             .container { padding: 1.2rem !important; }
             .section-title { font-size: 1.5rem !important; }
             .section-desc { font-size: 1.05rem !important; }
             table, thead th, tbody td { font-size: 1rem !important; }
             canvas { height: 300px !important; }
+            .btn-action { font-size: 1em; padding: 0.6rem 1rem; }
         }
     </style>
 </head>
 <body class="main-bg">
-    <div class="container" style="max-width: 900px; margin: 0 auto; padding-top: 2.5rem;">
-        <a href="admin/menu.jsp" class="btn-back-menu"><i class="fas fa-arrow-left"></i> Quay lại menu</a>
-        <div class="section-card">
-            <div class="section-title"><i class="fa-solid fa-crown"></i>Người dùng chi tiêu nhiều nhất</div>
-            <div class="section-desc">Danh sách những khách hàng có tổng chi tiêu cao nhất trên hệ thống của bạn.</div>
-        </div>
-        <div class="section-card chart-section">
-            <div class="section-title"><i class="fa-solid fa-chart-bar"></i>Biểu đồ chi tiêu người dùng</div>
-            <canvas id="userChart"></canvas>
-        </div>
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+        <a href="admin/menu.jsp" class="btn-action"><i class="fas fa-arrow-left"></i> Quay lại menu</a>
+        <% if (showTable == null || !showTable) { %>
+            <a href="#" class="btn-action" id="show-detail-btn">
+                <span style="font-size:1.3em;vertical-align:middle;">📋</span>
+                <span style="vertical-align:middle;">Xem bảng chi tiết người dùng</span>
+            </a>
+        <% } %>
+    </div>
+    <% if (showTable != null && showTable) { %>
+        <% Integer currentPage = (Integer) request.getAttribute("currentPage"); %>
+        <a href="TopUsersServlet?page=<%= currentPage != null ? currentPage : 1 %>" class="btn-action" id="back-overview-btn" style="margin-bottom:1.5rem;">
+            <span style="font-size:1.3em;vertical-align:middle;">🔙</span>
+            <span style="vertical-align:middle;">Quay lại tổng quan</span>
+        </a>
         <div class="section-card table-section">
+            <!-- bảng chi tiết người dùng (copy nguyên phần table-section cũ vào đây) -->
             <div class="section-title"><i class="fa-solid fa-table"></i>Bảng chi tiết người dùng</div>
             <div class="table-container">
                 <table>
@@ -218,7 +290,43 @@
                     </tbody>
                 </table>
             </div>
+            <!-- PHÂN TRANG (giữ nguyên logic phân trang) -->
+            <div class="pagination">
+<%
+    Integer totalPages = (Integer) request.getAttribute("totalPages");
+    if (totalPages != null && totalPages > 1) {
+        if (currentPage > 1) {
+            out.print("<a href='TopUsersServlet?page=" + (currentPage - 1) + "&showTable=1' class='page-btn'>Trước</a>");
+        } else {
+            out.print("<span class='page-btn disabled'>Trước</span>");
+        }
+        for (int i = 1; i <= totalPages; i++) {
+            if (i == currentPage) {
+                out.print("<span class='page-btn active'>" + i + "</span>");
+            } else {
+                out.print("<a href='TopUsersServlet?page=" + i + "&showTable=1' class='page-btn'>" + i + "</a>");
+            }
+        }
+        if (currentPage < totalPages) {
+            out.print("<a href='TopUsersServlet?page=" + (currentPage + 1) + "&showTable=1' class='page-btn'>Sau</a>");
+        } else {
+            out.print("<span class='page-btn disabled'>Sau</span>");
+        }
+    }
+%>
+            </div>
         </div>
+    <% } else { %>
+        <!-- phần overview + chart như cũ, ẩn bảng chi tiết -->
+        <div class="section-card">
+            <div class="section-title"><i class="fa-solid fa-crown"></i>Người dùng chi tiêu nhiều nhất</div>
+            <div class="section-desc">Danh sách những khách hàng có tổng chi tiêu cao nhất trên hệ thống của bạn.</div>
+        </div>
+        <div class="section-card chart-section">
+            <div class="section-title"><i class="fa-solid fa-chart-bar"></i>Biểu đồ chi tiêu người dùng</div>
+            <canvas id="userChart"></canvas>
+        </div>
+    <% } %>
     </div>
     <script>
         const labels = <%= userLabelsArray %>;
@@ -261,6 +369,15 @@
             }
         };
         new Chart(document.getElementById('userChart'), config);
+    </script>
+    <script>
+        var btn = document.getElementById('show-detail-btn');
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'TopUsersServlet?page=1&showTable=1';
+            });
+        }
     </script>
 </body>
 </html>

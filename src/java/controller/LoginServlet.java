@@ -136,6 +136,9 @@ public class LoginServlet extends HttpServlet {
             User user = userDAO.login(username, password);
 
             if (user != null) {
+                // Kiểm tra nếu tài khoản đã bị xóa mềm (is_deleted = 1)
+                // (userDAO.login đã lọc is_deleted = 0, nên nếu null thì có thể do bị xóa mềm)
+                // Tuy nhiên, để thông báo rõ ràng, cần kiểm tra lại trong trường hợp user == null
                 if (user.isActive()) {
                     HttpSession session = request.getSession();
                     session.setAttribute("user", user);
@@ -169,7 +172,12 @@ public class LoginServlet extends HttpServlet {
                     request.getRequestDispatcher("./view/login.jsp").forward(request, response);
                 }
             } else {
-                request.setAttribute("errorMessage", "Tên đăng nhập hoặc mật khẩu không đúng.");
+                // Kiểm tra tài khoản có tồn tại nhưng bị xóa mềm không
+                if (userDAO.isUsernameExists(username)) {
+                    request.setAttribute("errorMessage", "Tài khoản của bạn đã bị xóa khỏi hệ thống. Vui lòng liên hệ quản trị viên nếu đây là nhầm lẫn.");
+                } else {
+                    request.setAttribute("errorMessage", "Tên đăng nhập hoặc mật khẩu không đúng.");
+                }
                 request.getRequestDispatcher("./view/login.jsp").forward(request, response);
             }
 
@@ -178,5 +186,6 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại sau.");
             request.getRequestDispatcher("./view/login.jsp").forward(request, response);
         }
-    }
+    } 
 }
+ 

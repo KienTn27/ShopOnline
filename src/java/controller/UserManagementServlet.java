@@ -19,7 +19,7 @@ public class UserManagementServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("user");
-        if (currentUser == null || !"Admin".equals(currentUser.getRole())) {
+        if (currentUser == null || !("Admin".equals(currentUser.getRole()) || "SuperAdmin".equals(currentUser.getRole()))) {
             response.sendRedirect(request.getContextPath() + "/view/login.jsp");
             return;
         }
@@ -27,6 +27,7 @@ public class UserManagementServlet extends HttpServlet {
         try {
             List<User> userList = userDAO.getAllUsers();
             request.setAttribute("userList", userList);
+            request.setAttribute("currentUser", currentUser);
         } catch (SQLException e) {
             request.setAttribute("error", "Lỗi khi lấy danh sách người dùng");
         }
@@ -37,7 +38,7 @@ public class UserManagementServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("user");
-        if (currentUser == null || !"Admin".equals(currentUser.getRole())) {
+        if (currentUser == null || !("Admin".equals(currentUser.getRole()) || "SuperAdmin".equals(currentUser.getRole()))) {
             response.sendRedirect(request.getContextPath() + "/view/login.jsp");
             return;
         }
@@ -49,24 +50,59 @@ public class UserManagementServlet extends HttpServlet {
             User targetUser = userDAO.getUserById(userId);
             boolean isSelf = (userId == currentUser.getUserId());
             boolean isTargetAdmin = targetUser != null && "Admin".equals(targetUser.getRole());
+            boolean isTargetSuperAdmin = targetUser != null && "SuperAdmin".equals(targetUser.getRole());
+            boolean isTargetCustomer = targetUser != null && "Customer".equals(targetUser.getRole());
             switch (action) {
                 case "block":
                     if (isSelf) {
                         error = "Bạn không thể block chính mình!";
-                    } else {
-                        userDAO.updateUserStatus(userId, false);
+                    } else if ("SuperAdmin".equals(currentUser.getRole())) {
+                        if (isTargetSuperAdmin) {
+                            error = "Không thể block super admin khác!";
+                        } else {
+                            userDAO.blockUser(userId);
+                        }
+                    } else if ("Admin".equals(currentUser.getRole())) {
+                        if (isTargetCustomer) {
+                            userDAO.blockUser(userId);
+                        } else {
+                            error = "Admin chỉ có thể block customer!";
+                        }
                     }
                     break;
                 case "unblock":
-                    userDAO.updateUserStatus(userId, true);
+                    if ("SuperAdmin".equals(currentUser.getRole())) {
+                        if (isTargetSuperAdmin) {
+                            error = "Không thể mở khóa super admin khác!";
+                        } else {
+                            userDAO.unblockUser(userId);
+                        }
+                    } else if ("Admin".equals(currentUser.getRole())) {
+                        if (isTargetCustomer) {
+                            userDAO.unblockUser(userId);
+                        } else {
+                            error = "Admin chỉ có thể mở khóa customer!";
+                        }
+                    }
                     break;
                 case "delete":
                     if (isSelf) {
                         error = "Bạn không thể xóa chính mình!";
-                    } else if (isTargetAdmin) {
-                        error = "Admin không thể xóa admin khác!";
+                    } else if ("SuperAdmin".equals(currentUser.getRole())) {
+                        if (isTargetSuperAdmin) {
+                            error = "Không thể xóa super admin khác!";
+                        } else {
+                            userDAO.softDeleteUser(userId);
+                        }
                     } else {
-                        userDAO.deleteUser(userId);
+                        error = "Chỉ super admin mới có thể xóa tài khoản!";
+                    }
+                    break;
+                case "createAdmin":
+                    if (!"SuperAdmin".equals(currentUser.getRole())) {
+                        error = "Chỉ super admin mới có thể thêm admin!";
+                    } else {
+                        // Logic tạo admin sẽ được xử lý ở nơi khác (form riêng)
                     }
                     break;
                 default:
@@ -77,5 +113,5 @@ public class UserManagementServlet extends HttpServlet {
         }
         if (error != null) request.setAttribute("error", error);
         doGet(request, response);
-    }
+    } 
 } 

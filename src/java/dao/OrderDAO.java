@@ -16,7 +16,7 @@ public class OrderDAO {
     public List<Order> getAllOrders() {
         List<Order> orders = new ArrayList<>();
         Connection conn = DBContext.getInstance().getConnection();
-        String query = "SELECT * FROM Orders";
+        String query = "SELECT * FROM Orders ORDER BY OrderDate DESC";
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -38,7 +38,7 @@ public class OrderDAO {
     public List<Order> getOrdersByStatus(String status) {
         List<Order> orders = new ArrayList<>();
         Connection conn = DBContext.getInstance().getConnection();
-        String query = "SELECT * FROM Orders WHERE Status = ? ORDER BY OrderDate DESC";
+        String query = "SELECT * FROM Orders WHERE Status = ?";
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, status);
             ResultSet rs = ps.executeQuery();
@@ -121,7 +121,7 @@ public class OrderDAO {
 
     public List<Order> getOrdersByUserId(int userId) throws SQLException {
         List<Order> orders = new ArrayList<>();
-        try (Connection conn = dbContext.getConnection(); PreparedStatement ps = conn.prepareStatement("SELECT * FROM Orders WHERE UserId = ?")) {
+        try (Connection conn = dbContext.getConnection(); PreparedStatement ps = conn.prepareStatement("SELECT * FROM Orders WHERE UserId = ? ORDER BY OrderDate DESC")) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
