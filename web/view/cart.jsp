@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -698,7 +699,17 @@
                         <div class="cart-items">
                             <c:forEach var="cart" items="${sessionScope.carts}">
                                 <div class="cart-item d-flex align-items-center">
-                                    <img src="${cart.imageURL}" class="product-image" alt="${cart.productName}">
+                                    <c:choose>
+                                        <c:when test="${cart.imageURL != null && cart.imageURL ne '' && fn:startsWith(cart.imageURL, 'http')}">
+                                            <img src="${cart.imageURL}" class="product-image" alt="${cart.productName}">
+                                        </c:when>
+                                        <c:when test="${cart.imageURL != null && cart.imageURL ne ''}">
+                                            <img src="${pageContext.request.contextPath}/${cart.imageURL}" class="product-image" alt="${cart.productName}">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="${pageContext.request.contextPath}/images/no-image.png" class="product-image" alt="No image">
+                                        </c:otherwise>
+                                    </c:choose>
 
                                     <div class="product-info">
                                         <h5 class="product-name">${cart.productName}</h5>
