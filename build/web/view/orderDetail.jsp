@@ -588,7 +588,19 @@
                         ReviewDAO reviewDAO = new ReviewDAO();
                     %>
                     <% if (order != null && !orderDetails.isEmpty()) {
-                        for (OrderDetailView detail : orderDetails) { %>
+                        for (OrderDetailView detail : orderDetails) {
+                            String imageUrl = detail.getImageUrl();
+                            String finalImageUrl;
+                            if (imageUrl != null && !imageUrl.isEmpty()) {
+                                if (imageUrl.startsWith("http")) {
+                                    finalImageUrl = imageUrl;
+                                } else {
+                                    finalImageUrl = request.getContextPath() + "/" + imageUrl;
+                                }
+                            } else {
+                                finalImageUrl = request.getContextPath() + "/images/no-image.png";
+                            }
+                    %>
                     <div class="order-item-card">
                         <div class="product-main">
                             <div class="product-image">
