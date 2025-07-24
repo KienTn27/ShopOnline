@@ -31,6 +31,30 @@
                 background: #90cdf4;
                 color: #fff;
             }
+            .btn-action {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: #e3f2fd;
+                color: #2563eb;
+                font-weight: 600;
+                border: none;
+                border-radius: 999px;
+                padding: 0.7rem 1.5rem;
+                font-size: 1.08em;
+                margin: 1.5rem 0;
+                text-decoration: none;
+                box-shadow: 0 2px 8px rgba(72,187,255,0.08);
+                transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            }
+            .btn-action:hover {
+                background: #2563eb;
+                color: #fff;
+                box-shadow: 0 4px 16px rgba(37,99,235,0.10);
+            }
+            .btn-action i, .btn-action span[style*='vertical-align:middle'] {
+                color: inherit !important;
+            }
         </style>
     </head>
     <body>
@@ -63,11 +87,15 @@
                         <p class="dashboard-subtitle">Phân tích doanh thu theo ngày hoặc tháng</p>
                     </div>
                     <div class="header-actions">
-                        
+
                         <button class="action-btn secondary" onclick="refreshData()">
                             <span class="btn-icon">🔄</span>
                             Làm mới
                         </button>
+                        <a href="revenue-table<%= (type != null ? ("?type=" + type) : "") %>" class="btn-action">
+                            <span style="font-size:1.3em;vertical-align:middle;">📋</span>
+                            <span style="vertical-align:middle;">Xem bảng chi tiết doanh thu</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -131,7 +159,7 @@
                     <div class="chart-card">
                         <div class="chart-header">
                             <h3 class="chart-title">Doanh thu <%= (type != null && type.equals("day")) ? "ngày" : "tháng" %></h3>
-                            
+
                         </div>
                         <div class="chart-container">
                             <canvas id="revenueChart"></canvas>
@@ -141,7 +169,7 @@
                     <div class="chart-card">
                         <div class="chart-header">
                             <h3 class="chart-title">Số đơn hàng <%= (type != null && type.equals("day")) ? "ngày" : "tháng" %></h3>
-                            
+
                         </div>
                         <div class="chart-container">
                             <canvas id="ordersChart"></canvas>
@@ -150,65 +178,30 @@
                 </div>
             </div>
 
-            <!-- Filter and Table Section -->
-            <div class="table-section">
-                <div class="section-header">
-                    <h2 class="section-title">📋 Bảng tổng hợp doanh thu</h2>
-                    <p class="section-subtitle">Dữ liệu chi tiết theo <%= (type != null && type.equals("day")) ? "ngày" : "tháng" %></p>
-                </div>
-                <div class="tabs-container">
-                    <div class="tabs">
-                        <button class="tab active" onclick="openTab(event, 'table-overview')">Tổng quan</button>
-                    </div>
-                    <div class="tab-content" id="table-overview" style="display: block;">
-                        <div class="table-card">
-                            <div class="table-header">
-                                <form method="get" action="revenue" class="filter-form">
-                                    <label for="type">Chọn loại:</label>
-                                    <select id="type" name="type" onchange="this.form.submit()">
-                                        <option value="day" <%= (type != null && "day".equals(type)) ? "selected" : "" %>>Theo ngày</option>
-                                        <option value="month" <%= (type != null && "month".equals(type)) ? "selected" : "" %>>Theo tháng</option>
-                                    </select>
-                                </form>
-                            </div>
-                            <div class="table-responsive">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th><%= (type != null && type.equals("day")) ? "Ngày" : "Tháng" %></th>
-                                            <th>Số đơn hàng</th>
-                                            <th>Tổng doanh thu</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% if (stats != null) {
-                                        for (RevenueStat s : stats) { %>
-                                        <tr>
-                                            <td><%= s.getLabel() %></td>
-                                            <td><%= s.getTotalOrders() %></td>
-                                            <td class="currency"><%= String.format("%,.0f", s.getTotalRevenue()) %> đ</td>
-                                        </tr>
-                                        <% }
-                                    } else { %>
-                                        <tr><td colspan="3" class="no-data">Không có dữ liệu</td></tr>
-                                        <% } %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <script>
             let labels = [];
             let revenueData = [];
             let ordersData = [];
-            <% if (stats != null && !stats.isEmpty()) { %>
-            labels = [<%= stats.stream().map(s -> "\"" + s.getLabel() + "\"").collect(java.util.stream.Collectors.joining(",")) %>];
-            revenueData = [<%= stats.stream().map(s -> String.valueOf(s.getTotalRevenue())).collect(java.util.stream.Collectors.joining(",")) %>];
-            ordersData = [<%= stats.stream().map(s -> String.valueOf(s.getTotalOrders())).collect(java.util.stream.Collectors.joining(",")) %>];
+            <% if (stats != null && !stats.isEmpty()) { 
+    StringBuilder labelBuilder = new StringBuilder();
+    StringBuilder revenueBuilder = new StringBuilder();
+    StringBuilder ordersBuilder = new StringBuilder();
+    for (int i = 0; i < stats.size(); i++) {
+        if (i > 0) {
+            labelBuilder.append(",");
+            revenueBuilder.append(",");
+            ordersBuilder.append(",");
+        }
+        labelBuilder.append("\"").append(stats.get(i).getLabel()).append("\"");
+        revenueBuilder.append(stats.get(i).getTotalRevenue());
+        ordersBuilder.append(stats.get(i).getTotalOrders());
+    }
+            %>
+            labels = [<%= labelBuilder.toString() %>];
+            revenueData = [<%= revenueBuilder.toString() %>];
+            ordersData = [<%= ordersBuilder.toString() %>];
             <% } %>
 
             // Revenue Line Chart

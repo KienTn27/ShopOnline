@@ -11,6 +11,7 @@ import java.util.List;
 
 @WebServlet("/inventory")
 public class InventoryServlet extends HttpServlet {
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
@@ -49,7 +50,9 @@ public class InventoryServlet extends HttpServlet {
                 String pageParam = request.getParameter("page");
                 if (pageParam != null) {
                     page = Integer.parseInt(pageParam);
-                    if (page < 1) page = 1;
+                    if (page < 1) {
+                        page = 1;
+                    }
                 }
             } catch (NumberFormatException e) {
                 page = 1;

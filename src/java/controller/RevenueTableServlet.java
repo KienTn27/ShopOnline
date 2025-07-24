@@ -12,16 +12,17 @@ import jakarta.servlet.annotation.WebServlet;
 
 @WebServlet("/revenue-table")
 public class RevenueTableServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         String type = request.getParameter("type");
         if (type == null || (!type.equals("day") && !type.equals("month"))) {
             type = "day"; // mặc định
         }
 
         int page = 1;
-        int pageSize = 10; // Số dòng mỗi trang
+        int pageSize = 8; // Số dòng mỗi trang
         try {
             if (request.getParameter("page") != null) {
                 page = Integer.parseInt(request.getParameter("page"));
@@ -41,4 +42,4 @@ public class RevenueTableServlet extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("/admin/revenue-table.jsp").forward(request, response);
     }
-} 
+}

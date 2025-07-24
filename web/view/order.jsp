@@ -143,7 +143,7 @@
                                 <c:forEach var="order" items="${sessionScope.orders}">
                                     <tr>
                                         <td><strong>#${order.orderId}</strong></td>
-                                        <td><fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy HH:mm"/></td>
+                                        <td><fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy"/></td>
                                         <td><strong><fmt:formatNumber value="${order.totalAmount}" type="number"/>₫</strong></td>
                                         <td>${order.shippingAddress}</td>
                                         <td>
