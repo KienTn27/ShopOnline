@@ -307,6 +307,9 @@
                     <i class="fas fa-shopping-cart"></i>
                     Quản Lý Đơn Hàng
                 </h1>
+                <a href="admin/menu.jsp" class="btn btn-outline-secondary mt-3">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại menu
+                </a>
             </div>
         </div>
 
