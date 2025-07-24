@@ -346,7 +346,6 @@
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav align-items-center">
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Trang chủ"><i class="fa fa-home fa-lg"></i></a></li>
-                        <li class="nav-item mx-2"><a class="nav-link" href="#" title="Sản phẩm"><i class="fa fa-tshirt fa-lg"></i></a></li>
                         <li class="nav-item mx-2"><a class="nav-link" href="CartServlet" title="Giỏ hàng"><i class="fa fa-shopping-cart fa-lg"></i></a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link position-relative" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
