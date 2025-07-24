@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/revenue.css">
 </head>
 <body>
-    <a href="average-revenue" class="btn-back-menu btn-back-stat">
+    <a href="revenue" class="btn-back-menu btn-back-stat">
         <span style="font-size:1.2em;">&#8592;</span> Quay lại trang tổng quan
     </a>
     <div class="table-section">
