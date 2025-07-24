@@ -1,5 +1,6 @@
 package controller;
 
+import dao.CategoryDAO;
 import dao.ProductDAO;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
@@ -10,8 +11,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Category;
 import model.Product;
 
 @WebServlet(name = "HomeControl", urlPatterns = {"/Home"})
@@ -20,7 +23,7 @@ public class HomeControl extends HttpServlet {
     
     
     
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
   // Lấy tham số trang từ request
@@ -41,14 +44,24 @@ public class HomeControl extends HttpServlet {
             int productsPerPage = 8;
             
             ProductDAO dao = new ProductDAO();
-                    
+            CategoryDAO cd = new CategoryDAO();
             
             // Tính offset
             int offset = (currentPage - 1) * productsPerPage;
-            
+            String categoryFilter_raw = request.getParameter("categoryFilter");
+            List<Product> productList = new ArrayList<>();
             // Lấy danh sách sản phẩm với phân trang
-            List<Product> productList = dao.getProductsWithPagination(offset, productsPerPage);
-            
+            if ( categoryFilter_raw == null){
+                productList = dao.getProductsWithPagination(offset, productsPerPage);
+            } else {
+                int categoryFilter = Integer.parseInt(categoryFilter_raw);
+                if ( categoryFilter == 0 ){
+                    productList = dao.getProductsWithPagination(offset, productsPerPage);
+                } else {
+                    productList = dao.getProductsByCategory(categoryFilter);
+                }
+            }
+            List<Category> categories = cd.getAllCategories();
             // Lấy tổng số sản phẩm để tính số trang
             int totalProducts = dao.getTotalProductCount();
             int totalPages = (int) Math.ceil((double) totalProducts / productsPerPage);
@@ -65,12 +78,17 @@ public class HomeControl extends HttpServlet {
             List<Product> featuredProducts = dao.getFeaturedProducts(4);
             
             // Set attributes
+            if ( categoryFilter_raw != null ){
+                request.setAttribute("categorySelected",Integer.parseInt(categoryFilter_raw));
+            }
             request.setAttribute("productList", productList);
+            request.setAttribute("categories", categories);
             request.setAttribute("featuredProducts", featuredProducts);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("totalProducts", totalProducts);
             request.setAttribute("productsPerPage", productsPerPage);
+            
             
             // Thông tin phân trang bổ sung
             int startProduct = (currentPage - 1) * productsPerPage + 1;
