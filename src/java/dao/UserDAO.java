@@ -197,15 +197,19 @@ public class UserDAO extends DBContext {
         return false;
     }
 
-    //// Lấy tất cả người dùng, admin lên đầu
+    // Lấy tất cả người dùng, SuperAdmin lên đầu, sau đó Admin, Shipper, cuối cùng là Customer
     public List<User> getAllUsers() throws SQLException {
         List<User> userList = new ArrayList<>();
+
         String sql = "SELECT * FROM Users WHERE is_deleted = 0 ORDER BY CASE "
                 + " WHEN Role = 'SuperAdmin' THEN 0 "
                 + " WHEN Role = 'Admin' THEN 1 "
                 + " WHEN Role = 'Shipper' THEN 2 "
                 + " WHEN Role = 'Customer' THEN 3 "
                 + " ELSE 4 END, UserID";
+
+
+
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 User user = new User();
