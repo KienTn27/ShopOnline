@@ -842,7 +842,17 @@
                                     <textarea id="detailAddress" name="detailAddress" class="form-control" rows="3"
                                               placeholder="Số nhà, tên đường, landmark..." required></textarea>
                                 </div>
-
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-money-bill-wave me-2"></i>Phương thức thanh toán
+                                    </label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>
+                                        <label class="form-check-label" for="cod">
+                                            Thanh toán khi nhận hàng
+                                        </label>
+                                    </div>
+                                </div>
                                 <button type="submit" class="btn-checkout">
                                     <i class="fas fa-credit-card"></i>
                                     Đặt hàng ngay

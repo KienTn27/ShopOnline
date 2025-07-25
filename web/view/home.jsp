@@ -1,7 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ page import="model.User" %>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -241,8 +240,8 @@
                 font-size: 1.1rem;
                 font-weight: 500;
             }
-            /* Thêm vào cuối phần <style> */
 
+            /* Thêm vào cuối phần <style> */
             .pagination-container {
                 display: flex;
                 justify-content: center;
@@ -331,6 +330,8 @@
                 margin-bottom: 20px;
                 opacity: 0.5;
             }
+
+
         </style>
     </head>
 
@@ -368,12 +369,10 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <% if (session.getAttribute("user") != null && (((User)session.getAttribute("user")).getRole().equals("Admin") || ((User)session.getAttribute("user")).getRole().equals("SuperAdmin"))) { %>
+                                <% if (session.getAttribute("user") != null && ((model.User)session.getAttribute("user")).getRole().equals("Admin")) { %>
                                 <li><a class="dropdown-item" href="<%= request.getContextPath() %>/admin/menu.jsp">Quản lý website</a></li>
                                     <% } %>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="<%= request.getContextPath() %>/logout">Đăng xuất</a></li>
                             </ul>
                             <% } else { %>
@@ -381,23 +380,19 @@
                             <% } %>
                         </li>
                         <li class="nav-item mx-2">
-                            <form id="filterForm" action="Home" method="get">
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <div style="display: flex; background: white; justify-content: space-between; border-radius: 10px; align-items: center">
-                                            <label style="margin-left: 5px; margin-top: 8px" class="form-label">Danh mục sản phẩm</label>
-                                            <select style="max-width: 40%" class="form-select" id="categoryFilter" name="categoryFilter" onchange="this.form.submit()">
-                                                <option value="0">Tất cả</option>
-                                                <c:forEach var="category" items="${categories}">
-                                                    <option value="${category.categoryID}" ${categorySelected == category.categoryID ? 'selected' : ''}>
-                                                        ${category.name}
-                                                    </option>
-                                                </c:forEach>
-                                            </select>
-                                        </div>
-                                    </div>
+                            <form id="filterForm" action="Home" method="get" class="d-flex ms-3">
+                                <div style="display: flex; background: white; justify-content: space-between; border-radius: 10px; align-items: center">
+                                    <label style="margin-left: 5px; margin-top: 8px" class="form-label">Danh mục sản phẩm</label>
+                                    <select style="max-width: 40%" class="form-select" id="categoryFilter" name="categoryFilter" onchange="this.form.submit()">
+                                        <option value="0">Tất cả</option>
+                                        <c:forEach var="category" items="${categories}">
+                                            <option value="${category.categoryID}" ${categorySelected == category.categoryID ? 'selected' : ''}>
+                                                ${category.name}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
                                 </div>
-                            </form>    
+                            </form>
                         </li>
                     </ul>
                 </div>
@@ -421,7 +416,7 @@
                     </div>
                     <div class="swiper-slide" style="background-image:url('https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80')">
                         <div class="slide-content">
-                            <h2>Thời trang nam</h2>
+                            <h2>Thời trang nam nữ</h2>
                             <p>Đa dạng mẫu mã, chất lượng đảm bảo, giá hợp lý.</p>
                         </div>
                     </div>
@@ -435,8 +430,7 @@
             <h4>Mặc đẹp mỗi ngày – Không lo ví mỏng!</h4>
             <h4>Thời trang nam chất – Giá hợp túi tiền sinh viên</h4>
             <h4>Sinh viên mặc đẹp – Tự tin đi học, đi chơi</h4>
-
-        </div>
+        </div>             
         <!-- Thêm sau phần sản phẩm nổi bật, trước footer -->
         <div class="container">
             <div class="product-section">
@@ -466,7 +460,7 @@
                                         <div class="card-body">
                                             <div class="product-title">${product.name}</div>
                                             <div class="product-price">
-                                                <fmt:formatNumber value="${product.price}" type="number" groupingUsed="true" />đ
+                                                <fmt:formatNumber value="${product.price}" type="number" groupingUsed="true"/>đ
                                             </div>
                                             <div class="product-quantity ${product.quantity <= 0 ? 'out-of-stock' : ''}">
                                                 <c:choose>
@@ -529,7 +523,9 @@
                                                 </c:if>
 
                                                 <!-- Pages around current -->
-                                                <c:forEach begin="${currentPage > 4 ? currentPage - 1 : 2}" end="${currentPage < totalPages - 3 ? currentPage + 1 : totalPages - 1}" var="i">
+                                                <c:forEach begin="${currentPage > 4 ? currentPage - 1 : 2}" 
+                                                           end="${currentPage < totalPages - 3 ? currentPage + 1 : totalPages - 1}" 
+                                                           var="i">
                                                     <c:if test="${i > 1 && i < totalPages}">
                                                         <li class="page-item ${currentPage == i ? 'active' : ''}">
                                                             <a class="page-link" href="Home?page=${i}">${i}</a>
@@ -553,7 +549,7 @@
 
                                         <!-- Next Button -->
                                         <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                            <a class="page-link" href="Home?page=${currentPage + 1}" aria-label="Next">
+                                            <a class="page-link" href="home?page=${currentPage + 1}" aria-label="Next">
                                                 <i class="fas fa-chevron-right"></i>
                                             </a>
                                         </li>
@@ -571,7 +567,8 @@
                     </c:otherwise>
                 </c:choose>
             </div>
-        </div>
+        </div>       
+
         <footer class="footer text-center mt-5">
             <div class="container">
                 <div class="row">
@@ -579,114 +576,65 @@
                         <b>FashionShop</b> &copy; 2025. All rights reserved.
                     </div>
                     <div class="col-md-6 text-md-end">
-                        <span><i class="fa fa-phone"></i> 0983 455 882</span> &nbsp;|&nbsp;
-                        <span><i class="fa fa-envelope"></i> kien@gmail.com</span>
+                        <span><i class="fa fa-phone"></i> 0375 780 999</span> &nbsp;|&nbsp;
+                        <span><i class="fa fa-envelope"></i> kien@fashionshop.vn</span>
                     </div>
                 </div>
             </div>
         </footer>
 
-
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
         <script>
-                                                var swiper = new Swiper(".mySwiper", {
-                                                    loop: true,
-                                                    pagination: {
-                                                        el: ".swiper-pagination",
-                                                        clickable: true,
-                                                    },
-                                                    autoplay: {
-                                                        delay: 3500,
-                                                        disableOnInteraction: false,
-                                                    },
-                                                });
-                                                // Dữ liệu sản phẩm mẫu cho gợi ý
-                                                const trendingProducts = [
-                                                    "Áo thun nam basic",
-                                                    "Váy nữ mùa hè",
-                                                    "Áo khoác bomber",
-                                                    "Quần jeans nam",
-                                                    "Áo sơ mi trắng",
-                                                    "Đầm dạ hội",
-                                                    "Áo hoodie unisex",
-                                                    "Chân váy chữ A"
-                                                ];
-                                                const searchInput = document.getElementById('searchInput');
-                                                const suggestionsBox = document.getElementById('searchSuggestions');
+                                        var swiper = new Swiper(".mySwiper", {
+                                            loop: true,
+                                            pagination: {
+                                                el: ".swiper-pagination",
+                                                clickable: true,
+                                            },
+                                            autoplay: {
+                                                delay: 3500,
+                                                disableOnInteraction: false,
+                                            },
+                                        });
+                                        // Dữ liệu sản phẩm mẫu cho gợi ý
 
-                                                function showSuggestions(list) {
-                                                    if (list.length === 0) {
-                                                        suggestionsBox.style.display = 'none';
-                                                        return;
-                                                    }
-                                                    suggestionsBox.innerHTML = list.map(item => `<button type="button" class="list-group-item list-group-item-action">${item}</button>`).join('');
-                                                    suggestionsBox.style.display = 'block';
-                                                }
-
-                                                // Gợi ý xu hướng khi focus
-                                                searchInput.addEventListener('focus', function () {
-                                                    showSuggestions(trendingProducts);
-                                                });
-                                                // Gợi ý theo tên khi nhập
-                                                searchInput.addEventListener('input', function () {
-                                                    const value = this.value.trim().toLowerCase();
-                                                    if (!value) {
-                                                        showSuggestions(trendingProducts);
-                                                    } else {
-                                                        const filtered = trendingProducts.filter(p => p.toLowerCase().includes(value));
-                                                        showSuggestions(filtered);
-                                                    }
-                                                });
-                                                // Ẩn gợi ý khi blur (trễ để click chọn)
-                                                searchInput.addEventListener('blur', function () {
-                                                    setTimeout(() => {
-                                                        suggestionsBox.style.display = 'none';
-                                                    }, 150);
-                                                });
-                                                // Chọn gợi ý
-                                                suggestionsBox.addEventListener('mousedown', function (e) {
-                                                    if (e.target && e.target.matches('button')) {
-                                                        searchInput.value = e.target.textContent;
-                                                        suggestionsBox.style.display = 'none';
-                                                    }
-                                                });
-                                                document.addEventListener("DOMContentLoaded", function () {
-                                                    const notifBtn = document.getElementById("notifDropdown");
-                                                    const notifMenu = document.getElementById("notifMenu");
-                                                    notifBtn.addEventListener("click", function () {
-                                                        fetch("NotificationServlet") // Gọi servlet NotificationServlet
-                                                                .then(res => res.text())
-                                                                .then(html => {
-                                                                    notifMenu.innerHTML = html;
-                                                                    updateNotifCount();
-                                                                });
-                                                    });
-                                                    notifMenu.addEventListener("click", function (e) {
-                                                        const target = e.target.closest(".notification-item");
-                                                        if (target) {
-                                                            const notiId = target.getAttribute("data-id");
-                                                            if (target.classList.contains("bg-light")) {
-                                                                fetch('MarkNotificationReadServlet?id=' + notiId, {
-                                                                    method: 'POST'
-                                                                }).then(res => {
-                                                                    if (res.ok) {
-                                                                        target.classList.remove("bg-light", "text-dark");
-                                                                        target.classList.add("bg-white");
-                                                                        updateNotifCount();
-                                                                    }
-                                                                });
+                                        document.addEventListener("DOMContentLoaded", function () {
+                                            const notifBtn = document.getElementById("notifDropdown");
+                                            const notifMenu = document.getElementById("notifMenu");
+                                            notifBtn.addEventListener("click", function () {
+                                                fetch("NotificationServlet") // Gọi servlet NotificationServlet
+                                                        .then(res => res.text())
+                                                        .then(html => {
+                                                            notifMenu.innerHTML = html;
+                                                            updateNotifCount();
+                                                        });
+                                            });
+                                            notifMenu.addEventListener("click", function (e) {
+                                                const target = e.target.closest(".notification-item");
+                                                if (target) {
+                                                    const notiId = target.getAttribute("data-id");
+                                                    if (target.classList.contains("bg-light")) {
+                                                        fetch('MarkNotificationReadServlet?id=' + notiId, {
+                                                            method: 'POST'
+                                                        }).then(res => {
+                                                            if (res.ok) {
+                                                                target.classList.remove("bg-light", "text-dark");
+                                                                target.classList.add("bg-white");
+                                                                updateNotifCount();
                                                             }
-                                                        }
-                                                    });
-                                                    function updateNotifCount() {
-                                                        fetch("CountUnreadServlet")
-                                                                .then(res => res.text())
-                                                                .then(count => {
-                                                                    document.getElementById("notifCount").textContent = count === "0" ? "" : count;
-                                                                });
+                                                        });
                                                     }
-                                                });
+                                                }
+                                            });
+                                            function updateNotifCount() {
+                                                fetch("CountUnreadServlet")
+                                                        .then(res => res.text())
+                                                        .then(count => {
+                                                            document.getElementById("notifCount").textContent = count === "0" ? "" : count;
+                                                        });
+                                            }
+                                        });
         </script>
         <% if (session.getAttribute("user") == null) { %>
         <script>
@@ -723,5 +671,4 @@
         </script>
         <% } %>
     </body>
-
 </html>

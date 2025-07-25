@@ -444,9 +444,7 @@
                     <% } %>
                 </form>
 
-                <div class="divider">
-                    <span>Hoặc đăng nhập với</span>
-                </div>
+                
                 <div class="login-links">
                     <a href="register">
                         <i class="fas fa-user-plus me-1"></i>
