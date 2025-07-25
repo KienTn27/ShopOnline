@@ -385,7 +385,7 @@
                                 <div class="row mb-3">
                                     <div class="col-md-12">
                                         <div style="display: flex; background: white; justify-content: space-between; border-radius: 10px; align-items: center">
-                                            <label style="margin-left: 5px; margin-top: 8px" class="form-label">Tìm kiếm sản phẩm</label>
+                                            <label style="margin-left: 5px; margin-top: 8px" class="form-label">Danh mục sản phẩm</label>
                                             <select style="max-width: 40%" class="form-select" id="categoryFilter" name="categoryFilter" onchange="this.form.submit()">
                                                 <option value="0">Tất cả</option>
                                                 <c:forEach var="category" items="${categories}">
@@ -435,7 +435,7 @@
             <h4>Mặc đẹp mỗi ngày – Không lo ví mỏng!</h4>
             <h4>Thời trang nam chất – Giá hợp túi tiền sinh viên</h4>
             <h4>Sinh viên mặc đẹp – Tự tin đi học, đi chơi</h4>
-            
+
         </div>
         <!-- Thêm sau phần sản phẩm nổi bật, trước footer -->
         <div class="container">
@@ -553,7 +553,7 @@
 
                                         <!-- Next Button -->
                                         <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                            <a class="page-link" href="home?page=${currentPage + 1}" aria-label="Next">
+                                            <a class="page-link" href="Home?page=${currentPage + 1}" aria-label="Next">
                                                 <i class="fas fa-chevron-right"></i>
                                             </a>
                                         </li>
@@ -572,110 +572,121 @@
                 </c:choose>
             </div>
         </div>
+        <footer class="footer text-center mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-md-start mb-2 mb-md-0">
+                        <b>FashionShop</b> &copy; 2025. All rights reserved.
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <span><i class="fa fa-phone"></i> 0983 455 882</span> &nbsp;|&nbsp;
+                        <span><i class="fa fa-envelope"></i> kien@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
-        
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
         <script>
-                var swiper = new Swiper(".mySwiper", {
-                    loop: true,
-                    pagination: {
-                        el: ".swiper-pagination",
-                        clickable: true,
-                    },
-                    autoplay: {
-                        delay: 3500,
-                        disableOnInteraction: false,
-                    },
-                });
-                // Dữ liệu sản phẩm mẫu cho gợi ý
-                const trendingProducts = [
-                    "Áo thun nam basic",
-                    "Váy nữ mùa hè",
-                    "Áo khoác bomber",
-                    "Quần jeans nam",
-                    "Áo sơ mi trắng",
-                    "Đầm dạ hội",
-                    "Áo hoodie unisex",
-                    "Chân váy chữ A"
-                ];
-                const searchInput = document.getElementById('searchInput');
-                const suggestionsBox = document.getElementById('searchSuggestions');
+                                                var swiper = new Swiper(".mySwiper", {
+                                                    loop: true,
+                                                    pagination: {
+                                                        el: ".swiper-pagination",
+                                                        clickable: true,
+                                                    },
+                                                    autoplay: {
+                                                        delay: 3500,
+                                                        disableOnInteraction: false,
+                                                    },
+                                                });
+                                                // Dữ liệu sản phẩm mẫu cho gợi ý
+                                                const trendingProducts = [
+                                                    "Áo thun nam basic",
+                                                    "Váy nữ mùa hè",
+                                                    "Áo khoác bomber",
+                                                    "Quần jeans nam",
+                                                    "Áo sơ mi trắng",
+                                                    "Đầm dạ hội",
+                                                    "Áo hoodie unisex",
+                                                    "Chân váy chữ A"
+                                                ];
+                                                const searchInput = document.getElementById('searchInput');
+                                                const suggestionsBox = document.getElementById('searchSuggestions');
 
-                function showSuggestions(list) {
-                    if (list.length === 0) {
-                        suggestionsBox.style.display = 'none';
-                        return;
-                    }
-                    suggestionsBox.innerHTML = list.map(item => `<button type="button" class="list-group-item list-group-item-action">${item}</button>`).join('');
-                    suggestionsBox.style.display = 'block';
-                }
+                                                function showSuggestions(list) {
+                                                    if (list.length === 0) {
+                                                        suggestionsBox.style.display = 'none';
+                                                        return;
+                                                    }
+                                                    suggestionsBox.innerHTML = list.map(item => `<button type="button" class="list-group-item list-group-item-action">${item}</button>`).join('');
+                                                    suggestionsBox.style.display = 'block';
+                                                }
 
-                // Gợi ý xu hướng khi focus
-                searchInput.addEventListener('focus', function () {
-                    showSuggestions(trendingProducts);
-                });
-                // Gợi ý theo tên khi nhập
-                searchInput.addEventListener('input', function () {
-                    const value = this.value.trim().toLowerCase();
-                    if (!value) {
-                        showSuggestions(trendingProducts);
-                    } else {
-                        const filtered = trendingProducts.filter(p => p.toLowerCase().includes(value));
-                        showSuggestions(filtered);
-                    }
-                });
-                // Ẩn gợi ý khi blur (trễ để click chọn)
-                searchInput.addEventListener('blur', function () {
-                    setTimeout(() => {
-                        suggestionsBox.style.display = 'none';
-                    }, 150);
-                });
-                // Chọn gợi ý
-                suggestionsBox.addEventListener('mousedown', function (e) {
-                    if (e.target && e.target.matches('button')) {
-                        searchInput.value = e.target.textContent;
-                        suggestionsBox.style.display = 'none';
-                    }
-                });
-                document.addEventListener("DOMContentLoaded", function () {
-                    const notifBtn = document.getElementById("notifDropdown");
-                    const notifMenu = document.getElementById("notifMenu");
-                    notifBtn.addEventListener("click", function () {
-                        fetch("NotificationServlet") // Gọi servlet NotificationServlet
-                                .then(res => res.text())
-                                .then(html => {
-                                    notifMenu.innerHTML = html;
-                                    updateNotifCount();
-                                });
-                    });
-                    notifMenu.addEventListener("click", function (e) {
-                        const target = e.target.closest(".notification-item");
-                        if (target) {
-                            const notiId = target.getAttribute("data-id");
-                            if (target.classList.contains("bg-light")) {
-                                fetch('MarkNotificationReadServlet?id=' + notiId, {
-                                    method: 'POST'
-                                }).then(res => {
-                                    if (res.ok) {
-                                        target.classList.remove("bg-light", "text-dark");
-                                        target.classList.add("bg-white");
-                                        updateNotifCount();
-                                    }
-                                });
-                            }
-                        }
-                    });
-
-                    function updateNotifCount() {
-                        fetch("CountUnreadServlet")
-                                .then(res => res.text())
-                                .then(count => {
-                                    document.getElementById("notifCount").textContent = count === "0" ? "" : count;
-                                });
-                    }
-                });
+                                                // Gợi ý xu hướng khi focus
+                                                searchInput.addEventListener('focus', function () {
+                                                    showSuggestions(trendingProducts);
+                                                });
+                                                // Gợi ý theo tên khi nhập
+                                                searchInput.addEventListener('input', function () {
+                                                    const value = this.value.trim().toLowerCase();
+                                                    if (!value) {
+                                                        showSuggestions(trendingProducts);
+                                                    } else {
+                                                        const filtered = trendingProducts.filter(p => p.toLowerCase().includes(value));
+                                                        showSuggestions(filtered);
+                                                    }
+                                                });
+                                                // Ẩn gợi ý khi blur (trễ để click chọn)
+                                                searchInput.addEventListener('blur', function () {
+                                                    setTimeout(() => {
+                                                        suggestionsBox.style.display = 'none';
+                                                    }, 150);
+                                                });
+                                                // Chọn gợi ý
+                                                suggestionsBox.addEventListener('mousedown', function (e) {
+                                                    if (e.target && e.target.matches('button')) {
+                                                        searchInput.value = e.target.textContent;
+                                                        suggestionsBox.style.display = 'none';
+                                                    }
+                                                });
+                                                document.addEventListener("DOMContentLoaded", function () {
+                                                    const notifBtn = document.getElementById("notifDropdown");
+                                                    const notifMenu = document.getElementById("notifMenu");
+                                                    notifBtn.addEventListener("click", function () {
+                                                        fetch("NotificationServlet") // Gọi servlet NotificationServlet
+                                                                .then(res => res.text())
+                                                                .then(html => {
+                                                                    notifMenu.innerHTML = html;
+                                                                    updateNotifCount();
+                                                                });
+                                                    });
+                                                    notifMenu.addEventListener("click", function (e) {
+                                                        const target = e.target.closest(".notification-item");
+                                                        if (target) {
+                                                            const notiId = target.getAttribute("data-id");
+                                                            if (target.classList.contains("bg-light")) {
+                                                                fetch('MarkNotificationReadServlet?id=' + notiId, {
+                                                                    method: 'POST'
+                                                                }).then(res => {
+                                                                    if (res.ok) {
+                                                                        target.classList.remove("bg-light", "text-dark");
+                                                                        target.classList.add("bg-white");
+                                                                        updateNotifCount();
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                    });
+                                                    function updateNotifCount() {
+                                                        fetch("CountUnreadServlet")
+                                                                .then(res => res.text())
+                                                                .then(count => {
+                                                                    document.getElementById("notifCount").textContent = count === "0" ? "" : count;
+                                                                });
+                                                    }
+                                                });
         </script>
         <% if (session.getAttribute("user") == null) { %>
         <script>

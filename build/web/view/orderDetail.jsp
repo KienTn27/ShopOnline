@@ -604,8 +604,8 @@
                     <div class="order-item-card">
                         <div class="product-main">
                             <div class="product-image">
-                                <img src="<%= detail.getImageUrl() %>" alt="<%= detail.getProductName() %>" 
-                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0zNSAzNUg2NVY2NUgzNVYzNVoiIGZpbGw9IiNEREREREQiLz4KPC9zdmc+'">
+                                <img src="<%= finalImageUrl %>" alt="<%= detail.getProductName() %>"
+                                     onerror="this.src='<%= request.getContextPath() %>/images/no-image.png'">  
                                 <div class="quantity-badge"><%= detail.getQuantity() %></div>
                             </div>
                             <div class="product-details">
