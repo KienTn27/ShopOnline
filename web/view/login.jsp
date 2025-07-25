@@ -447,16 +447,6 @@
                 <div class="divider">
                     <span>Hoặc đăng nhập với</span>
                 </div>
-
-                <div class="social-login">
-                    <button type="button" class="btn-social btn-google" onclick="loginWithGoogle()">
-                        <i class="fab fa-google"></i>
-                    </button>
-                    <button type="button" class="btn-social btn-facebook" onclick="loginWithFacebook()">
-                        <i class="fab fa-facebook-f"></i>
-                    </button>
-                </div>
-
                 <div class="login-links">
                     <a href="register">
                         <i class="fas fa-user-plus me-1"></i>

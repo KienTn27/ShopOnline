@@ -369,6 +369,32 @@
                 background: #34495e;
                 transform: translateY(-1px);
             }
+            .footer-homepage {
+                background: var(--primary-color);
+                padding: 1.5rem 0;
+                margin-top: 3rem;
+            }
+
+            .btn-footer-homepage {
+                background-color: #fff;
+                color: var(--primary-color);
+                border-radius: 30px;
+                padding: 0.75rem 2rem;
+                font-weight: 600;
+                font-size: 1rem;
+                box-shadow: var(--shadow-light);
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .btn-footer-homepage:hover {
+                background-color: var(--accent-color);
+                color: #fff;
+                box-shadow: var(--shadow-medium);
+            }
+
+
 
             /* Responsive Design */
             @media (max-width: 768px) {
@@ -596,6 +622,12 @@
                 </div>
             </div>
         </div>
+        <footer class="footer-homepage text-center">
+            <a href="${pageContext.request.contextPath}/Home" class="btn btn-footer-homepage">
+                <i class="fas fa-home me-2"></i>Trang chủ
+            </a>
+        </footer>
+
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -603,7 +635,7 @@
         <script>
             // Lưu productID vào biến JavaScript
             const productID = '${product.productID}';
-            
+
             document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM đã được tải hoàn toàn.');
                     // Product variant selection logic
@@ -634,7 +666,7 @@
                     const size = selectedOption.dataset.size;
                     const imageUrl = selectedOption.dataset.imageurl;
                     displayPrice.innerText = formatCurrency(price);
-            selectedVariantInfo.innerHTML = `<i class="fas fa-check-circle text-success me-1"></i>Bạn đã chọn: Màu ${color}, Size ${size}`;
+                    selectedVariantInfo.innerHTML = `<i class="fas fa-check-circle text-success me-1"></i>Bạn đã chọn: Màu ${color}, Size ${size}`;
                     const qty = parseInt(quantity);
                     if (qty === 0) {
             displayQuantity.innerHTML = '<i class="fas fa-times-circle me-1"></i>(Hết hàng)';
@@ -693,40 +725,37 @@
                     displayQuantity.classList.add('text-muted');
             }
             }
-            
+
             // Add to cart functionality
             if (addToCartBtn) {
-                addToCartBtn.addEventListener('click', function() {
-                    if (!variantSelect) return;
+            addToCartBtn.addEventListener('click', function() {
+            if (!variantSelect) return;
                     const selectedOption = variantSelect.options[variantSelect.selectedIndex];
                     const variantId = selectedOption.value;
                     // Sửa logic kiểm tra: chỉ kiểm tra empty string và null
                     if (!variantId || variantId.trim() === "") {
-                        alert('Vui lòng chọn phiên bản sản phẩm!');
-                        return;
-                    }
-                    // Tạo form ẩn để submit
-                    const form = document.createElement('form');
+            alert('Vui lòng chọn phiên bản sản phẩm!');
+                    return;
+            }
+            // Tạo form ẩn để submit
+            const form = document.createElement('form');
                     form.method = 'POST';
                     form.action = 'AddToCartServlet';
-                    
                     // Thêm input variantID
                     const inputVariant = document.createElement('input');
                     inputVariant.type = 'hidden';
                     inputVariant.name = 'variantID';
                     inputVariant.value = variantId;
                     form.appendChild(inputVariant);
-                    
                     // Thêm input productId
                     const inputProduct = document.createElement('input');
                     inputProduct.type = 'hidden';
                     inputProduct.name = 'productId';
                     inputProduct.value = productID;
                     form.appendChild(inputProduct);
-                    
                     document.body.appendChild(form);
                     form.submit();
-                });
+            });
             }
 
             // Reviews functionality
@@ -737,7 +766,7 @@
                     userName: '${review.userName}',
                     comment: '${review.comment}',
                     createdAt: '<fmt:formatDate value="${review.createdAt}" pattern="dd/MM/yyyy HH:mm"/>'
-    }<c:if test="${!status.last}">,</c:if>
+            }<c:if test="${!status.last}">,</c:if>
             </c:forEach>
             ];
                     // Calculate and display rating statistics

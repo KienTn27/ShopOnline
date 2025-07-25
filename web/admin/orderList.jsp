@@ -423,7 +423,7 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <a href="${pageContext.request.contextPath}/admin/orderDetail.jsp?orderId=${order.orderId}" 
+                                                <a href="${pageContext.request.contextPath}/view/orderDetail.jsp?orderId=${order.orderId}" 
                                                    class="btn btn-sm btn-outline-primary">
                                                     <i class="fas fa-eye"></i>
                                                     Xem chi tiết

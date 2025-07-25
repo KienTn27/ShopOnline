@@ -45,10 +45,10 @@
                                         <fmt:formatNumber value="${p.price}" type="number"/> VND
                                     </span>
                                 </div>
-                                <button class="add-to-cart-btn">
+                                <a class="add-to-cart-btn" href="product-detail?id=${p.productId}">
                                     <i class="fas fa-shopping-cart"></i>
-                                    Thêm vào giỏ
-                                </button>
+                                    Xem chi tiết
+                                </a>
                             </div>
                         </div>
                     </c:forEach>
