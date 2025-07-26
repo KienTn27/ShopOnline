@@ -35,21 +35,12 @@ public class CartServlet extends HttpServlet {
         int userId;
         try {
             userId = Integer.parseInt(userIdStr);
-            System.out.println("🔍 Debug CartServlet - UserId from session: " + userId);
         } catch (NumberFormatException e) {
-            System.err.println("❌ Debug CartServlet - Invalid userId in session: " + userIdStr);
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
         String action = request.getParameter("action");
-        System.out.println("🔍 Debug CartServlet - Action: " + action);
-
-        // Debug session attributes
-        System.out.println("🔍 Debug CartServlet - Session attributes:");
-        System.out.println("  - userId: " + session.getAttribute("userId"));
-        System.out.println("  - role: " + session.getAttribute("role"));
-        System.out.println("  - user: " + session.getAttribute("user"));
 
         if (action == null || action.isEmpty()) {
             action = "viewCart";
@@ -159,19 +150,11 @@ public class CartServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        System.out.println("🔍 Debug CartServlet - doPost called");
-        System.out.println("🔍 Debug CartServlet - Request URI: " + request.getRequestURI());
-        System.out.println("🔍 Debug CartServlet - Request method: " + request.getMethod());
-
         HttpSession session = request.getSession();
         String userIdStr = (String) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
-        System.out.println("🔍 Debug CartServlet - Session userId: " + userIdStr);
-        System.out.println("🔍 Debug CartServlet - Session role: " + role);
-
         if (userIdStr == null) {
-            System.err.println("❌ Debug CartServlet - No userId in session, redirecting to login");
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -189,10 +172,8 @@ public class CartServlet extends HttpServlet {
         switch (action) {
             case "placeOrder" -> {
                 try {
-                    System.out.println("🔍 Debug CartServlet - Starting placeOrder process");
 
                     // Debug all form parameters
-                    System.out.println("🔍 Debug CartServlet - All form parameters:");
                     java.util.Enumeration<String> paramNames = request.getParameterNames();
                     while (paramNames.hasMoreElements()) {
                         String paramName = paramNames.nextElement();
@@ -202,7 +183,6 @@ public class CartServlet extends HttpServlet {
 
                     // Parse và validate totalAmount
                     String totalAmountStr = request.getParameter("totalAmount");
-                    System.out.println("🔍 Debug CartServlet - totalAmount from form: " + totalAmountStr);
 
                     if (totalAmountStr == null || totalAmountStr.trim().isEmpty()) {
                         throw new IllegalArgumentException("Tổng tiền không được để trống");
@@ -220,7 +200,6 @@ public class CartServlet extends HttpServlet {
                     String district = request.getParameter("district");
                     String detail = request.getParameter("detailAddress");
 
-                    System.out.println("🔍 Debug CartServlet - Form data: totalAmount=" + totalAmount + ", city=" + city + ", province=" + province + ", district=" + district + ", detail=" + detail);
 
                     if (totalAmount <= 0
                             || city == null || city.trim().isEmpty()
@@ -236,7 +215,6 @@ public class CartServlet extends HttpServlet {
                     // Lấy danh sách giỏ hàng trước khi xóa
                     List<CartDTO> cartItems = cartDAO.getCartWithStockInfo(userId);
 
-                    System.out.println("🔍 Debug CartServlet - Cart items count: " + (cartItems != null ? cartItems.size() : "null"));
 
                     if (cartItems == null || cartItems.isEmpty()) {
                         throw new RuntimeException("Giỏ hàng trống hoặc không thể lấy thông tin giỏ hàng");
@@ -249,14 +227,12 @@ public class CartServlet extends HttpServlet {
                         throw new RuntimeException("Failed to create order");
                     }
 
-                    System.out.println("🔍 Debug CartServlet - Order created with ID: " + orderId);
 
                     // Tạo chi tiết đơn hàng và cập nhật số lượng sản phẩm
                     OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
                     ProductDAO productDAO = new ProductDAO();
 
                     for (CartDTO cartItem : cartItems) {
-                        System.out.println("🔍 Debug CartServlet - Processing cart item: productId=" + cartItem.getProductId() + ", quantity=" + cartItem.getQuantity() + ", price=" + cartItem.getPrice());
 
                         // Tính totalPrice
                         double totalPrice = cartItem.getPrice() * cartItem.getQuantity();
@@ -298,11 +274,9 @@ public class CartServlet extends HttpServlet {
 
                     // Xóa giỏ hàng
                     cartDAO.clearCartByUserId(userId);
-                    System.out.println("✅ Debug CartServlet - Order placed successfully");
                     response.sendRedirect(request.getContextPath() + "/CartServlet?action=viewOrders");
 
                 } catch (Exception e) {
-                    System.err.println("❌ Debug CartServlet - Error placing order: " + e.getMessage());
                     e.printStackTrace();
 
                     String errorMessage = "Lỗi đặt hàng: ";

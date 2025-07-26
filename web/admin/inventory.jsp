@@ -74,11 +74,7 @@
         <a href="admin/menu.jsp" class="btn-back-menu"><i class="fas fa-arrow-left"></i> Quay lại menu</a>
         <div class="container">
             <h2>Danh sách tồn kho</h2>
-            <div class="button-group">
-                <a href="inventory?action=add" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i> Thêm sản phẩm
-                </a>
-            </div>
+            
             <table>
                 <thead>
                     <tr>
@@ -97,9 +93,7 @@
                                 <a href="inventory?action=edit&productId=${inv.productId}&productName=${inv.productName}&stockQuantity=${inv.stockQuantity}" class="btn-action btn-edit">
                                     <i class="fas fa-edit"></i> Sửa
                                 </a>
-                                <a href="inventory?action=delete&productId=${inv.productId}" class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
-                                    <i class="fas fa-trash-alt"></i> Xóa
-                                </a>
+                                
                             </td>
                         </tr>
                     </c:forEach>
