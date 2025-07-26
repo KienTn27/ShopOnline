@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="model.User" %>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -240,8 +241,8 @@
                 font-size: 1.1rem;
                 font-weight: 500;
             }
-
             /* Thêm vào cuối phần <style> */
+
             .pagination-container {
                 display: flex;
                 justify-content: center;
@@ -330,8 +331,6 @@
                 margin-bottom: 20px;
                 opacity: 0.5;
             }
-
-
         </style>
     </head>
 
@@ -346,6 +345,7 @@
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav align-items-center">
                         <li class="nav-item mx-2"><a class="nav-link" href="#" title="Trang chủ"><i class="fa fa-home fa-lg"></i></a></li>
+                        <li class="nav-item mx-2"><a class="nav-link" href="#" title="Sản phẩm"><i class="fa fa-tshirt fa-lg"></i></a></li>
                         <li class="nav-item mx-2"><a class="nav-link" href="CartServlet" title="Giỏ hàng"><i class="fa fa-shopping-cart fa-lg"></i></a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link position-relative" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -372,7 +372,9 @@
                                 <% if (session.getAttribute("user") != null && (((User)session.getAttribute("user")).getRole().equals("Admin") || ((User)session.getAttribute("user")).getRole().equals("SuperAdmin"))) { %>
                                 <li><a class="dropdown-item" href="<%= request.getContextPath() %>/admin/menu.jsp">Quản lý website</a></li>
                                     <% } %>
-                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                                 <li><a class="dropdown-item" href="<%= request.getContextPath() %>/logout">Đăng xuất</a></li>
                             </ul>
                             <% } else { %>
@@ -426,11 +428,9 @@
         </div>
 
         <div class="container promo-section">
-            <h4>Giá sinh viên – Phong cách chuẩn men!</h4>
-            <h4>Mặc đẹp mỗi ngày – Không lo ví mỏng!</h4>
-            <h4>Thời trang nam chất – Giá hợp túi tiền sinh viên</h4>
-            <h4>Sinh viên mặc đẹp – Tự tin đi học, đi chơi</h4>
-        </div>             
+            <h3>Miễn phí vận chuyển cho đơn hàng từ 499.000đ</h3>
+            <p>Đổi trả dễ dàng trong 7 ngày. Đăng ký thành viên để nhận ưu đãi độc quyền!</p>
+        </div>
         <!-- Thêm sau phần sản phẩm nổi bật, trước footer -->
         <div class="container">
             <div class="product-section">
@@ -460,7 +460,7 @@
                                         <div class="card-body">
                                             <div class="product-title">${product.name}</div>
                                             <div class="product-price">
-                                                <fmt:formatNumber value="${product.price}" type="number" groupingUsed="true"/>đ
+                                                <fmt:formatNumber value="${product.price}" type="number" groupingUsed="true" />đ
                                             </div>
                                             <div class="product-quantity ${product.quantity <= 0 ? 'out-of-stock' : ''}">
                                                 <c:choose>
@@ -523,9 +523,7 @@
                                                 </c:if>
 
                                                 <!-- Pages around current -->
-                                                <c:forEach begin="${currentPage > 4 ? currentPage - 1 : 2}" 
-                                                           end="${currentPage < totalPages - 3 ? currentPage + 1 : totalPages - 1}" 
-                                                           var="i">
+                                                <c:forEach begin="${currentPage > 4 ? currentPage - 1 : 2}" end="${currentPage < totalPages - 3 ? currentPage + 1 : totalPages - 1}" var="i">
                                                     <c:if test="${i > 1 && i < totalPages}">
                                                         <li class="page-item ${currentPage == i ? 'active' : ''}">
                                                             <a class="page-link" href="Home?page=${i}">${i}</a>
@@ -567,7 +565,7 @@
                     </c:otherwise>
                 </c:choose>
             </div>
-        </div>       
+        </div>
 
         <footer class="footer text-center mt-5">
             <div class="container">
@@ -597,7 +595,6 @@
                                                 disableOnInteraction: false,
                                             },
                                         });
-                                        // Dữ liệu sản phẩm mẫu cho gợi ý
 
                                         document.addEventListener("DOMContentLoaded", function () {
                                             const notifBtn = document.getElementById("notifDropdown");
@@ -627,6 +624,7 @@
                                                     }
                                                 }
                                             });
+
                                             function updateNotifCount() {
                                                 fetch("CountUnreadServlet")
                                                         .then(res => res.text())
@@ -671,4 +669,5 @@
         </script>
         <% } %>
     </body>
+
 </html>
