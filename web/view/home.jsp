@@ -418,7 +418,7 @@
                     </div>
                     <div class="swiper-slide" style="background-image:url('https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80')">
                         <div class="slide-content">
-                            <h2>Thời trang nam nữ</h2>
+                            <h2>Thời trang nam</h2>
                             <p>Đa dạng mẫu mã, chất lượng đảm bảo, giá hợp lý.</p>
                         </div>
                     </div>
@@ -428,8 +428,10 @@
         </div>
 
         <div class="container promo-section">
-            <h3>Miễn phí vận chuyển cho đơn hàng từ 499.000đ</h3>
-            <p>Đổi trả dễ dàng trong 7 ngày. Đăng ký thành viên để nhận ưu đãi độc quyền!</p>
+            <h4>Giá sinh viên – Phong cách chuẩn men!</h4>
+            <h4>Mặc đẹp mỗi ngày – Không lo ví mỏng!</h4>
+            <h4>Thời trang nam chất – Giá hợp túi tiền sinh viên</h4>
+            <h4>Sinh viên mặc đẹp – Tự tin đi học, đi chơi</h4>
         </div>
         <!-- Thêm sau phần sản phẩm nổi bật, trước footer -->
         <div class="container">
