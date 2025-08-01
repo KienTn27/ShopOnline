@@ -21,10 +21,10 @@ public class EmailUtils {
         try {
             // Cấu hình SMTP
             Properties props = new Properties();
-            props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.port", "587");
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");//máy chủ SMTP của Gmail.
+            props.put("mail.smtp.port", "587"); //cổng dùng cho TLS.
+            props.put("mail.smtp.auth", "true"); //bật xác thực.
+            props.put("mail.smtp.starttls.enable", "true"); //dùng STARTTLS để mã hóa.
 
             // Tạo Session
             Session session = Session.getInstance(props, new Authenticator() {

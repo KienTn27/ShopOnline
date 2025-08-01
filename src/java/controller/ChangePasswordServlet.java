@@ -27,14 +27,14 @@ public class ChangePasswordServlet extends HttpServlet {
         String message = null;
         if (!newPassword.equals(confirmNewPassword)) {
             message = "Mật khẩu mới và xác nhận mật khẩu mới không khớp.";
-        } else if (!userDAO.checkPassword(user.getUserId(), currentPassword)) { // Cần bổ sung checkPassword trong UserDAO
+        } else if (!userDAO.checkPassword(user.getUserId(), currentPassword)) { 
             message = "Mật khẩu hiện tại không đúng.";
         } else {
-            boolean success = userDAO.updatePassword(user.getUserId(), newPassword); // Cần bổ sung updatePassword trong UserDAO
+            boolean success = userDAO.updatePassword(user.getUserId(), newPassword); 
             if (success) {
                 message = "Đổi mật khẩu thành công!";
-                // Cập nhật mật khẩu trong session user object (optional but good practice)
-                user.setPassword(newPassword); // Lưu ý: Trong thực tế nên lưu mật khẩu đã hash
+                // Cập nhật mật khẩu trong session user object 
+                user.setPassword(newPassword); 
                 session.setAttribute("user", user);
             } else {
                 message = "Đổi mật khẩu thất bại. Vui lòng thử lại.";

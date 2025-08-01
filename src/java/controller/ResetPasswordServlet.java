@@ -19,7 +19,7 @@ public class ResetPasswordServlet extends HttpServlet {
 
         if (!valid) {
             request.setAttribute("message", "Token không hợp lệ hoặc đã hết hạn!");
-            request.setAttribute("token", token); // Để form không bị lỗi nếu có logic kiểm tra
+            request.setAttribute("token", token); 
             request.getRequestDispatcher("./view/reset_password.jsp").forward(request, response);
             return;
         }
