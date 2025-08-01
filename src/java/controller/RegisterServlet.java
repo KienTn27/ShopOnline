@@ -71,7 +71,7 @@ public class RegisterServlet extends HttpServlet {
             boolean success = userDAO.register(user);
 
             if (success) {
-                // Đăng ký thành công → chuyển sang login.jsp
+                // Đăng ký thành công 
                 session.setAttribute("registerMessage", "Đăng ký thành công! Vui lòng đăng nhập.");
                 response.sendRedirect("login");
             } else {

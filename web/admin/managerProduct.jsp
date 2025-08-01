@@ -245,7 +245,7 @@
             <div class="col-md-4">
                 <label class="form-label">Tìm kiếm sản phẩm</label>
                 <input type="text" class="form-control" id="searchInput" name="searchInput" 
-                       placeholder="Nhập tên sản phẩm..." value="${searchKeyword}">
+                       placeholder="Nhập thông tin sản phẩm..." value="${searchKeyword}">
             </div>
             <div class="col-md-3">
                 <label class="form-label">Danh mục</label>

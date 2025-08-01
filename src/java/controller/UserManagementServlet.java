@@ -102,7 +102,7 @@ public class UserManagementServlet extends HttpServlet {
                     if (!"SuperAdmin".equals(currentUser.getRole())) {
                         error = "Chỉ super admin mới có thể thêm admin!";
                     } else {
-                        // Logic tạo admin sẽ được xử lý ở nơi khác (form riêng)
+                        
                     }
                     break;
                 default:

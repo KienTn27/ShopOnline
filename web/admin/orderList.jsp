@@ -368,7 +368,7 @@
             <!-- Orders Table -->
             <div class="orders-container">
                 <div class="alert alert-info" role="alert">
-                <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-info-circle"></i>
                     <strong>Thông báo:</strong> Chức năng cập nhật trạng thái đơn hàng đã được chuyển cho Shipper để tối ưu hóa quy trình giao hàng. 
                     Admin chỉ có thể xem thông tin đơn hàng.
                 </div>
@@ -431,13 +431,23 @@
                                             </td>
                                             <td>
                                                 <c:choose>
-                                                    <c:when test="${order.status == 'Pending' || order.status == 'Processing' || order.status == 'Cancelled'}">
+                                                    <c:when test="${order.status == 'Cancelled'}">
+                                                        <div class="cancelled-order-info">
+                                                            <small class="text-danger">
+                                                                <i class="fas fa-ban"></i>
+                                                                <strong>Đơn hàng đã bị khách hàng hủy</strong>
+                                                                <br>
+                                                                <span class="text-muted">Không thể thay đổi trạng thái</span>
+                                                            </small>
+                                                        </div>
+                                                    </c:when>
+                                                    <c:when test="${order.status == 'Pending' || order.status == 'Processing'}">
                                                         <form action="UpdateStatusServlet" method="post" class="update-form" onsubmit="showLoading(this)">
                                                             <input type="hidden" name="orderId" value="${order.orderId}" />
                                                             <select name="status" class="status-select">
                                                                 <option value="Pending" ${order.status == 'Pending' ? 'selected' : ''}>Chờ xác nhận</option>
                                                                 <option value="Processing" ${order.status == 'Processing' ? 'selected' : ''}>Chờ lấy hàng</option>
-                                                                <option value="Cancelled" ${order.status == 'Cancelled' ? 'selected' : ''}>Đã hủy</option>
+                                                                <option value="Cancelled">Đã hủy</option>
                                                             </select>
                                                             <button type="submit" class="btn-update">
                                                                 <i class="fas fa-sync-alt"></i>
@@ -528,48 +538,48 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                                                    function showLoading(form) {
-                                                        form.classList.add('form-updating');
-                                                        form.querySelector('.btn-update').disabled = true;
-                                                    }
+                                                            function showLoading(form) {
+                                                                form.classList.add('form-updating');
+                                                                form.querySelector('.btn-update').disabled = true;
+                                                            }
 
-                                                    // Add smooth animations on page load
-                                                    document.addEventListener('DOMContentLoaded', function () {
-                                                        const cards = document.querySelectorAll('.stat-card');
-                                                        cards.forEach((card, index) => {
-                                                            card.style.opacity = '0';
-                                                            card.style.transform = 'translateY(30px)';
-                                                            setTimeout(() => {
-                                                                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                                                                card.style.opacity = '1';
-                                                                card.style.transform = 'translateY(0)';
-                                                            }, index * 100);
-                                                        });
+                                                            // Add smooth animations on page load
+                                                            document.addEventListener('DOMContentLoaded', function () {
+                                                                const cards = document.querySelectorAll('.stat-card');
+                                                                cards.forEach((card, index) => {
+                                                                    card.style.opacity = '0';
+                                                                    card.style.transform = 'translateY(30px)';
+                                                                    setTimeout(() => {
+                                                                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                                                                        card.style.opacity = '1';
+                                                                        card.style.transform = 'translateY(0)';
+                                                                    }, index * 100);
+                                                                });
 
-                                                        const tableContainer = document.querySelector('.orders-container');
-                                                        if (tableContainer) {
-                                                            tableContainer.style.opacity = '0';
-                                                            tableContainer.style.transform = 'translateY(30px)';
-                                                            setTimeout(() => {
-                                                                tableContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                                                                tableContainer.style.opacity = '1';
-                                                                tableContainer.style.transform = 'translateY(0)';
-                                                            }, 400);
-                                                        }
-                                                    });
-
-                                                    // Auto-refresh functionality (optional)
-                                                    let autoRefresh = false;
-                                                    function toggleAutoRefresh() {
-                                                        autoRefresh = !autoRefresh;
-                                                        if (autoRefresh) {
-                                                            setInterval(() => {
-                                                                if (autoRefresh) {
-                                                                    location.reload();
+                                                                const tableContainer = document.querySelector('.orders-container');
+                                                                if (tableContainer) {
+                                                                    tableContainer.style.opacity = '0';
+                                                                    tableContainer.style.transform = 'translateY(30px)';
+                                                                    setTimeout(() => {
+                                                                        tableContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                                                                        tableContainer.style.opacity = '1';
+                                                                        tableContainer.style.transform = 'translateY(0)';
+                                                                    }, 400);
                                                                 }
-                                                            }, 30000); // Refresh every 30 seconds
-                                                        }
-                                                    }
+                                                            });
+
+                                                            // Auto-refresh functionality (optional)
+                                                            let autoRefresh = false;
+                                                            function toggleAutoRefresh() {
+                                                                autoRefresh = !autoRefresh;
+                                                                if (autoRefresh) {
+                                                                    setInterval(() => {
+                                                                        if (autoRefresh) {
+                                                                            location.reload();
+                                                                        }
+                                                                    }, 30000); // Refresh every 30 seconds
+                                                                }
+                                                            }
         </script>
     </body>
 </html>

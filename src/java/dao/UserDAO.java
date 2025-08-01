@@ -103,6 +103,21 @@ public class UserDAO extends DBContext {
         return null;
 // Không tìm thấy user
     }
+    
+    public Integer getIsDeletedByUsername(String username) {
+        String sql = "SELECT is_deleted FROM [Users] WHERE [Username] = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("is_deleted");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public boolean isUsernameExists(String username) {
         String sql = "SELECT * FROM [Users] WHERE [Username] = ?";
@@ -226,30 +241,6 @@ public class UserDAO extends DBContext {
             }
         }
         return userList;
-    }
-
-    // Block User
-    public boolean updateUserStatus(int userId, boolean isActive) {
-        String sql = "UPDATE Users SET isActive = ? WHERE UserID = ?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setBoolean(1, isActive);
-            ps.setInt(2, userId);
-            int rows = ps.executeUpdate();
-            return rows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    //XOA USER
-    public boolean deleteUser(int userId) throws SQLException {
-        String sql = "DELETE FROM Users WHERE UserID = ?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            int rows = ps.executeUpdate();
-            return rows > 0;
-        }
     }
 
     public User getUserById(int userId) {
@@ -394,21 +385,6 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
             return false;
         }
-    }
-
-    public Integer getIsDeletedByUsername(String username) {
-        String sql = "SELECT is_deleted FROM [Users] WHERE [Username] = ?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("is_deleted");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     // Phân trang Top User theo chi tiêu
