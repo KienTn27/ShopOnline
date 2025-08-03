@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Category;
 import model.Product1;
+import model.User;
+import java.net.URLEncoder; // <-- THÊM DÒNG NÀY
 
 /**
  * Servlet quản lý sản phẩm
@@ -40,8 +42,29 @@ public class managerProduct extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          request.setCharacterEncoding("UTF-8");
         
-        request.setCharacterEncoding("UTF-8");
+      
+        
+            HttpSession session = request.getSession(false);
+        // Nếu đã đăng nhập rồi → chuyển qua Home luôn
+        User user =  (User) session.getAttribute("user");
+        if (user == null || !user.getRole().equalsIgnoreCase("Admin")) {
+           
+                        request.setAttribute("errorMessage", "You need login role admin before do this action");
+                    request.getRequestDispatcher("./view/login.jsp").forward(request, response);
+                    return;
+
+        }
+                
+              
+                
+        // Nếu chưa đăng nhập → hiển thị form login
+    
+
+        
+        
+      
         
         try {
             // Lấy tham số lọc
@@ -51,6 +74,10 @@ public class managerProduct extends HttpServlet {
             String priceToStr = request.getParameter("priceTo");
             String pageStr = request.getParameter("page");
             
+            // --- DEBUG: Kiểm tra searchKeyword khi nhận được ở doGet ---
+            System.out.println("DEBUG (managerProduct doGet): searchKeyword = '" + searchKeyword + "'");
+            // ---------------------------------------------------------
+
             // Xử lý tham số trang
             int page = 1;
             if (pageStr != null && !pageStr.isEmpty()) {
@@ -140,12 +167,19 @@ public class managerProduct extends HttpServlet {
         
         request.setCharacterEncoding("UTF-8");
         
+        // --- DEBUG: Kiểm tra searchInput khi nhận được ở doPost ---
+        String searchInput = request.getParameter("searchInput");
+        System.out.println("DEBUG (managerProduct doPost): searchInput = '" + searchInput + "'");
+        // ---------------------------------------------------------
+
         // Xử lý tìm kiếm và lọc từ form
         String action = request.getParameter("action");
         
         if ("filter".equals(action)) {
             // Lấy tham số từ form
-            String searchInput = request.getParameter("searchInput");
+            
+            
+            //String searchInput = request.getParameter("searchInput"); // Đã lấy ở trên
             String categoryFilter = request.getParameter("categoryFilter");
             String priceFrom = request.getParameter("priceFrom");
             String priceTo = request.getParameter("priceTo");
@@ -154,7 +188,8 @@ public class managerProduct extends HttpServlet {
             StringBuilder redirectUrl = new StringBuilder("managerProduct?");
             
             if (searchInput != null && !searchInput.isEmpty()) {
-                redirectUrl.append("search=").append(searchInput).append("&");
+                // SỬ DỤNG URLEncoder.encode() ĐỂ MÃ HÓA CHUỖI TIẾNG VIỆT
+                redirectUrl.append("search=").append(URLEncoder.encode(searchInput, "UTF-8")).append("&");
             }
             
             if (categoryFilter != null && !categoryFilter.isEmpty()) {

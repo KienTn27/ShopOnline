@@ -734,8 +734,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <script src="js/managerUser.js"></script>
@@ -882,14 +881,28 @@ function refreshData() {
 }
 
 function exportToExcel() {
-    // Hiển thị loading
-    document.getElementById('loadingOverlay').style.display = 'block';
-    document.getElementById('loadingSpinner').style.display = 'block';
+    // Tạo form ẩn để gửi request
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.action = 'ExportExcel';
+    form.target = '_blank'; // Mở trong tab mới
     
-    // Chuyển hướng đến servlet xuất Excel
-    window.location.href = 'ExportExcel';
+    // Thêm các tham số tìm kiếm hiện tại
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.forEach((value, key) => {
+        if (key !== 'page') { // Không cần tham số page cho export
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
+    });
+    
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
 }
-
 
 function editProduct(productId) {
     // Hiển thị loading
