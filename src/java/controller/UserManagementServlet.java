@@ -15,6 +15,7 @@ import java.util.List;
 
 @WebServlet("/admin/user-management")
 public class UserManagementServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
@@ -52,6 +53,7 @@ public class UserManagementServlet extends HttpServlet {
             boolean isTargetAdmin = targetUser != null && "Admin".equals(targetUser.getRole());
             boolean isTargetSuperAdmin = targetUser != null && "SuperAdmin".equals(targetUser.getRole());
             boolean isTargetCustomer = targetUser != null && "Customer".equals(targetUser.getRole());
+            boolean isTargetShipper = targetUser != null && "Shipper".equals(targetUser.getRole());
             switch (action) {
                 case "block":
                     if (isSelf) {
@@ -63,10 +65,10 @@ public class UserManagementServlet extends HttpServlet {
                             userDAO.blockUser(userId);
                         }
                     } else if ("Admin".equals(currentUser.getRole())) {
-                        if (isTargetCustomer) {
+                        if (isTargetCustomer || isTargetShipper) {
                             userDAO.blockUser(userId);
                         } else {
-                            error = "Admin chỉ có thể block customer!";
+                            error = "Admin chỉ có thể block customer và shipper!";
                         }
                     }
                     break;
@@ -78,10 +80,10 @@ public class UserManagementServlet extends HttpServlet {
                             userDAO.unblockUser(userId);
                         }
                     } else if ("Admin".equals(currentUser.getRole())) {
-                        if (isTargetCustomer) {
+                        if (isTargetCustomer || isTargetShipper) {
                             userDAO.unblockUser(userId);
                         } else {
-                            error = "Admin chỉ có thể mở khóa customer!";
+                            error = "Admin chỉ có thể mở khóa customer và shipper!";
                         }
                     }
                     break;
@@ -102,7 +104,7 @@ public class UserManagementServlet extends HttpServlet {
                     if (!"SuperAdmin".equals(currentUser.getRole())) {
                         error = "Chỉ super admin mới có thể thêm admin!";
                     } else {
-                        
+                        // Logic tạo admin sẽ được xử lý ở nơi khác (form riêng)
                     }
                     break;
                 default:
@@ -111,7 +113,9 @@ public class UserManagementServlet extends HttpServlet {
         } catch (Exception e) {
             error = "Lỗi thao tác: " + e.getMessage();
         }
-        if (error != null) request.setAttribute("error", error);
+        if (error != null) {
+            request.setAttribute("error", error);
+        }
         doGet(request, response);
-    } 
-} 
+    }
+}

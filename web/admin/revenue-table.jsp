@@ -80,7 +80,7 @@
         </a>
         <div class="table-section">
             <div class="section-header">
-                <h2 class="section-title">📋 Bảng chi tiết doanh thu trung bình/ngày</h2>
+                <h2 class="section-title">📋 Bảng chi tiết doanh thu trung bình</h2>
                 <p class="section-subtitle">Dữ liệu chi tiết từng ngày</p>
             </div>
             <div class="table-card">

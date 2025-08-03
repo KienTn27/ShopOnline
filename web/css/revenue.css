@@ -416,9 +416,15 @@ th {
     letter-spacing: 0.5px;
 }
 
-th:nth-child(1) { background: linear-gradient(90deg, #1abc9c 0%, #16a085 100%); } /* Xanh nhạt */
-th:nth-child(2) { background: linear-gradient(90deg, #3498db 0%, #2980b9 100%); } /* Xanh dương */
-th:nth-child(3) { background: linear-gradient(90deg, #3498db 0%, #2980b9 100%); } /* Xanh dương */
+th:nth-child(1) {
+    background: linear-gradient(90deg, #1abc9c 0%, #16a085 100%);
+} /* Xanh nhạt */
+th:nth-child(2) {
+    background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+} /* Xanh dương */
+th:nth-child(3) {
+    background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+} /* Xanh dương */
 
 tbody tr {
     border-bottom: 1px solid #f1f5f9;
@@ -520,8 +526,14 @@ td {
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .stats-summary, .chart-section, .table-section {

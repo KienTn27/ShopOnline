@@ -12,31 +12,50 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <link rel="stylesheet" href="<%= request.getContextPath() %>/css/revenue.css">
         <style>
+            /* Color Scheme - Consistent Blue Theme */
+            :root {
+                --primary-blue: #2563eb;
+                --primary-blue-dark: #1d4ed8;
+                --primary-blue-light: #90cdf4;
+                --primary-blue-bg: #e3f2fd;
+                --primary-blue-bg-light: #f8fafc;
+                --text-primary: #1e293b;
+                --text-secondary: #64748b;
+                --text-muted: #94a3b8;
+                --border-color: #e2e8f0;
+                --border-color-light: #f1f5f9;
+                --shadow-light: rgba(37, 99, 235, 0.08);
+                --shadow-medium: rgba(37, 99, 235, 0.15);
+                --shadow-heavy: rgba(37, 99, 235, 0.25);
+            }
+
             .btn-back-menu {
                 display: inline-flex;
                 align-items: center;
                 gap: 0.5rem;
-                background: #e3f2fd;
-                color: #2563eb;
+                background: var(--primary-blue-bg);
+                color: var(--primary-blue);
                 font-weight: 600;
                 border: none;
                 border-radius: 8px;
                 padding: 0.6rem 1.2rem;
                 margin-bottom: 1.2rem;
                 text-decoration: none;
-                box-shadow: 0 2px 8px rgba(72,187,255,0.08);
-                transition: background 0.2s, color 0.2s;
+                box-shadow: 0 2px 8px var(--shadow-light);
+                transition: all 0.3s ease;
             }
             .btn-back-menu:hover {
-                background: #90cdf4;
+                background: var(--primary-blue-light);
                 color: #fff;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px var(--shadow-medium);
             }
             .btn-action {
                 display: inline-flex;
                 align-items: center;
                 gap: 0.5rem;
-                background: #e3f2fd;
-                color: #2563eb;
+                background: var(--primary-blue-bg);
+                color: var(--primary-blue);
                 font-weight: 600;
                 border: none;
                 border-radius: 999px;
@@ -44,16 +63,143 @@
                 font-size: 1.08em;
                 margin: 1.5rem 0;
                 text-decoration: none;
-                box-shadow: 0 2px 8px rgba(72,187,255,0.08);
-                transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+                box-shadow: 0 2px 8px var(--shadow-light);
+                transition: all 0.3s ease;
             }
             .btn-action:hover {
-                background: #2563eb;
+                background: var(--primary-blue);
                 color: #fff;
-                box-shadow: 0 4px 16px rgba(37,99,235,0.10);
+                box-shadow: 0 4px 16px var(--shadow-medium);
+                transform: translateY(-1px);
             }
             .btn-action i, .btn-action span[style*='vertical-align:middle'] {
                 color: inherit !important;
+            }
+
+            /* Time Toggle Styles */
+            .time-toggle {
+                display: flex;
+                gap: 0.5rem;
+                margin-right: 1rem;
+            }
+
+            .toggle-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.6rem 1.2rem;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+            }
+
+            .toggle-btn:not(.active) {
+                background: var(--primary-blue-bg-light);
+                color: var(--text-secondary);
+                border-color: var(--border-color);
+            }
+
+            .toggle-btn.active {
+                background: var(--primary-blue);
+                color: white;
+                border-color: var(--primary-blue-dark);
+                box-shadow: 0 2px 8px var(--shadow-medium);
+            }
+
+            .toggle-btn:hover:not(.active) {
+                background: var(--border-color);
+                color: var(--text-primary);
+                border-color: var(--text-muted);
+                transform: translateY(-1px);
+            }
+
+            .toggle-btn:hover.active {
+                background: var(--primary-blue-dark);
+                border-color: #1e40af;
+                box-shadow: 0 4px 12px var(--shadow-heavy);
+                transform: translateY(-1px);
+            }
+
+            .toggle-icon {
+                font-size: 1.1rem;
+            }
+
+            /* Action Button Improvements */
+            .action-btn {
+                background: var(--primary-blue-bg);
+                color: var(--primary-blue);
+                border: 2px solid var(--primary-blue-light);
+                border-radius: 8px;
+                padding: 0.6rem 1.2rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 8px var(--shadow-light);
+            }
+
+            .action-btn:hover {
+                background: var(--primary-blue);
+                color: white;
+                border-color: var(--primary-blue);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px var(--shadow-medium);
+            }
+
+            .action-btn.secondary {
+                background: var(--primary-blue-bg-light);
+                color: var(--text-secondary);
+                border-color: var(--border-color);
+            }
+
+            .action-btn.secondary:hover {
+                background: var(--border-color);
+                color: var(--text-primary);
+                border-color: var(--text-muted);
+            }
+
+            /* Current View Indicator */
+            .current-view-indicator {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: var(--primary-blue-bg);
+                color: var(--primary-blue);
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                margin-top: 0.5rem;
+                border: 1px solid var(--primary-blue-light);
+                box-shadow: 0 1px 4px var(--shadow-light);
+            }
+
+            .indicator-icon {
+                font-size: 1rem;
+            }
+
+            .indicator-text {
+                font-weight: 600;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .header-actions {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .time-toggle {
+                    margin-right: 0;
+                    justify-content: center;
+                }
+
+                .current-view-indicator {
+                    font-size: 0.8rem;
+                    padding: 0.4rem 0.8rem;
+                }
             }
         </style>
     </head>
@@ -85,8 +231,23 @@
                     <div class="header-text">
                         <h1 class="dashboard-title"><span>📈</span> Thống kê doanh thu</h1>
                         <p class="dashboard-subtitle">Phân tích doanh thu theo ngày hoặc tháng</p>
+                        <div class="current-view-indicator">
+                            <span class="indicator-icon">📊</span>
+                            <span class="indicator-text">Đang xem: <%= "day".equals(type) ? "Doanh thu theo ngày" : "Doanh thu theo tháng" %></span>
+                        </div>
                     </div>
                     <div class="header-actions">
+                        <!-- Time Period Toggle -->
+                        <div class="time-toggle">
+                            <a href="revenue?type=day" class="toggle-btn <%= "day".equals(type) ? "active" : "" %>">
+                                <span class="toggle-icon">📅</span>
+                                Theo ngày
+                            </a>
+                            <a href="revenue?type=month" class="toggle-btn <%= "month".equals(type) ? "active" : "" %>">
+                                <span class="toggle-icon">📆</span>
+                                Theo tháng
+                            </a>
+                        </div>
 
                         <button class="action-btn secondary" onclick="refreshData()">
                             <span class="btn-icon">🔄</span>
@@ -103,8 +264,8 @@
             <!-- Stats Summary with Tabs -->
             <div class="stats-summary">
                 <div class="section-header">
-                    <h2 class="section-title">📊 Tổng quan</h2>
-                    <p class="section-subtitle">Thống kê nhanh về doanh thu</p>
+                    <h2 class="section-title">📊 Tổng quan doanh thu <%= "day".equals(type) ? "theo ngày" : "theo tháng" %></h2>
+                    <p class="section-subtitle">Thống kê nhanh về doanh thu <%= "day".equals(type) ? "từng ngày" : "từng tháng" %></p>
                 </div>
                 <div class="tabs-container">
                     <div class="tabs">
