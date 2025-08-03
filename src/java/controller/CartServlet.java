@@ -23,11 +23,13 @@ public class CartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession();
         String userIdStr = (String) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
-        if (userIdStr == null) {
+        if (userIdStr == null || role == null
+                || !(role.equals("Customer") || role.equals("Admin") || role.equals("Shipper"))) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -154,7 +156,8 @@ public class CartServlet extends HttpServlet {
         String userIdStr = (String) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
-        if (userIdStr == null) {
+        if (userIdStr == null || role == null
+                || !(role.equals("Customer") || role.equals("Admin") || role.equals("Shipper"))) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -200,7 +203,6 @@ public class CartServlet extends HttpServlet {
                     String district = request.getParameter("district");
                     String detail = request.getParameter("detailAddress");
 
-
                     if (totalAmount <= 0
                             || city == null || city.trim().isEmpty()
                             || province == null || province.trim().isEmpty()
@@ -215,7 +217,6 @@ public class CartServlet extends HttpServlet {
                     // Lấy danh sách giỏ hàng trước khi xóa
                     List<CartDTO> cartItems = cartDAO.getCartWithStockInfo(userId);
 
-
                     if (cartItems == null || cartItems.isEmpty()) {
                         throw new RuntimeException("Giỏ hàng trống hoặc không thể lấy thông tin giỏ hàng");
                     }
@@ -226,7 +227,6 @@ public class CartServlet extends HttpServlet {
                     if (orderId == -1) {
                         throw new RuntimeException("Failed to create order");
                     }
-
 
                     // Tạo chi tiết đơn hàng và cập nhật số lượng sản phẩm
                     OrderDetailDAO orderDetailDAO = new OrderDetailDAO();

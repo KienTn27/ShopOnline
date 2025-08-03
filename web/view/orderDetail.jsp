@@ -7,6 +7,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="model.User" %>
 <%@ page import="dao.ReviewDAO" %>
+<%
+    // Kiểm tra authentication
+    User currentUser = (User) session.getAttribute("user");
+    if (currentUser == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
 <html>
     <head>
         <title>Chi tiết đơn hàng</title>
@@ -583,7 +591,6 @@
                     <h3><i class="fas fa-box"></i> Sản phẩm trong đơn hàng</h3>
 
                     <%
-                        User currentUser = (User) session.getAttribute("user");
                         int currentUserId = currentUser != null ? currentUser.getUserId() : -1;
                         ReviewDAO reviewDAO = new ReviewDAO();
                     %>
