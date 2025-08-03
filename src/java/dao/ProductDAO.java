@@ -472,17 +472,19 @@ public class ProductDAO {
     public List<Product1> advancedSearch(String keyword, Integer categoryId,
             BigDecimal minPrice, BigDecimal maxPrice,
             Boolean isActive) {
+        
+         System.out.println("DEBUG DAO: searchKeyword received = '" + keyword + "'");
         List<Product1> products = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM Products WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
         if (keyword != null && !keyword.trim().isEmpty()) {
-            sql.append(" AND (Name LIKE ? OR Description LIKE ?)");
+            sql.append(" AND Name LIKE ?"); // Sửa: Bỏ dấu ngoặc và chỉ để một dấu '?'
             String searchPattern = "%" + keyword.trim() + "%";
-            params.add(searchPattern);
-            params.add(searchPattern);
+            params.add(searchPattern); // Sửa: Chỉ thêm tham số MỘT LẦN
         }
 
+        // ... (các phần còn lại giữ nguyên)
         if (categoryId != null) {
             sql.append(" AND CategoryID = ?");
             params.add(categoryId);
@@ -661,7 +663,7 @@ public class ProductDAO {
     public static void main(String[] args) {
         List<Product1> l = new ArrayList<>();
         ProductDAO pd = new ProductDAO();
-        System.out.println(pd.getProductsWithPagination(1, 5).get(0).getName());
+        System.out.println(pd.advancedSearch("áo", null, null, null, true).size()) ;
 
 //        System.out.println(l.size());
     }

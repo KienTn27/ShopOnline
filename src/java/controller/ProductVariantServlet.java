@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 
 import java.io.File;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 import model.Product;
 import model.Product1;
+import model.User;
 
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2,
@@ -45,6 +47,22 @@ public class ProductVariantServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        
+        
+        
+            HttpSession session = request.getSession(false);
+        // Nếu đã đăng nhập rồi → chuyển qua Home luôn
+        User user =  (User) session.getAttribute("user");
+        if (user == null || !user.getRole().equalsIgnoreCase("Admin")) {
+           
+                        request.setAttribute("errorMessage", "You need login role admin before do this action");
+                    request.getRequestDispatcher("./view/login.jsp").forward(request, response);
+                    return;
+
+        }
+               
+        
         String productIdStr = request.getParameter("productId");
 
         if (productIdStr == null || productIdStr.trim().isEmpty()) {
