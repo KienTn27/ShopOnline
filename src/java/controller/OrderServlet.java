@@ -60,8 +60,17 @@ public class OrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+
+        // Kiểm tra session và đăng nhập
+        HttpSession session = request.getSession(false); // Không tạo session mới
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
+        // Lấy user từ session
         User user = (User) session.getAttribute("user");
+
         if (user != null) {
             int productId = Integer.parseInt(request.getParameter("productId"));
             int quantity = Integer.parseInt(request.getParameter("quantity"));
@@ -75,6 +84,7 @@ public class OrderServlet extends HttpServlet {
         } else {
             request.setAttribute("message", "Please login first!");
         }
+
         request.getRequestDispatcher("order.jsp").forward(request, response);
     }
 

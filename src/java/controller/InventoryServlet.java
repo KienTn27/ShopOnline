@@ -43,9 +43,11 @@ public class InventoryServlet extends HttpServlet {
             request.getRequestDispatcher("admin/add-inventory.jsp").forward(request, response);
             return;
         } else {
-            // Hiển thị danh sách tồn kho
+            // Hiển thị danh sách tồn kho với lọc
             int page = 1;
             int pageSize = 10; // Số dòng mỗi trang, có thể chỉnh
+
+            // Lấy tham số phân trang
             try {
                 String pageParam = request.getParameter("page");
                 if (pageParam != null) {
@@ -57,13 +59,47 @@ public class InventoryServlet extends HttpServlet {
             } catch (NumberFormatException e) {
                 page = 1;
             }
+
+            // Lấy tham số lọc
+            String minQuantityParam = request.getParameter("minQuantity");
+            String maxQuantityParam = request.getParameter("maxQuantity");
+
+            Integer minQuantity = null;
+            Integer maxQuantity = null;
+            String errorMessage = null;
+
+            try {
+                if (minQuantityParam != null && !minQuantityParam.trim().isEmpty()) {
+                    minQuantity = Integer.parseInt(minQuantityParam);
+                }
+                if (maxQuantityParam != null && !maxQuantityParam.trim().isEmpty()) {
+                    maxQuantity = Integer.parseInt(maxQuantityParam);
+                }
+
+                // Validate: số lượng từ phải nhỏ hơn số lượng đến
+                if (minQuantity != null && maxQuantity != null && minQuantity >= maxQuantity) {
+                    errorMessage = "Số lượng 'từ' phải nhỏ hơn số lượng 'đến'";
+                    // Reset về null để không áp dụng filter
+                    minQuantity = null;
+                    maxQuantity = null;
+                }
+
+            } catch (NumberFormatException e) {
+                errorMessage = "Vui lòng nhập số hợp lệ";
+                // Reset về null để không áp dụng filter
+                minQuantity = null;
+                maxQuantity = null;
+            }
+
             InventoryDAO dao = new InventoryDAO();
-            List<InventoryStat> inventoryList = dao.getInventoryStatsPage(page, pageSize);
-            int totalRecords = dao.getTotalInventoryCount();
+            List<InventoryStat> inventoryList = dao.getInventoryStatsWithFilter(page, pageSize, minQuantity, maxQuantity, null);
+            int totalRecords = dao.getTotalInventoryCountWithFilter(minQuantity, maxQuantity, null);
             int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+
             request.setAttribute("inventoryList", inventoryList);
             request.setAttribute("currentPage", page);
             request.setAttribute("totalPages", totalPages);
+            request.setAttribute("errorMessage", errorMessage);
             request.getRequestDispatcher("admin/inventory.jsp").forward(request, response);
         }
     }

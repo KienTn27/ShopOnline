@@ -74,14 +74,52 @@
         <a href="admin/menu.jsp" class="btn-back-menu"><i class="fas fa-arrow-left"></i> Quay lại menu</a>
         <div class="container">
             <h2>Danh sách tồn kho</h2>
-            
+
+            <!-- Form lọc sản phẩm -->
+            <div class="filter-section">
+                <!-- Error Message -->
+                <% 
+                String errorMessage = (String) request.getAttribute("errorMessage");
+                if (errorMessage != null && !errorMessage.isEmpty()) {
+                %>
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <%= errorMessage %>
+                </div>
+                <% } %>
+
+                <form action="inventory" method="GET" class="filter-form" onsubmit="return validateFilter()">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="minQuantity">Số lượng từ:</label>
+                            <input type="number" id="minQuantity" name="minQuantity" 
+                                   value="${param.minQuantity}" min="0" placeholder="0">
+                        </div>
+                        <div class="filter-group">
+                            <label for="maxQuantity">Đến:</label>
+                            <input type="number" id="maxQuantity" name="maxQuantity" 
+                                   value="${param.maxQuantity}" min="0" placeholder="999">
+                        </div>
+
+                        <div class="filter-buttons">
+                            <button type="submit" class="btn-filter">
+                                <i class="fas fa-search"></i> Lọc
+                            </button>
+                            <a href="inventory" class="btn-clear">
+                                <i class="fas fa-times"></i> Xóa lọc
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Tên sản phẩm</th>
                         <th>Số lượng tồn</th>
-                        <th>Hành động</th> </tr>
+                    </tr>
                 </thead>
                 <tbody>
                     <c:forEach var="inv" items="${inventoryList}">
@@ -89,12 +127,6 @@
                             <td data-label="ID">${inv.productId}</td>
                             <td data-label="Tên sản phẩm">${inv.productName}</td>
                             <td data-label="Số lượng tồn">${inv.stockQuantity}</td>
-                            <td data-label="Hành động">
-                                <a href="inventory?action=edit&productId=${inv.productId}&productName=${inv.productName}&stockQuantity=${inv.stockQuantity}" class="btn-action btn-edit">
-                                    <i class="fas fa-edit"></i> Sửa
-                                </a>
-                                
-                            </td>
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -104,10 +136,25 @@
                 <%
                     Integer currentPage = (Integer) request.getAttribute("currentPage");
                     Integer totalPages = (Integer) request.getAttribute("totalPages");
+    
+                    // Lấy các tham số lọc hiện tại
+                    String minQuantity = request.getParameter("minQuantity");
+                    String maxQuantity = request.getParameter("maxQuantity");
+    
+                    // Tạo query string cho các tham số lọc
+                    StringBuilder filterParams = new StringBuilder();
+                    if (minQuantity != null && !minQuantity.trim().isEmpty()) {
+                        filterParams.append("&minQuantity=").append(minQuantity);
+                    }
+                    if (maxQuantity != null && !maxQuantity.trim().isEmpty()) {
+                        filterParams.append("&maxQuantity=").append(maxQuantity);
+                    }
+                    String filterQueryString = filterParams.toString();
+    
                     if (totalPages != null && totalPages > 1) {
                         // Nút Trước
                         if (currentPage > 1) {
-                            out.print("<a href='inventory?page=" + (currentPage - 1) + "' class='page-btn'>Trước</a>");
+                            out.print("<a href='inventory?page=" + (currentPage - 1) + filterQueryString + "' class='page-btn'>Trước</a>");
                         } else {
                             out.print("<span class='page-btn disabled'>Trước</span>");
                         }
@@ -116,12 +163,12 @@
                             if (i == currentPage) {
                                 out.print("<span class='page-btn active'>" + i + "</span>");
                             } else {
-                                out.print("<a href='inventory?page=" + i + "' class='page-btn'>" + i + "</a>");
+                                out.print("<a href='inventory?page=" + i + filterQueryString + "' class='page-btn'>" + i + "</a>");
                             }
                         }
                         // Nút Sau
                         if (currentPage < totalPages) {
-                            out.print("<a href='inventory?page=" + (currentPage + 1) + "' class='page-btn'>Sau</a>");
+                            out.print("<a href='inventory?page=" + (currentPage + 1) + filterQueryString + "' class='page-btn'>Sau</a>");
                         } else {
                             out.print("<span class='page-btn disabled'>Sau</span>");
                         }
@@ -129,5 +176,71 @@
                 %>
             </div>
         </div>
+
+        <!-- JavaScript Validation -->
+        <script>
+            function validateFilter() {
+                const minQuantity = document.getElementById('minQuantity').value;
+                const maxQuantity = document.getElementById('maxQuantity').value;
+
+                // Kiểm tra nếu cả hai trường đều có giá trị
+                if (minQuantity && maxQuantity) {
+                    const min = parseInt(minQuantity);
+                    const max = parseInt(maxQuantity);
+
+                    if (min >= max) {
+                        alert('Số lượng "từ" phải nhỏ hơn số lượng "đến"');
+                        return false;
+                    }
+                }
+
+                // Kiểm tra giá trị âm
+                if (minQuantity && parseInt(minQuantity) < 0) {
+                    alert('Số lượng không được âm');
+                    return false;
+                }
+
+                if (maxQuantity && parseInt(maxQuantity) < 0) {
+                    alert('Số lượng không được âm');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Real-time validation
+            document.getElementById('minQuantity').addEventListener('input', function () {
+                validateInputs();
+            });
+
+            document.getElementById('maxQuantity').addEventListener('input', function () {
+                validateInputs();
+            });
+
+            function validateInputs() {
+                const minQuantity = document.getElementById('minQuantity').value;
+                const maxQuantity = document.getElementById('maxQuantity').value;
+                const submitBtn = document.querySelector('.btn-filter');
+
+                if (minQuantity && maxQuantity) {
+                    const min = parseInt(minQuantity);
+                    const max = parseInt(maxQuantity);
+
+                    if (min >= max) {
+                        submitBtn.style.opacity = '0.5';
+                        submitBtn.style.cursor = 'not-allowed';
+                        submitBtn.disabled = true;
+                    } else {
+                        submitBtn.style.opacity = '1';
+                        submitBtn.style.cursor = 'pointer';
+                        submitBtn.disabled = false;
+                    }
+                } else {
+                    submitBtn.style.opacity = '1';
+                    submitBtn.style.cursor = 'pointer';
+                    submitBtn.disabled = false;
+                }
+            }
+        </script>
     </body>
 </html>

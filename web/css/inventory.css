@@ -55,52 +55,173 @@ h2 {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.02); /* Very subtle shadow */
 }
 
-/* --- Buttons --- */
-.button-group {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-bottom: 2rem;
+/* --- Filter Section --- */
+.filter-section {
+    background: #ffffff !important;
+    border-radius: 0.5rem !important;
+    padding: 1.5rem !important;
+    margin-bottom: 2rem !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-.btn {
-    padding: 0.8rem 1.8rem;
+.filter-form {
+    width: 100%;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: end;
+    justify-content: space-between;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 180px;
+    max-width: 250px;
+}
+
+.filter-group label {
+    display: block !important;
+    margin-bottom: 0.5rem !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    font-size: 0.9rem !important;
+}
+
+.filter-group input {
+    width: 100% !important;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    background: #ffffff !important;
+    color: #374151 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: none !important;
+}
+
+.filter-group input:focus {
+    outline: none !important;
+    border-color: #6b7280 !important;
+    box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.1) !important;
+    transform: none !important;
+}
+
+.filter-group input:hover {
+    border-color: #9ca3af !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.filter-group input::placeholder {
+    color: #9ca3af;
+}
+
+/* Error Message */
+.error-message {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border: 2px solid #fca5a5;
     border-radius: 0.75rem;
-    font-size: 1.05rem;
-    font-weight: 700;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    color: #dc2626;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+.error-message i {
+    font-size: 1.1rem;
+    color: #dc2626;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 1.5rem;
+    align-items: end;
+    flex-shrink: 0;
+}
+
+.btn-filter, .btn-clear {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
     border: none;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.5rem;
     text-decoration: none;
-    color: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Softer shadow */
+    min-width: 120px;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Softer hover shadow */
+.btn-filter {
+    background: #2563eb !important;
+    color: white !important;
+    border: 2px solid #1d4ed8 !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
 }
 
-.btn-primary {
-    /* Gradient xanh dương nhạt */
-    background: linear-gradient(45deg, #0ea5e9, #0284c7); /* Sky blue to a slightly darker blue */
+.btn-filter:hover {
+    background: #1d4ed8 !important;
+    border-color: #1e40af !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
 }
 
-.btn-primary:hover {
-    background: linear-gradient(45deg, #0284c7, #0369a1); /* Darker shades of blue */
+.btn-filter:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3) !important;
 }
 
-.btn-danger {
-    /* Vẫn giữ màu đỏ nhưng có thể điều chỉnh sắc thái */
-    background: linear-gradient(45deg, #f87171, #ef4444); /* Lighter red to standard red */
+.btn-clear {
+    background: transparent !important;
+    color: #7c3aed !important;
+    border: none !important;
+    text-decoration: underline !important;
+    min-width: auto !important;
+    padding: 0.5rem 1rem !important;
+    box-shadow: none !important;
 }
 
-.btn-danger:hover {
-    background: linear-gradient(45deg, #ef4444, #dc2626); /* Standard red to darker red */
+.btn-clear:hover {
+    color: #5b21b6 !important;
+    text-decoration: underline !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
+
+.btn-clear:active {
+    color: #4c1d95 !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+
+
+
 
 /* --- Table Styling --- */
 table {
@@ -184,53 +305,7 @@ td:nth-child(3) { /* Stock Quantity */
     font-size: 1.05rem;
 }
 
-td:nth-child(4) { /* Actions Column */
-    text-align: center;
-    white-space: nowrap;
-    gap: 0.75rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-/* Action Buttons within table */
-.btn-action {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    border-radius: 0.5rem;
-    transition: all 0.2s ease-in-out;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-}
-
-.btn-action:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-}
-
-.btn-edit {
-    /* Gradient xanh lá cây nhạt */
-    background: linear-gradient(45deg, #2dd4bf, #0d9488); /* Teal to darker teal */
-    color: white;
-}
-
-.btn-edit:hover {
-    background: linear-gradient(45deg, #0d9488, #0f766e); /* Darker teal shades */
-}
-
-.btn-delete {
-    /* Vẫn giữ màu đỏ nhưng có thể điều chỉnh sắc thái */
-    background: linear-gradient(45deg, #fca5a5, #f87171); /* Very light red to lighter red */
-    color: white;
-}
-
-.btn-delete:hover {
-    background: linear-gradient(45deg, #f87171, #ef4444); /* Lighter red to standard red */
-}
 
 /* --- Responsive adjustments for smaller screens --- */
 @media (max-width: 768px) {
@@ -249,17 +324,35 @@ td:nth-child(4) { /* Actions Column */
         margin-bottom: 1.5rem;
     }
 
-    .button-group {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 0.75rem;
+    .filter-section {
+        padding: 1rem;
         margin-bottom: 1.5rem;
     }
 
-    .btn {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
-        border-radius: 0.6rem;
+    .filter-row {
+        flex-direction: column;
+        gap: 1.5rem;
+        justify-content: flex-start;
+    }
+
+    .filter-group {
+        min-width: auto;
+        max-width: none;
+    }
+
+    .filter-buttons {
+        flex-direction: row;
+        gap: 1rem;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-filter, .btn-clear {
+        width: 100%;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        min-width: auto;
     }
 
     table, thead, tbody, th, td, tr {
@@ -299,17 +392,21 @@ td:nth-child(4) { /* Actions Column */
     }
 
     /* Assign labels for responsive table */
-    tbody td:nth-of-type(1):before { content: "ID:"; }
-    tbody td:nth-of-type(2):before { content: "Tên sản phẩm:"; }
-    tbody td:nth-of-type(3):before { content: "Số lượng tồn:"; }
-    tbody td:nth-of-type(4):before { content: "Hành động:"; }
+    tbody td:nth-of-type(1):before {
+        content: "ID:";
+    }
+    tbody td:nth-of-type(2):before {
+        content: "Tên sản phẩm:";
+    }
+    tbody td:nth-of-type(3):before {
+        content: "Số lượng tồn:";
+    }
+
 
     tbody tr:hover {
         transform: none;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     }
 
-    td:nth-child(4) {
-        justify-content: flex-end;
-    }
+
 }

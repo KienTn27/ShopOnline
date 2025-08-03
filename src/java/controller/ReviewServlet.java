@@ -82,7 +82,7 @@ public class ReviewServlet extends HttpServlet {
         // Kiểm tra session để lấy thông tin user
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
