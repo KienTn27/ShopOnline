@@ -3,6 +3,7 @@ package model;
 import java.util.Date;
 
 public class RevenueStat {
+
     private String label; // Ngày hoặc Tháng
     private int totalOrders;
     private double totalRevenue;
